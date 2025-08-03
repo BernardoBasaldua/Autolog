@@ -16,4 +16,9 @@ export class VehiculoService {
   getVehiculos(): Observable<Vehiculo[]> {
     return of(this.vehiculos);
   }
+
+  getVehiculoById(id: number): Observable<Vehiculo | undefined> {
+    const vehiculo = this.vehiculos.find(v => v.id === id);
+    return of(vehiculo);
+  }
 }

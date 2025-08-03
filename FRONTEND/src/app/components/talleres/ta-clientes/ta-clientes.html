@@ -1,1 +1,87 @@
-<p>ta-clientes works!</p>
+<!-- Search and Filter Section -->
+<section class="mb-6 card p-4 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+    <div class="flex-1">
+        <input type="text" placeholder="Buscar cliente por nombre, DNI..." class="w-full">
+    </div>
+    <div class="w-full md:w-auto">
+        <select class="w-full">
+            <option>Tipo de cliente</option>
+            <option>Particular</option>
+            <option>Empresa</option>
+        </select>
+    </div>
+    <div class="w-full md:w-auto">
+        <select class="w-full">
+            <option>Vehículos asociados</option>
+            <option>Sí</option>
+            <option>No</option>
+        </select>
+    </div>
+    <button class="button-primary w-full md:w-auto">Buscar</button>
+</section>
+
+<!-- Client List Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Client Card Example 1 -->
+    <div class="card p-6 flex flex-col">
+        <div class="flex items-center mb-4">
+            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-user text-gray-600 text-3xl"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">Juan Pérez</h2>
+                <p class="text-gray-600 text-sm">DNI: 12.345.678</p>
+            </div>
+        </div>
+        <div class="text-gray-700 flex-grow mb-4">
+            <p class="mb-2"><i class="fas fa-envelope mr-2 text-gray-500"></i>juan.perez&#64;mail.com</p>
+            <p class="mb-2"><i class="fas fa-phone mr-2 text-gray-500"></i>+54 9 11 1234-5678</p>
+            <p class="mb-2"><i class="fas fa-car mr-2 text-gray-500"></i>Vehículos: 2</p>
+        </div>
+        <div class="flex justify-end">
+            <button class="button-secondary text-sm">Ver detalles</button>
+        </div>
+    </div>
+
+    <!-- Client Card Example 2 -->
+    <div class="card p-6 flex flex-col">
+        <div class="flex items-center mb-4">
+            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-user text-gray-600 text-3xl"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">María Rodriguez</h2>
+                <p class="text-gray-600 text-sm">DNI: 87.654.321</p>
+            </div>
+        </div>
+        <div class="text-gray-700 flex-grow mb-4">
+            <p class="mb-2"><i class="fas fa-envelope mr-2 text-gray-500"></i>maria.rodriguez&#64;mail.com</p>
+            <p class="mb-2"><i class="fas fa-phone mr-2 text-gray-500"></i>+54 9 11 9876-5432</p>
+            <p class="mb-2"><i class="fas fa-car mr-2 text-gray-500"></i>Vehículos: 1</p>
+        </div>
+        <div class="flex justify-end">
+            <button class="button-secondary text-sm">Ver detalles</button>
+        </div>
+    </div>
+
+    <!-- Client Card Example 3 -->
+    <div class="card p-6 flex flex-col">
+        <div class="flex items-center mb-4">
+            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-user text-gray-600 text-3xl"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">José Fernández</h2>
+                <p class="text-gray-600 text-sm">DNI: 34.567.890</p>
+            </div>
+        </div>
+        <div class="text-gray-700 flex-grow mb-4">
+            <p class="mb-2"><i class="fas fa-envelope mr-2 text-gray-500"></i>jose.f&#64;mail.com</p>
+            <p class="mb-2"><i class="fas fa-phone mr-2 text-gray-500"></i>+54 9 11 5555-1111</p>
+            <p class="mb-2"><i class="fas fa-car mr-2 text-gray-500"></i>Vehículos: 3</p>
+        </div>
+        <div class="flex justify-end">
+            <button class="button-secondary text-sm">Ver detalles</button>
+        </div>
+    </div>
+</section>

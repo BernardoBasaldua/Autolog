@@ -112,10 +112,23 @@ textarea:focus {
 
 #nuevaOrdenTab {
     border-radius: 0.75rem 0.75rem 0 0;
+    background-color: #f8fafc;
     /* Bordes redondeados solo arriba */
 }
 
 #nuevaOrdenTab.active {
+    background-color: #ffffff;
+    color: #2a69ac;
+    border-bottom: 2px solid #2a69ac;
+}
+
+#ordenesTrabajoTab {
+    border-radius: 0.75rem 0.75rem 0 0;
+    background-color: #f8fafc;
+    /* Bordes redondeados solo arriba */
+}
+
+#ordenesTrabajoTab.active {
     background-color: #ffffff;
     color: #2a69ac;
     border-bottom: 2px solid #2a69ac;

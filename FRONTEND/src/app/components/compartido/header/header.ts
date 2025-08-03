@@ -35,6 +35,7 @@ export class Header {
     if (path.startsWith('/taller/clientes')) return 'Clientes';
     if (path.startsWith('/taller/vehiculos')) return 'Vehículos';
     if (path.startsWith('/taller/turnos')) return 'Agenda de turnos';
+    if (path.startsWith('/taller/turnos/detalle')) return 'Detalle del turno';
     if (path.startsWith('/taller/config')) return 'Configuración';
 
     return 'Inicio'; // Título por defecto

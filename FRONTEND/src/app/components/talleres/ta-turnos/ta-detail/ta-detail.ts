@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-ta-turnos',
+  selector: 'app-ta-detail',
   imports: [],
-  templateUrl: './ta-turnos.html',
-  styleUrl: './ta-turnos.css'
+  templateUrl: './ta-detail.html',
+  styleUrl: './ta-detail.css'
 })
-export class TaTurnos {
+export class TaDetail {
   constructor(private router: Router) {}
 
   verTurnos() {
@@ -15,8 +15,8 @@ export class TaTurnos {
     this.router.navigate(['/taller', 'turnos']);
   }
 
-  verDetalleTurno() {
-    console.log(`Ver detalle del turno con ID:`);
-    this.router.navigate(['/taller', 'turnos', 'detalle']);
+  crearNuevaOrden() {
+    console.log('Crear nueva orden');
+    this.router.navigate(['/taller', 'ordenes', 'nueva']);
   }
 }

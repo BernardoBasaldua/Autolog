@@ -1,6 +1,6 @@
 <ul *ngIf="userType() === 'cliente'">
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/cliente" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <i class="fas fa-home mr-3"></i><span>Inicio</span>
         </a>
     </li>

@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-ta-ordenes',
+  selector: 'app-ta-new-order',
   imports: [],
-  templateUrl: './ta-ordenes.html',
-  styleUrl: './ta-ordenes.css'
+  templateUrl: './ta-new-order.html',
+  styleUrl: './ta-new-order.css'
 })
-export class TaOrdenes {
+export class TaNewOrder {
   constructor(private router: Router) {}
 
   verOrdenesTrabajo() {

@@ -1,0 +1,110 @@
+<div>
+    <section class="card p-6 mb-6">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-clock text-gray-600 text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Horario: 10:00 - 11:00 AM</h2>
+                <p class="text-gray-600">Fecha: Lunes, 6 de enero de 2025</p>
+            </div>
+        </div>
+        <p class="text-gray-700 font-semibold text-lg">Vehículos agendados: <span id="vehicle-count">2</span></p>
+    </section>
+
+    <!-- List of Vehicles for this Time Slot -->
+    <section class="space-y-4" id="appointments-list">
+        <!-- Appointment Item 1 -->
+        <div class="card p-4 flex items-center justify-between">
+            <div>
+                <p class="font-semibold text-lg text-gray-800">Ford Focus - ABC 123</p>
+                <p class="text-sm text-gray-600">Servicio: Cambio de aceite</p>
+            </div>
+            <div class="flex space-x-2">
+                <button class="button-secondary text-sm"
+                    onclick="openEditModal('Ford Focus', 'ABC 123', 'Cambio de aceite')">Editar</button>
+                <button class="bg-red-500 text-white p-2 rounded-lg font-semibold text-sm hover:bg-red-700 transition"
+                    onclick="openDeleteModal('Ford Focus', 'ABC 123')">Eliminar</button>
+            </div>
+        </div>
+        <!-- Appointment Item 2 -->
+        <div class="card p-4 flex items-center justify-between">
+            <div>
+                <p class="font-semibold text-lg text-gray-800">Chevrolet S-10 - XYZ 789</p>
+                <p class="text-sm text-gray-600">Servicio: Revisión de frenos</p>
+            </div>
+            <div class="flex space-x-2">
+                <button class="button-secondary text-sm"
+                    onclick="openEditModal('Chevrolet S-10', 'XYZ 789', 'Revisión de frenos')">Editar</button>
+                <button class="bg-red-500 text-white p-2 rounded-lg font-semibold text-sm hover:bg-red-700 transition"
+                    onclick="openDeleteModal('Chevrolet S-10', 'XYZ 789')">Eliminar</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="flex justify-between mt-6">
+        <button class="button-secondary" (click)="verTurnos()">Volver</button>
+        <button class="button-primary" (click)="crearNuevaOrden()">
+            <i class="fas fa-plus mr-2"></i>
+            Agregar nuevo turno
+        </button>
+    </footer>
+</div>
+
+<!-- Modals -->
+<div id="modal-add" class="modal-overlay hidden">
+    <div class="modal-container">
+        <h3 class="text-xl font-bold mb-4">Agregar Nuevo Turno</h3>
+        <p class="text-gray-700 mb-4">Fecha: Lunes, 6 de enero de 2025<br>Horario: 10:00 - 11:00 AM</p>
+        <form>
+            <div class="mb-4">
+                <label for="vehicle" class="block text-gray-700 font-semibold mb-2">Vehículo</label>
+                <select id="vehicle" class="w-full border rounded-lg p-2">
+                    <option>Seleccionar vehículo...</option>
+                    <option>Ford Focus - ABC 123</option>
+                    <option>Chevrolet S-10 - XYZ 789</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="service" class="block text-gray-700 font-semibold mb-2">Servicio</label>
+                <input type="text" id="service" class="w-full border rounded-lg p-2" placeholder="Ej: Cambio de aceite">
+            </div>
+        </form>
+        <div class="flex justify-end space-x-2 mt-4">
+            <button class="button-secondary" onclick="closeModal('modal-add')">Cancelar</button>
+            <button class="button-primary" onclick="handleNewAppointment()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-edit" class="modal-overlay hidden">
+    <div class="modal-container">
+        <h3 class="text-xl font-bold mb-4">Editar Turno</h3>
+        <p class="text-gray-700 mb-4">Vehículo: <span id="edit-vehicle-name" class="font-bold"></span></p>
+        <p class="text-gray-700 mb-4">Patente: <span id="edit-vehicle-plate" class="font-bold"></span></p>
+        <form>
+            <div class="mb-4">
+                <label for="edit-service" class="block text-gray-700 font-semibold mb-2">Servicio</label>
+                <input type="text" id="edit-service" class="w-full border rounded-lg p-2"
+                    placeholder="Ej: Cambio de aceite">
+            </div>
+        </form>
+        <div class="flex justify-end space-x-2 mt-4">
+            <button class="button-secondary" onclick="closeModal('modal-edit')">Cancelar</button>
+            <button class="button-primary" onclick="handleEditAppointment()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete" class="modal-overlay hidden">
+    <div class="modal-container">
+        <h3 class="text-xl font-bold mb-4">Eliminar Turno</h3>
+        <p class="text-gray-700 mb-4">¿Estás seguro de que quieres eliminar el turno para <span id="delete-vehicle-name"
+                class="font-bold"></span> (<span id="delete-vehicle-plate" class="font-bold"></span>)?</p>
+        <div class="flex justify-end space-x-2 mt-4">
+            <button class="button-secondary" onclick="closeModal('modal-delete')">Cancelar</button>
+            <button class="bg-red-500 text-white p-2 rounded-lg font-semibold hover:bg-red-700 transition"
+                onclick="handleDeleteAppointment()">Eliminar</button>
+        </div>
+    </div>
+</div>
