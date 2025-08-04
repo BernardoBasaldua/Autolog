@@ -6,6 +6,7 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import permissions
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from .models import Usuario,Cliente,AdministradorTecnico
 from .serializers import UsuarioSerializer,ClienteSerializer,AdministradorTecnicoSerializer,PermisoSerializer
 
