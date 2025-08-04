@@ -5,6 +5,7 @@ import {Vehiculo} from '../../../models/vehiculo/vehiculo.model'
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-inicio',
   standalone: true,
@@ -13,21 +14,28 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cli-inicio.css'
 })
 export class CliInicio implements OnInit {
-  vehiculos: Vehiculo[] = []
+  vehiculos: Vehiculo[] = [];
   
+  clienteId: number = 3 //id simulado
+
   constructor(private vehiculoService: VehiculoService, private router: Router) {}
 
   ngOnInit(): void {
-    this.vehiculoService.getVehiculos().subscribe(data => this.vehiculos = data);
-  }
+    console.log('Iniciando componente y esperando vehículos...');
+    this.vehiculoService.getVehiculos(this.clienteId).subscribe({
+      next: (data) =>{ this.vehiculos = data;},
+      error:(error)=>{
+      console.log('error al obtener los vehiculos, back no responde');}
+    })
+  }   
 
   administrarPermisos(vehiculo: Vehiculo) {
-    console.log(`Permisos para: ${vehiculo.patente}`);
+    console.log(`Permisos para: ${vehiculo.dominio}`);
   //  this.router.navigate(['/permisos']);
   }
 
   verHistorial(vehiculo: Vehiculo) {
-    console.log(`Historial de: ${vehiculo.patente}`);
+    console.log(`Historial de: ${vehiculo.dominio}`);
     this.router.navigate(['/cliente', 'historial', vehiculo.id]);
   }
 

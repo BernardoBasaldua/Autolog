@@ -2,19 +2,20 @@
 import { Injectable } from '@angular/core';
 import { Vehiculo } from '../../models/vehiculo/vehiculo.model';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehiculoService {
-  private vehiculos: Vehiculo[] = [
-    { id: 1, marca: 'Volkswagen', modelo: 'Amarok', patente: 'AB 123 CD' },
-    { id: 2, marca: 'BMW', modelo: '530i', patente: 'AG 123 CD' },
-    { id: 3, marca: 'Toyota', modelo: 'Hilux', patente: 'AM 134 BG' }
-  ];
+  private apiUrl = 'http://127.0.0.1:8000/api';
+  private vehiculos: Vehiculo[] = [];
 
-  getVehiculos(): Observable<Vehiculo[]> {
-    return of(this.vehiculos);
+  constructor(private http: HttpClient){}
+
+  getVehiculos(clienteId: number): Observable<Vehiculo[]> {
+    const url = `${this.apiUrl}/clientes/${clienteId}/vehiculos/`;
+    return this.http.get<Vehiculo[]>(url);
   }
 
   getVehiculoById(id: number): Observable<Vehiculo | undefined> {
