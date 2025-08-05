@@ -11,4 +11,4 @@ class TallerSerializer(serializers.ModelSerializer):
 
     def get_horarioAtencion(self, obj):
          # VER DESPUES
-         return ["08:00", "17:00", "12:00"]
+         return ["L-V", "9:00", "18:00"]
