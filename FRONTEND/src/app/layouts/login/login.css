@@ -1,0 +1,69 @@
+
+.card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.button-primary {
+    background-color: #2a69ac;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.button-primary:hover {
+    background-color: #1c4a7e;
+}
+
+.button-google {
+    background-color: #4285f4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-google:hover {
+    background-color: #357ae8;
+}
+
+.button-google .fa-google {
+    margin-right: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    border: 1px solid #cbd5e0;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2a69ac;
+}
+
+.tab-button {
+    background-color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.tab-button.active {
+    border-bottom-color: #2a69ac;
+    color: #2a69ac;
+}
