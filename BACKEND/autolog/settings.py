@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+
 
     'ordenes',
     #'presupuestos'
@@ -138,8 +141,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # 👈 permite acceso sin autenticación
-    ]
+     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication", #metodo de autenticacion
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated", #configuro para que todas las vistas pidan autenticacion
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.AllowAny',  #permite acceso sin autenticación
+    # ]
 }
 CORS_ALLOW_ALL_ORIGINS = True
+
+SIMPLE_JWT = {
+    #  Duraciones
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),   # recomendado: 15–30 min
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),     # recomendado: 7–30 días
+
+    # Política de refresh
+    "ROTATE_REFRESH_TOKENS": True,        # entrega un refresh nuevo en cada /refresh
+    "BLACKLIST_AFTER_ROTATION": True,     # el refresh viejo queda inutilizable (requiere blacklist)
+
+    # Firma del token
+    "ALGORITHM": "HS256",                 # simple y suficiente; para microservicios: RS256
+    # "SIGNING_KEY": settings.SECRET_KEY, # por defecto usa tu SECRET_KEY
+    # "VERIFYING_KEY": "",                # solo si usás RS256
+
+    # Header esperado
+    "AUTH_HEADER_TYPES": ("Bearer",),     # Authorization: Bearer <token>
+
+   
+    "UPDATE_LAST_LOGIN": True,           # Django tiene un campo last_login en el modelo User que guarda la última vez que ese usuario hizo login con éxito
+  "LEEWAY": 30,                        # tolerancia en segundos para exp/nbf si necesitás
+}

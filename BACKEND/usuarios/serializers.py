@@ -55,7 +55,7 @@ class ClienteSerializer(serializers.ModelSerializer):
     
     def create(self, validated_date):
         usuario_data = validated_date.pop('usuario')
-        usuario = Usuario.objects.create(**usuario_data)
+        usuario = Usuario.objects.create_user(**usuario_data)
         cliente = Cliente.objects.create(usuario=usuario , **validated_date)
         return cliente
 

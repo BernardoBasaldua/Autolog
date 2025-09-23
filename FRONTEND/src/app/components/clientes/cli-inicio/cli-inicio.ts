@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 export class CliInicio implements OnInit {
   vehiculos: Vehiculo[] = [];
   
-  clienteId: number = 3 //id simulado
+  clienteId = 3 //id simulado
 
   constructor(private vehiculoService: VehiculoService, private router: Router) {}
 
