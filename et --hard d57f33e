@@ -1,0 +1,72 @@
+[33me0d9f4e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Actualizo los requerimientos, ya que me olvide en el push anterior.
+[33m0850252[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog
+[33m5c3a9f0[m Autenticacción con JWT, solo se puede crear un usuario, falta agregar la parte de OAuth.
+[33m9aafa11[m Actualización de la arquitectura FRONTEND y LOGIN agregado (no funcional todavía)
+[33md57f33e[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Cambiamos horario y descomentamos html.
+[33mcffc6b3[m agrego harcodeado en el back horarios de atencion en el taller, tambien esta bien hecho, pero hay que armar db nueva, dejo comentado el atributo nuevo
+[33me1f99fa[m Comenté el horario de atención y funcionó. Estabamos llamando un atributo que no tiene.
+[33mf4f55d5[m Cambios en el modelo y servicio de taller.
+[33m63fa79f[m Actulizacion requerimientos (BACKEND)
+[33mbb9b790[m cambios en el back settings, views, serializer
+[33m9bf200b[m Conexión inicial entre cli-inicio y endpoint /clientes/<id>/vehiculos/
+[33m345c384[m Se agregaron interfaces, modelos y servicios al FRONTEND
+[33m54bdf96[m Se agregó depuracion a la funcion detalle_orden, que devuelve una orden en particular asiganada a un tecnico, y se chequeó que funciona.
+[33me90d243[m Se agregó depuración a la funcion ordenes_del_taller y se chequeó que funciona.
+[33me2f8f7f[m desde admintecnico funciona, crear y actualizar ordenes
+[33mc3ab026[m Force push debido a problemas con 0004_alter_ordendetrabajo_agenda.py
+[33m3b4d3fd[m Pruebas, problemos de serialización.
+[33m52c83f8[m cambio en crear cliente desde tecnico
+[33m1eb2dbd[m Algunos cambios no se subieron al push anterior.
+[33m26aa5d2[m Corrijo agenda y cambio todos los archivos admin.py de las aplicaciones. (Probablemente haya que borrar las migraciones)
+[33m0d3f1b9[m Se arreglo el funcionamiento del header, se arregla interfaz de turnos, se agrega interfaz talleres y pedir turno con funcionalidad de flechita para volver atras,
+[33mafe383a[m Agrego html clientes
+[33md4b5a85[m m
+[33m8420a26[m cliente puede ver historial de vehiculos propios y externos autorizados, crear vehiculo, crear permisos a talleres y clientes, obtener fecha y kilometraje siguiente service, orden calcula fecha y kilometraje siguiente servicio segun ultima orden tipo preventiva
+[33m3375cff[m agrego crud de ot en admin y create de vehiculos y clientes
+[33m145f141[m cambios todo al modelo admin
+[33m639d530[m Se agregaron los modelos de las interfaces FRONTEND restantes
+[33m29415cf[m saco autenticacion por pruebas
+[33m127f18d[m agrego logica cliente, model y views para, devolver vehiculos propios, ver historial de propios y autorizados, ver proximos servicios de un vehiculo, SERVIDOR OK
+[33m15e7ed5[m cambios en admin tecnico
+[33me562fe6[m actualizo vehiculos, clientes, usuarios, ordenes servidor corriendo--> https://music.youtube.com/watch?v=Ej8m5F58wS4&si=fvsJ8LxHQkO2LxFD
+[33m98e7952[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog
+[33m140a2e4[m Agregué app "Agendas", servidor funcionando.
+[33m6e4574d[m Se agrega funcionalidad del boton ver historial y se arregla el html de la componente historial
+[33m786b0eb[m Corrección de carpetas de componentes de FRONTEND
+[33mc7b59b5[m Elimino componentes extra fuera de carpeta compartidos
+[33m36324ef[m agrego solo un from import
+[33md6bd266[m vehiculos y talleres autorizados en cliente funcionando
+[33mb876898[m cambios adecuados por cambios en ususario
+[33m01ac73d[m Actualización del FRONTEND
+[33md4722db[m taller, cliente, tecnico, ordenes, vehiculo andando, con alguna logica de negocio
+[33m98513cc[m creo modelo usuario, cliente, permisoDeAcceso
+[33m4e30721[m modificaciones en todo lo que es admin tecnico
+[33md56ba2c[m Flujo completo funcionando: desde la request HTTP hasta la base de datos (sqlite) en ordenes y vehiculos
+[33m5bcb340[m Se agregaron los modelos de interfaces para el FRONTEND y se eliminó el cache
+[33m1b111eb[m Agrego componente historial
+[33m273b485[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog agrego cambios
+[33md3f8589[m Cambio nombre de componente cli-inicio a inicio y sus referencias, implementacion de vehicle cards a partir de datos simulados
+[33m483190b[m agrego cambios en init.py de talleres
+[33mbcafb5d[m cambio nombre de archivos correspondiente a entidades y correciones de algunos errores menores
+[33m7044bdc[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog
+[33m666b732[m agrego views
+[33mee81328[m añadi descripcione a talleres
+[33madd02c6[m actualizo clases vehiculo, marca, modelo, ordenDeTrabajo, logica para calcular fecha siguiente turno para mantenimiento preventivo. Faltan las relaciones con los distintos tipos de usuarios
+[33m88ecdbf[m Agregué serializer y viewset para Taller
+[33m71b47a3[m Modificaciones en modelos de las apps ordenes y vehiculos; se reestructura el backend en carpeta BACKEND
+[33m49eabdb[m agrego .gitignore unificado para frontend y backend
+[33m00de25d[m Se agrega la carpeta FRONTEND con su respectivo contenido inicial
+[33m6b858b4[m Mensaje claro describiendo los cambios, ejemplo: 'Agrego modelo AdministradorTecnico y relacion con Taller'
+[33mdccf479[m elimino carpeta auxiliar y creo carpeta backend
+[33me46a7b2[m Renombrar carpeta aux a auxiliar (por conflicto en Windows)
+[33ma960e99[m Add files via upload
+[33m581bfc7[m archivo temporal para crear la carpeta
+[33m76ae51f[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog
+[33mf0773c1[m Creé el modelo de para usuario, en este caso lo hice de tal forma que el usuario seleccione si es:
+[33m6d65a04[m snake a camel case
+[33mce00e13[m Segun el cambio en UML actulizo estructuras de apps
+[33m5b6173b[m Modificacion UML: agrego clase usuario de la cual heredan cliente y adminstradorTecnico.
+[33m3523e80[m " Configuración inicial del proyecto Django: estructura, apps base y modelos"
+[33m7d82e3c[m Merge branch 'main' of https://github.com/alexisbelesia/proyecto-Autolog
+[33mf58702e[m Initial commit
+[33mc1d7555[m Primer commit: agrego diagrama UML del sistema Autolog

@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { Vehiculo } from '../../models/vehiculo/vehiculo.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -14,9 +14,12 @@ export class VehiculoService {
   constructor(private http: HttpClient){}
 
   getVehiculos(clienteId: number): Observable<Vehiculo[]> {
-    const url = `${this.apiUrl}/clientes/${clienteId}/vehiculos/`;
-    return this.http.get<Vehiculo[]>(url);
-  }
+  const url = `${this.apiUrl}/clientes/${clienteId}/vehiculos/`;
+  return this.http.get<Vehiculo[]>(url).pipe(
+    tap((vehiculos: Vehiculo[]) => this.vehiculos = vehiculos) // ahora sí se llena
+  );
+}
+
 
   getVehiculoById(id: number): Observable<Vehiculo | undefined> {
     const vehiculo = this.vehiculos.find(v => v.id === id);
