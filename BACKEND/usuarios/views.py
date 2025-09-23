@@ -15,6 +15,9 @@ from vehiculos.models import Vehiculo
 from ordenes.serializers import OrdenDeTrabajoSerializer
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+
 # ViewSets define el comportamiento de la vista
 class UsuarioViewSet(viewsets.ModelViewSet):
 
@@ -25,6 +28,26 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class clienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    #permission_classes = [AllowAny]
+    
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]   # registro público
+        return [IsAuthenticated()]  # el resto protegido
+    
+    def get_queryset(self):
+        user = self.request.user
+        # si no está autenticado, no devolver nada (por seguridad)
+        # if not user.is_authenticated:   #ESTO ESTA RESUELTO EN LOS PERMISOS
+        #     return Cliente.objects.none()
+        # si es staff/superuser podés dejar que vea todo (si querés)
+        if user.is_staff or user.is_superuser:
+            return Cliente.objects.all()
+        # si es técnico y querés que vea todo, descomentár, PERO ACA A LOS TECNICOS LOS VAMOS A CREAR COMO SUPERADMIN, POR LO QUE NO ES NECESARIO
+        # if hasattr(user, "tecnico"):
+        #     return Cliente.objects.all()
+        # cliente común: solo su propio registro
+        return Cliente.objects.filter(usuario=user)
 
     #crear permiso de acceso
     @action(detail=True, methods=['post'])
@@ -94,7 +117,7 @@ class clienteViewSet(viewsets.ModelViewSet):
             'kilometraje_prox_servicio': kilometraje
         },status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post']) #/api/clientes/id de cliente/crear_vehiculo
     def crear_vehiculo(self, request, pk=None):
         serializer = VehiculoSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)  
@@ -116,7 +139,8 @@ class clienteViewSet(viewsets.ModelViewSet):
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
-    permission_classes = [permissions.AllowAny] # 👈 acceso público por ahora para probar
+    #permission_classes = [permissions.AllowAny] # 👈 acceso público por ahora para probar
+    
     def get_queryset(self):
          # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
         if self.request.user.is_authenticated:

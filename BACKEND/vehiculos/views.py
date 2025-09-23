@@ -2,6 +2,14 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Vehiculo, Marca, Modelo
 from .serializers import VehiculoSerializer, MarcaSerializer, ModeloSerializer
+from rest_framework.permissions import (
+    AllowAny,          # acceso abierto (público)
+    IsAuthenticated,   # solo usuarios logueados
+    IsAdminUser,       # solo superusers / staff
+    DjangoModelPermissions,        # basado en permisos de modelo (add, change, delete, view)
+    DjangoModelPermissionsOrAnonReadOnly, # permisos de modelo, pero anónimos pueden leer
+    BasePermission     # (para crear permisos custom)
+)
 
 
 class VehiculoViewSet(viewsets.ModelViewSet):
@@ -23,3 +31,5 @@ class MarcaViewSet(viewsets.ModelViewSet):
 class ModeloViewset(viewsets.ModelViewSet):
     queryset = Modelo.objects.all()
     serializer_class = ModeloSerializer
+
+    #permission_classes = [AllowAny]
