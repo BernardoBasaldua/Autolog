@@ -19,6 +19,7 @@ import { TaConfig } from './components/talleres/ta-config/ta-config';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { Login } from './layouts/login/login';
+import { Permisos } from './components/clientes/cli-inicio/permisos/permisos';
 
 export const routes: Routes = [
     {
@@ -31,6 +32,7 @@ export const routes: Routes = [
         component: MainLayout, // Layout con aside y header
         children: [
             { path: 'cliente', component: CliInicio },
+            { path: 'cliente/permisos/:vehiculoId', component: Permisos},
             { path: 'cliente/historial/:vehiculoId', component: Historial },
             { path: 'cliente/turnos', component: CliTurnos },
             { path: 'cliente/talleres', component: CliTalleres },

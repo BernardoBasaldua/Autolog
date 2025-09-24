@@ -28,7 +28,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class clienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
-    #permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
     
     def get_permissions(self):
         if self.action == "create":
@@ -48,6 +48,9 @@ class clienteViewSet(viewsets.ModelViewSet):
         #     return Cliente.objects.all()
         # cliente común: solo su propio registro
         return Cliente.objects.filter(usuario=user)
+        #return Cliente.objects.all()
+
+
 
     #crear permiso de acceso
     @action(detail=True, methods=['post'])
@@ -130,6 +133,32 @@ class clienteViewSet(viewsets.ModelViewSet):
             return Response({'mensaje': 'ya existe un vehiculo con esa patente'}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response({'id':vehiculo.id, 'mensaje':'vehiculo creado'}, status=status.HTTP_201_CREATED)
+    
+    # talleres autorizados agregado por nicky
+    @action(detail=True, methods=['get'])
+    def talleres_autorizados(self, request, pk=None):
+        cliente = self.get_object()
+        vehiculo_id = request.query_params.get('vehiculo_id')
+
+        if not vehiculo_id:
+            return Response({'error': 'vehiculo_id es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        permisos = cliente.permisos_otorgados.filter(
+            taller_autorizado__isnull=False,
+            vehiculo_autorizado_id=vehiculo_id
+        )
+
+        data = [
+            {
+                "taller": permiso.taller_autorizado.nombre,
+                "vehiculo": permiso.vehiculo_autorizado.dominio
+            }
+            for permiso in permisos
+        ]
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
 
 
          

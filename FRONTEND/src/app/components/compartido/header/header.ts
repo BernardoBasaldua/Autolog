@@ -28,6 +28,7 @@ export class Header {
     if (path.startsWith('/cliente/turnos')) return 'Turnos';
     if (path.startsWith('/cliente/talleres')) return 'Talleres';
     if (path.startsWith('/cliente/config')) return 'Configuración';
+    if (path.startsWith('/cliente/permisos')) return 'Administración de permisos';
     if (path.startsWith('/cliente')) return 'Inicio';
     
     //Rutas a título de talleres

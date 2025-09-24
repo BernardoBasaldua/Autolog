@@ -25,4 +25,9 @@ export class VehiculoService {
     const vehiculo = this.vehiculos.find(v => v.id === id);
     return of(vehiculo);
   }
+
+  getTalleresAutorizados(clienteId: number): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/${clienteId}/talleres_autorizados/`);
+  }
+
 }
