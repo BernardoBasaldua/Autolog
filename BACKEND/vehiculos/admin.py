@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models.vehiculo import Vehiculo
+
 from .models.marca import Marca
 from .models.modelo import Modelo
+from .models.vehiculo import Vehiculo
 
 admin.site.register(Vehiculo)
 admin.site.register(Marca)

@@ -1,12 +1,9 @@
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .api import TallerViewSet
-from django.urls import path, include
-from django.contrib import admin
 
+from .api import TallerViewSet
 
 router = DefaultRouter()
-router.register(r'talleres', TallerViewSet)
+router.register(r"talleres", TallerViewSet)
 
-urlpatterns = [
-    path('', include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

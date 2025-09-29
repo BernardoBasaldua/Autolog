@@ -1,35 +1,37 @@
-from django.shortcuts import render
+"""Views de la app vehiculos."""
+
+
 from rest_framework import viewsets
-from .models import Vehiculo, Marca, Modelo
-from .serializers import VehiculoSerializer, MarcaSerializer, ModeloSerializer
-from rest_framework.permissions import (
-    AllowAny,          # acceso abierto (público)
-    IsAuthenticated,   # solo usuarios logueados
-    IsAdminUser,       # solo superusers / staff
-    DjangoModelPermissions,        # basado en permisos de modelo (add, change, delete, view)
-    DjangoModelPermissionsOrAnonReadOnly, # permisos de modelo, pero anónimos pueden leer
-    BasePermission     # (para crear permisos custom)
-)
+
+from .models import Marca, Modelo, Vehiculo
+from .serializers import MarcaSerializer, ModeloSerializer, VehiculoSerializer
 
 
 class VehiculoViewSet(viewsets.ModelViewSet):
+    """CRUD para vehículos."""
+
     queryset = Vehiculo.objects.all()
     serializer_class = VehiculoSerializer
 
-    '''def get_queryset(self):
+    """def get_queryset(self):
         tecnico = self.get_object()
         tecnico = self.request.user.tecnico
         # Aquí filtrás para que solo vea vehículos de clientes de su taller
         return Vehiculo.objects.filter(cliente__usuario__tecnico=tecnico)
-        '''
+        """
 
 
 class MarcaViewSet(viewsets.ModelViewSet):
-    queryset= Marca.objects.all()
+    """CRUD para marcas."""
+
+    queryset = Marca.objects.all()
     serializer_class = MarcaSerializer
 
+
 class ModeloViewset(viewsets.ModelViewSet):
+    """CRUD para modelos."""
+
     queryset = Modelo.objects.all()
     serializer_class = ModeloSerializer
 
-    #permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]

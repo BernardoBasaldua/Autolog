@@ -1,82 +1,116 @@
-from django.db import models
-from talleres.models.taller import Taller
 from django.conf import settings
-from .usuario import Usuario
-from vehiculos.models.vehiculo import Vehiculo
-from usuarios.models.pemisoAcceso import PermisoDeAcceso
+from django.db import models
+
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
+from talleres.models.taller import Taller
+from usuarios.models.pemisoAcceso import PermisoDeAcceso
+from vehiculos.models.vehiculo import Vehiculo
+
+from .usuario import Usuario
 
 
-class AdministradorTecnico(models.Model):  
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tecnico')
-    taller = models.ForeignKey(Taller, on_delete=models.CASCADE, related_name='tecnicos')
-    
+class AdministradorTecnico(models.Model):
+    usuario = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tecnico"
+    )
+    taller = models.ForeignKey(Taller, on_delete=models.CASCADE, related_name="tecnicos")
+
     class Meta:
         verbose_name = "Administrador Técnico"
         verbose_name_plural = "Administradores Técnicos"
+
     def __str__(self):
         return f"{self.usuario.username} (Técnico en {self.taller.nombre})"
-    
+
     # #creás solo un objeto Cliente con todos los campos requeridos (incluidos los de Usuario).
-    def crear_cliente(self, username, email, password, first_name, last_name=None, dni=None, telefono=None, direccion=None):
+    def crear_cliente(
+        self,
+        username,
+        email,
+        password,
+        first_name,
+        last_name=None,
+        dni=None,
+        telefono=None,
+        direccion=None,
+    ):
         from .cliente import Cliente
-        usuario_cliente = Usuario.objects.create_user( #El password queda hasheado correctamente y podés usar el sistema de autenticación de Django.
+
+        usuario_cliente = Usuario.objects.create_user(  # El password queda hasheado correctamente y podés usar el sistema de autenticación de Django.
             username=username,
             email=email,
             password=password,
             first_name=first_name,
-            last_name=last_name or '',
+            last_name=last_name or "",
             dni=dni,
-            telefono=telefono or '',
-            direccion=direccion or '',
+            telefono=telefono or "",
+            direccion=direccion or "",
         )
         cliente = Cliente.objects.create(usuario=usuario_cliente)
         return cliente
+
     def crear_vehiculo(self, cliente, modelo, año, dominio):
         from vehiculos.models.vehiculo import Vehiculo
+
         return Vehiculo.objects.create(
-        propietario=cliente,
-        modelo=modelo,
-        año=año,
-        dominio=dominio,
-    )
-    
-    
-    #OT
-    #CREATE
-    def crear_orden_trabajo(self, cliente, vehiculo, fecha_turno, kilometraje, mantenimiento='preventivo', observaciones_tecnicas=None, fecha_entrega=None):
+            propietario=cliente,
+            modelo=modelo,
+            año=año,
+            dominio=dominio,
+        )
+
+    # OT
+    # CREATE
+    def crear_orden_trabajo(
+        self,
+        cliente,
+        vehiculo,
+        fecha_turno,
+        kilometraje,
+        mantenimiento="preventivo",
+        observaciones_tecnicas=None,
+        fecha_entrega=None,
+    ):
         from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
-        #NO ESTOY SEGURA DE QUE SEA NECESARIO
+
+        # NO ESTOY SEGURA DE QUE SEA NECESARIO
         if mantenimiento not in dict(OrdenDeTrabajo.TIPOS_TRABAJO).keys():
-            raise ValueError(f"Tipo de mantenimiento inválido: {mantenimiento}. Debe ser 'preventivo' o 'correctivo'.")
-        
+            raise ValueError(
+                f"Tipo de mantenimiento inválido: {mantenimiento}. Debe ser 'preventivo' o 'correctivo'."
+            )
+
         orden = OrdenDeTrabajo.objects.create(
             vehiculo=vehiculo,
             tecnico=self,
             taller=self.taller,
             observaciones_tecnicas=observaciones_tecnicas,
-            kilometraje = kilometraje,
+            kilometraje=kilometraje,
             mantenimiento=mantenimiento,
             fecha_turno=fecha_turno,
-            fecha_entrega = fecha_entrega,
-            cliente=cliente)
-            #PRESUPUESTO?
-            #PRACTICA?
-           
-        
+            fecha_entrega=fecha_entrega,
+            cliente=cliente,
+        )
+        # PRESUPUESTO?
+        # PRACTICA?
+
         orden.calcular_fecha_siguiente_servicio()
         orden.save()
         return orden
 
-    
-    #UPDATE
+    # UPDATE
     def actualizar_orden_trabajo(
-    self,  orden, observaciones_tecnicas=None, fecha_siguiente_servicio=None,
-    fecha_entrega=None, kilometraje=None, kilometraje_siguiente_servicio=None,
-    mantenimiento=None, fecha_turno=None):
+        self,
+        orden,
+        observaciones_tecnicas=None,
+        fecha_siguiente_servicio=None,
+        fecha_entrega=None,
+        kilometraje=None,
+        kilometraje_siguiente_servicio=None,
+        mantenimiento=None,
+        fecha_turno=None,
+    ):
 
-
-    # Validación opcional: solo puede modificar sus propias órdenes
+        # Validación opcional: solo puede modificar sus propias órdenes
         if orden.tecnico != self:
             raise PermissionError("No tiene permiso para modificar esta orden.")
 
@@ -100,8 +134,7 @@ class AdministradorTecnico(models.Model):
         orden.save()
         return orden
 
-
-    #DELETE
+    # DELETE
     def eliminar_orden_trabajo(self, orden_id):
 
         try:
@@ -115,16 +148,17 @@ class AdministradorTecnico(models.Model):
         orden.delete()
         return f"Orden {orden_id} eliminada correctamente."
 
-    #GET
+    # GET
     def get_ordenes_taller(self):
-        permisos = PermisoDeAcceso.objects.filter(taller_autorizado=self.taller).values_list('vehiculo_autorizado_id', flat=True)
+        permisos = PermisoDeAcceso.objects.filter(taller_autorizado=self.taller).values_list(
+            "vehiculo_autorizado_id", flat=True
+        )
         vehiculos = Vehiculo.objects.filter(id__in=permisos)
         ordenes_autorizadas = OrdenDeTrabajo.objects.filter(vehiculo__in=vehiculos)
         ordenes_directas = OrdenDeTrabajo.objects.filter(taller=self.taller)
         ordenes = ordenes_directas.union(ordenes_autorizadas)
         return ordenes
-     
-    
+
     def obtener_orden(self, orden_id):
         try:
             # Busca la orden que pertenece al taller del técnico y tiene ese id

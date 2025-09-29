@@ -1,71 +1,113 @@
 <div class="flex items-center justify-center min-h-screen p-4">
-    <main class="w-full max-w-lg">
-        <header class="flex flex-col items-center mb-8">
-            <img src="icons/autolog-logo.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog.png';" />
-            <h1 class="text-3xl font-bold text-gray-800 mt-4">Bienvenido</h1>
-        </header>
+  <main class="w-full max-w-lg">
+    <header class="flex flex-col items-center mb-8">
+      <img src="icons/autolog-logo.png" alt="Logo Autolog"
+           class="h-24 w-24 object-contain rounded-lg shadow-sm"
+           onerror="this.onerror=null;this.src='Autolog.png';" />
+      <h1 class="text-3xl font-bold text-gray-800 mt-4">Bienvenido</h1>
+    </header>
 
-        <section class="card p-8">
-            <!-- Tabs for Login and Register -->
-            <div class="flex justify-center mb-6 border-b border-gray-200">
-                <button class="tab-button" (click)="showLogin()">Iniciar Sesión</button>
-                <button class="tab-button" (click)="showRegister()">Registrarse</button>
-            </div>
+    <section class="card p-8">
+      <!-- Tabs -->
+      <div class="flex justify-center mb-6 border-b border-gray-200">
+        <button class="tab-button" (click)="showLogin()">Iniciar Sesión</button>
+        <button class="tab-button" (click)="showRegister()">Registrarse</button>
+      </div>
 
-            <!-- Login Form -->
-            <div *ngIf="vistaActual === 'login'" class="space-y-6">
-                <div>
-                    <label for="login-username" class="block text-gray-700 font-semibold mb-2">Nombre de usuario</label>
-                    <input type="text" id="login-username" placeholder="Ingresa tu nombre de usuario" class="w-full">
-                </div>
-                <div>
-                    <label for="login-password" class="block text-gray-700 font-semibold mb-2">Contraseña</label>
-                    <input type="password" id="login-password" placeholder="Ingresa tu contraseña" class="w-full">
-                </div>
-                <button class="button-primary w-full">Iniciar Sesión</button>
-                <div class="flex items-center">
-                    <hr class="flex-grow border-gray-300">
-                    <span class="mx-4 text-gray-500">o</span>
-                    <hr class="flex-grow border-gray-300">
-                </div>
-                <button class="button-google w-full">
-                    <i class="fab fa-google"></i>
-                    Iniciar Sesión con Google
-                </button>
-            </div>
+      <!-- LOGIN -->
+      @if (vistaActual === 'login') {
+        <!-- Vinculamos el FormGroup y disparamos token() al submit -->
+        <form [formGroup]="form" (ngSubmit)="token()" class="space-y-6">
 
-            <!-- Register Form (hidden by default) -->
-            <div *ngIf="vistaActual === 'register'" class="space-y-6 hidden">
-                <button class="button-google w-full">
-                    <i class="fab fa-google"></i>
-                    Registrarse con Google
-                </button>
-                <div class="flex items-center">
-                    <hr class="flex-grow border-gray-300">
-                    <span class="mx-4 text-gray-500">o</span>
-                    <hr class="flex-grow border-gray-300">
-                </div>
-                <div>
-                    <label for="register-username" class="block text-gray-700 font-semibold mb-2">Nombre de
-                        usuario</label>
-                    <input type="text" id="register-username" placeholder="Crea un nombre de usuario" class="w-full">
-                </div>
-                <div>
-                    <label for="register-email" class="block text-gray-700 font-semibold mb-2">Correo
-                        electrónico</label>
-                    <input type="email" id="register-email" placeholder="Ingresa tu correo electrónico" class="w-full">
-                </div>
-                <div>
-                    <label for="register-password" class="block text-gray-700 font-semibold mb-2">Contraseña</label>
-                    <input type="password" id="register-password" placeholder="Crea una contraseña" class="w-full">
-                </div>
-                <div>
-                    <label for="confirm-password" class="block text-gray-700 font-semibold mb-2">Confirmar
-                        contraseña</label>
-                    <input type="password" id="confirm-password" placeholder="Confirma tu contraseña" class="w-full">
-                </div>
-                <button class="button-primary w-full">Registrarse</button>
-            </div>
-        </section>
-    </main>
+          <div>
+            <label for="login-username" class="block text-gray-700 font-semibold mb-2">
+              Nombre de usuario
+            </label>
+            <input id="login-username"
+                   type="text"
+                   class="w-full"
+                   formControlName="username"
+                   autocomplete="username" />
+            <!-- Validación opcional -->
+            @if(form.get('username')?.touched && form.get('username')?.hasError('required')) {
+              <small class="text-red-600">El usuario es requerido</small>
+            }
+          </div>
+
+          <div>
+            <label for="login-password" class="block text-gray-700 font-semibold mb-2">
+              Contraseña
+            </label>
+            <input id="login-password"
+                   type="password"
+                   class="w-full"
+                   formControlName="password"
+                   autocomplete="current-password" />
+            @if(form.get('password')?.touched && form.get('password')?.hasError('required')) {
+              <small class="text-red-600">La contraseña es requerida</small>
+            }
+          </div>
+
+          <button type="submit" class="button-primary w-full" [disabled]="form.invalid">
+            Iniciar Sesión
+          </button>
+
+          <div class="flex items-center">
+            <hr class="flex-grow border-gray-300" />
+            <span class="mx-4 text-gray-500">o</span>
+            <hr class="flex-grow border-gray-300" />
+          </div>
+
+          <button type="button" class="button-google w-full">
+            <i class="fab fa-google"></i>
+            Iniciar Sesión con Google
+          </button>
+        </form>
+      }
+
+      <!-- REGISTER (placeholder visual) -->
+      @else if (vistaActual === 'register') {
+        <div class="space-y-6">
+          <button type="button" class="button-google w-full">
+            <i class="fab fa-google"></i>
+            Registrarse con Google
+          </button>
+
+          <div class="flex items-center">
+            <hr class="flex-grow border-gray-300" />
+            <span class="mx-4 text-gray-500">o</span>
+            <hr class="flex-grow border-gray-300" />
+          </div>
+
+          <!-- (Más adelante lo pasamos a otro FormGroup) -->
+          <div>
+            <label for="register-username" class="block text-gray-700 font-semibold mb-2">
+              Nombre de usuario
+            </label>
+            <input type="text" id="register-username" class="w-full" />
+          </div>
+          <div>
+            <label for="register-email" class="block text-gray-700 font-semibold mb-2">
+              Correo electrónico
+            </label>
+            <input type="email" id="register-email" class="w-full" />
+          </div>
+          <div>
+            <label for="register-password" class="block text-gray-700 font-semibold mb-2">
+              Contraseña
+            </label>
+            <input type="password" id="register-password" class="w-full" />
+          </div>
+          <div>
+            <label for="confirm-password" class="block text-gray-700 font-semibold mb-2">
+              Confirmar contraseña
+            </label>
+            <input type="password" id="confirm-password" class="w-full" />
+          </div>
+
+          <button class="button-primary w-full">Registrarse</button>
+        </div>
+      }
+    </section>
+  </main>
 </div>

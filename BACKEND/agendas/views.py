@@ -1,25 +1,23 @@
-from rest_framework import viewsets, status, permissions
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from ordenes.serializers import OrdenDeTrabajoSerializer
+
 from .models.agendas import Agenda
 from .serializers import AgendaSerializer
-from usuarios.models.admin_tecnico import AdministradorTecnico
-from vehiculos.models.vehiculo import Vehiculo
-from ordenes.serializers import OrdenDeTrabajoSerializer
-import datetime
+
 
 class AgendaViewSet(viewsets.ModelViewSet):
     queryset = Agenda.objects.all()
     serializer_class = AgendaSerializer
     # 👇 --- 1. OMITIMOS LA AUTENTICACIÓN POR AHORA ---
     # Dejamos el acceso abierto para poder probar sin tokens.
-    permission_classes = [permissions.AllowAny] 
+    permission_classes = [permissions.AllowAny]
 
-    @action(detail=True, methods=['get'], url_path='turnos-asignados')
+    @action(detail=True, methods=["get"], url_path="turnos-asignados")
     def turnos_asignados(self, request, pk=None):
-        """
-        Endpoint para ver los turnos (OTs) asignados a esta agenda.
-        """
+        """Endpoint para ver los turnos (OTs) asignados a esta agenda."""
         agenda = self.get_object()
         turnos = agenda.get_turnos_asignados()
         serializer = OrdenDeTrabajoSerializer(turnos, many=True)
@@ -31,13 +29,13 @@ class AgendaViewSet(viewsets.ModelViewSet):
     #     Endpoint para reservar un turno.
     #     """
     #     agenda = self.get_object()
-        
+
     #     # 👇 --- 2. SIMULAMOS EL USUARIO TÉCNICO ---
     #     # IMPORTANTE: Esto es solo para desarrollo.
     #     # Obtenemos el primer técnico de la base de datos para simular que está logueado.
     #     # Asegúrate de haber creado al menos un AdministradorTecnico en el panel de admin.
     #     tecnico = AdministradorTecnico.objects.first()
-        
+
     #     if not tecnico:
     #         return Response(
     #             {"error": "No se encontró ningún Administrador Técnico en la base de datos para realizar la prueba."},
@@ -50,7 +48,7 @@ class AgendaViewSet(viewsets.ModelViewSet):
     #         fecha_hora_str = request.data.get('fecha_hora')
     #         if not fecha_hora_str:
     #             raise ValueError("El campo 'fecha_hora' es requerido.")
-            
+
     #         fecha_hora_reserva = datetime.datetime.strptime(fecha_hora_str, '%Y-%m-%d %H:%M')
     #         agenda.verificar_disponibilidad(fecha_hora_reserva)
 
@@ -65,7 +63,7 @@ class AgendaViewSet(viewsets.ModelViewSet):
     #             vehiculo=vehiculo,
     #             datos_adicionales=request.data
     #         )
-            
+
     #         # 4. Actualizamos la orden recién creada con la agenda y la fecha del turno
     #         orden.agenda = agenda
     #         orden.fecha_turno = fecha_hora_reserva

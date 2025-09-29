@@ -1,0 +1,79 @@
+# =============================
+# Configuración de Black
+# =============================
+[tool.black]
+# Longitud máxima de línea: 100 caracteres (igual que Pylint y Ruff para mantener consistencia)
+line-length = 100
+# Versión objetivo de Python (en este caso 3.13)
+target-version = ["py313"]
+
+
+# =============================
+# Configuración de Ruff
+# =============================
+[tool.ruff]
+# Longitud máxima de línea (coherente con Black y Pylint)
+line-length = 100
+# Versión objetivo de Python
+target-version = "py313"
+# Carpetas que NO deben analizarse
+extend-exclude = ["env", "__pycache__"]
+#“Activame también las reglas nuevas o experimentales que todavía no están marcadas como estables por defecto.”
+preview = true
+
+
+# =============================
+# Reglas de lint en Ruff
+# =============================
+[tool.ruff.lint]
+# Selección de chequeos a activar:
+#  - E: Errores de estilo (PEP8 básicos)
+#  - F: Errores de lógica (ej: variables no usadas)
+#  - I: Orden de imports (equivalente a isort) 
+#  - W: Warnings varios
+#  - B: Bugbear (malas prácticas comunes en Python)
+#  - UP: Python upgrades (sugerencias para modernizar código)
+#  - SIM: Simplificaciones (reescribir código más simple)
+#  - D: Reglas de docstrings (estilo, formato y faltantes)
+
+# Activamos solo las categorías con AUTOFIX automático:
+select = ["I", "E", "F", "W", "UP", "SIM"]
+
+# Reglas a ignorar:
+# - E203: espacio en blanco antes de “:”, conflicto con Black
+# - E501: longitud de línea, ya lo controlamos con Black
+# - F401: imports no usados (a veces se permiten en __init__.py)
+ignore = []
+
+# =============================
+# Ignorar reglas por archivo
+# =============================
+[tool.ruff.lint.per-file-ignores]
+# En migraciones de Django se aceptan líneas largas (E501) porque son autogeneradas
+"**/migrations/*.py" = ["E501"]
+# En settings también puede haber comentarios largos, ignoramos E501 ahí
+"autolog/settings.py" = ["E501"]
+# Ignoramos los import en la init
+"__init__.py" = ["F401"]
+
+
+# =============================
+# Configuración de isort (orden de imports)
+# =============================
+[tool.ruff.lint.isort]
+# Módulos que Ruff debe reconocer como “first-party” (nuestro código del proyecto)
+known-first-party = [
+  "autolog",
+  "agendas",
+  "ordenes",
+  "talleres",
+  "usuarios",
+  "vehiculos",
+  "presupuestos",
+  "auth"
+]
+# Combina imports con alias (ej: `import X as Y`) en un único bloque
+combine-as-imports = true
+
+# Obliga a ordenar imports dentro de cada sección (standard / third-party / first-party)
+force-sort-within-sections = true

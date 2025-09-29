@@ -1,20 +1,21 @@
-#usuarios/urls.py
-from django.urls import path, include
+# usuarios/urls.py
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from .views import AdministradorTecnicoViewSet, UsuarioViewSet, clienteViewSet
 
 # Creamos un router y registramos nuestro viewset
 router = DefaultRouter()
-router.register(r'usuarios', UsuarioViewSet)
-router.register(r'tecnicos', AdministradorTecnicoViewSet,basename='tecnicos')
-router.register(r'clientes', clienteViewSet)
+router.register(r"usuarios", UsuarioViewSet)
+router.register(r"tecnicos", AdministradorTecnicoViewSet, basename="tecnicos")
+router.register(r"clientes", clienteViewSet)
 
 # router.register(r'ordenes', OrdenDeTrabajoViewSet)
 # router.register(r'vehiculos', VehiculoViewSet)
 
 # Las URLs de la API son determinadas automáticamente por el router
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 # | Método   | URL                                                                  |
