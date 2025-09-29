@@ -14,25 +14,27 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      // Selectores de Angular
-      "@angular-eslint/directive-selector": [
-        "error",
-        { type: "attribute", prefix: "app", style: "camelCase" }
-      ],
-      "@angular-eslint/component-selector": [
-        "error",
-        { type: "element", prefix: "app", style: "kebab-case" }
-      ],
+      // Estilo
+        "quotes": ["warn", "single"],              
+        "semi": ["warn", "always"],                
+        "indent": ["warn", 2],                     
+        "object-curly-spacing": ["warn", "always"],
 
-      // Ajustes personalizados
-      "@angular-eslint/prefer-inject": "warn",            // aviso, no error
-      "@angular-eslint/use-lifecycle-interface": "warn", // aviso si falta OnInit
-      "@typescript-eslint/no-empty-function": "warn",    // permite funciones vacías
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
-      ],
-      "@typescript-eslint/no-explicit-any": "warn"       // evita error por "any", solo warning
+        // Buenas prácticas JS/TS
+        "no-console": ["warn", { "allow": ["warn", "error"] }], 
+        "eqeqeq": "warn",                         
+        "no-var": "warn",                         
+        "prefer-const": "warn",                   
+
+        // Angular específico
+        "@angular-eslint/prefer-on-push-component-change-detection": "warn", 
+        "@angular-eslint/no-empty-lifecycle-method": "warn",
+        
+        //para lo que da por defecto error de warn
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@angular-eslint/prefer-inject": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-empty-function": "warn",
     },
   },
   {

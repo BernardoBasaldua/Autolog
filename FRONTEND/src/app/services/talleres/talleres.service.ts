@@ -10,7 +10,7 @@ export class TalleresService {
   private apiUrl = 'http://127.0.0.1:8000/api';
   private talleres: Taller[] = [];
 
-   constructor(private http: HttpClient){}
+  constructor(private http: HttpClient){}
 
   getTalleres(): Observable<Taller[]> {
     const url = `${this.apiUrl}/talleres`;

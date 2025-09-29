@@ -10,7 +10,7 @@ describe('AuthLayout', () => {
     await TestBed.configureTestingModule({
       imports: [AuthLayout]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AuthLayout);
     component = fixture.componentInstance;

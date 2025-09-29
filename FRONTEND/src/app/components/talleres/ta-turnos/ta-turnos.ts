@@ -16,7 +16,7 @@ export class TaTurnos {
   }
 
   verDetalleTurno() {
-    console.log(`Ver detalle del turno con ID:`);
+    console.log('Ver detalle del turno con ID:');
     this.router.navigate(['/taller', 'turnos', 'detalle']);
   }
 }

@@ -15,7 +15,7 @@ export class Permisos implements OnInit {
   clienteId!: number;        // ID del cliente
   vehiculoId!: number;       // ID del vehículo
   talleres: any[] = [];      // Lista de talleres autorizados
-  filtro: string = '';
+  filtro = '';
 
   constructor(
     private router: Router,

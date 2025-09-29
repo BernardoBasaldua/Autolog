@@ -10,7 +10,7 @@ describe('TaTurnos', () => {
     await TestBed.configureTestingModule({
       imports: [TaTurnos]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TaTurnos);
     component = fixture.componentInstance;

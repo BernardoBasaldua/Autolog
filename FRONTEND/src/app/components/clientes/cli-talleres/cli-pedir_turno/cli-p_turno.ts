@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TalleresService } from '../../../../services/talleres/talleres.service';
@@ -12,7 +12,7 @@ import { Turno } from '../../../../models/turnos/turno.model';
   templateUrl: './cli-p_turno.html',
   styleUrl: './cli-p_turno.css'
 })
-export class CliPedirTurno {
+export class CliPedirTurno implements OnInit {
   tallerId: number;
   taller: any;
 

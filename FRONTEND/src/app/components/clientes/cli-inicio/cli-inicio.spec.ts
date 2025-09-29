@@ -10,7 +10,7 @@ describe('CliInicio', () => {
     await TestBed.configureTestingModule({
       imports: [CliInicio]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CliInicio);
     component = fixture.componentInstance;

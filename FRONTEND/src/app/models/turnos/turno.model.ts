@@ -1,5 +1,5 @@
-import { Taller } from "../talleres/taller.model";
-import { Vehiculo } from "../vehiculo/vehiculo.model";
+import { Taller } from '../talleres/taller.model';
+import { Vehiculo } from '../vehiculo/vehiculo.model';
 
 export interface Turno {
     id: number;

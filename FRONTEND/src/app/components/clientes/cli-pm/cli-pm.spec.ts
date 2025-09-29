@@ -10,7 +10,7 @@ describe('CliPm', () => {
     await TestBed.configureTestingModule({
       imports: [CliPm]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CliPm);
     component = fixture.componentInstance;

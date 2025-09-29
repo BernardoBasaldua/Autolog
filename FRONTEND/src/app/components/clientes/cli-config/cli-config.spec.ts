@@ -10,7 +10,7 @@ describe('CliConfig', () => {
     await TestBed.configureTestingModule({
       imports: [CliConfig]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CliConfig);
     component = fixture.componentInstance;

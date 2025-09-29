@@ -14,11 +14,11 @@ export class VehiculoService {
   constructor(private http: HttpClient){}
 
   getVehiculos(clienteId: number): Observable<Vehiculo[]> {
-  const url = `${this.apiUrl}/clientes/${clienteId}/vehiculos/`;
-  return this.http.get<Vehiculo[]>(url).pipe(
-    tap((vehiculos: Vehiculo[]) => this.vehiculos = vehiculos) // ahora sí se llena
-  );
-}
+    const url = `${this.apiUrl}/clientes/${clienteId}/vehiculos/`;
+    return this.http.get<Vehiculo[]>(url).pipe(
+      tap((vehiculos: Vehiculo[]) => this.vehiculos = vehiculos) // ahora sí se llena
+    );
+  }
 
 
   getVehiculoById(id: number): Observable<Vehiculo | undefined> {
@@ -27,7 +27,7 @@ export class VehiculoService {
   }
 
   getTalleresAutorizados(clienteId: number): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/${clienteId}/talleres_autorizados/`);
+    return this.http.get<any[]>(`${this.apiUrl}/${clienteId}/talleres_autorizados/`);
   }
 
 }

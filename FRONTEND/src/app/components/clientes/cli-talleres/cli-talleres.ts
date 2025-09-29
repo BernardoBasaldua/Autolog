@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,8 +11,8 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
   templateUrl: './cli-talleres.html',
   styleUrl: './cli-talleres.css'
 })
-export class CliTalleres {
-  talleres: Taller[] = []
+export class CliTalleres implements OnInit {
+  talleres: Taller[] = [];
 
   constructor(private router: Router, private talleresService: TalleresService) {}
 

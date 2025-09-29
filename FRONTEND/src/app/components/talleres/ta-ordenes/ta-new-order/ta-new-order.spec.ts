@@ -10,7 +10,7 @@ describe('TaNewOrder', () => {
     await TestBed.configureTestingModule({
       imports: [TaNewOrder]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TaNewOrder);
     component = fixture.componentInstance;

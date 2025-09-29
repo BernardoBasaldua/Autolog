@@ -10,7 +10,7 @@ describe('MainLayout', () => {
     await TestBed.configureTestingModule({
       imports: [MainLayout]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MainLayout);
     component = fixture.componentInstance;

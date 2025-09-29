@@ -10,7 +10,7 @@ describe('CliTurnos', () => {
     await TestBed.configureTestingModule({
       imports: [CliTurnos]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CliTurnos);
     component = fixture.componentInstance;

@@ -10,7 +10,7 @@ describe('TaConfig', () => {
     await TestBed.configureTestingModule({
       imports: [TaConfig]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TaConfig);
     component = fixture.componentInstance;

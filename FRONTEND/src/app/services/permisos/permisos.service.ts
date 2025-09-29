@@ -11,7 +11,7 @@ export class PermisosService {
   constructor(private http: HttpClient){}
 
   getTalleresAutorizados(clienteId: number, vehiculoId: number) {
-  return this.http.get<any[]>(`${this.apiUrl}/clientes/${clienteId}/talleres_autorizados/?vehiculo_id=${vehiculoId}`);
-}
+    return this.http.get<any[]>(`${this.apiUrl}/clientes/${clienteId}/talleres_autorizados/?vehiculo_id=${vehiculoId}`);
+  }
 
 }

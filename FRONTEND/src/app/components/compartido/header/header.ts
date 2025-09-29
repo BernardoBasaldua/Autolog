@@ -16,11 +16,11 @@ export class Header {
 
   constructor() {
     this.router.events
-    .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe((event: NavigationEnd) => {
-      const path = event.urlAfterRedirects;
-      this.currentTitle.set(this.mapPathToTitle(path));
-    })
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const path = event.urlAfterRedirects;
+        this.currentTitle.set(this.mapPathToTitle(path));
+      });
   }
   mapPathToTitle(path: string): string {
     //Rutas a título de clientes

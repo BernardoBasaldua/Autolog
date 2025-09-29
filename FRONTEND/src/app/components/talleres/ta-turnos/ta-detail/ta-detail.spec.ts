@@ -10,7 +10,7 @@ describe('TaDetail', () => {
     await TestBed.configureTestingModule({
       imports: [TaDetail]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TaDetail);
     component = fixture.componentInstance;

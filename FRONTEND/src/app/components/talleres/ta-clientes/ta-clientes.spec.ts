@@ -10,7 +10,7 @@ describe('TaClientes', () => {
     await TestBed.configureTestingModule({
       imports: [TaClientes]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TaClientes);
     component = fixture.componentInstance;

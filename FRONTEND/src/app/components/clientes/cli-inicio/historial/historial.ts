@@ -15,7 +15,7 @@ import { VehiculoService } from '../../../../services/vehiculo/vehiculo.service'
 export class Historial implements OnInit {
   vehiculoId: number;
   vehiculo: any;
-  filtro: string = '';
+  filtro = '';
 
   constructor(private router: Router, private vehiculoService: VehiculoService) {
     const url = this.router.url;
@@ -27,7 +27,7 @@ export class Historial implements OnInit {
     window.scrollTo(0, 0);
     this.vehiculoService.getVehiculoById(this.vehiculoId).subscribe({
       next: (vehiculo) => {
-        console.log("Vehículo recibido:", vehiculo);
+        console.log('Vehículo recibido:', vehiculo);
         this.vehiculo = vehiculo;
       },
       error: (err) => {
