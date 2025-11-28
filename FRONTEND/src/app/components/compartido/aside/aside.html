@@ -1,21 +1,43 @@
 <div>
-    <!-- User Profile -->
-    <div class="flex items-center mb-10">
-        <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
-            <i class="fas fa-user text-white text-xl"></i>
-        </div>
-        <!-- Cliente -->
-        <div *ngIf="userType() === 'cliente'">
-            <p class="font-semibold text-lg">Jorge Pérez</p>
-            <p class="text-sm text-gray-400">jorge_p&#64;gmail.com</p>
-        </div>
-        <!-- Taller -->
-        <div *ngIf="userType() === 'taller'">
-            <p class="font-semibold text-lg">Taller mecánico</p>
-            <p class="text-sm text-gray-400">un_taller&#64;gmail.com</p>
-        </div>
+  <!-- User Profile -->
+  <div class="flex items-center mb-10">
+    <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+      <i class="fas fa-user text-white text-xl"></i>
     </div>
 
-    <!-- Navigation Menu -->
-    <app-nav></app-nav>
+    <!-- Cliente -->
+    @if (userType() === 'cliente' && cliente()) {
+      <div>
+        <p class="font-semibold text-lg">
+          {{ cliente()!.usuario.first_name }} {{ cliente()!.usuario.last_name }}
+        </p>
+        <p class="text-sm text-gray-400">
+          {{ cliente()!.usuario.email }}
+        </p>
+      </div>
+    }
+
+    <!-- Taller (por ahora uso los mismos datos de usuario) -->
+    @else if (userType() === 'taller' && cliente()) {
+      <div>
+        <p class="font-semibold text-lg">
+          {{ cliente()!.usuario.username }}
+        </p>
+        <p class="text-sm text-gray-400">
+          {{ cliente()!.usuario.email }}
+        </p>
+      </div>
+    }
+
+    <!-- Fallback mientras carga o si no hay datos -->
+    @else {
+      <div>
+        <p class="font-semibold text-lg">Usuario</p>
+        <p class="text-sm text-gray-400">cargando...</p>
+      </div>
+    }
+  </div>
+
+  <!-- Navigation Menu -->
+  <app-nav></app-nav>
 </div>

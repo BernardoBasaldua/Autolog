@@ -9,4 +9,22 @@ import { Component } from '@angular/core';
 })
 export class CliConfig {
 
+  editarPerfil() {
+    // Más adelante podés:
+    // - abrir un modal
+    // - o navegar a clienteForm
+    console.log('Editar perfil clickeado');
+  }
+
+  eliminarCuenta() {
+    const confirmar = confirm(
+      '¿Seguro que querés eliminar tu cuenta? Esta acción es permanente.'
+    );
+
+    if (!confirmar) return;
+
+    // Acá después llamás a un servicio:
+    // this.usuarioService.eliminarCuenta().subscribe(...)
+    console.log('Eliminar cuenta confirmado');
+  }
 }

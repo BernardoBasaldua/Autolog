@@ -1,3 +1,5 @@
+import { Vehiculo } from "../vehiculo/vehiculo.model";
+
 export interface UsuarioModel {
   pk?: number;              // opcional → lo asigna el backend
   username: string;
@@ -10,8 +12,8 @@ export interface UsuarioModel {
   direccion: string;
 }
 
-export interface UsuarioDetalleModel {
+export interface ClienteModel {
   usuario: UsuarioModel;
-  permisos_que_otorgo: any[]; // después los tipás bien
-  mis_vehiculos: any[];       // idem
+  permisos_que_otorgo?: any[]; // después los tipás bien
+  mis_vehiculos?: Vehiculo[];       // idem
 }

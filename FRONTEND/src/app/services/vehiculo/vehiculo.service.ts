@@ -10,13 +10,18 @@ import { AuthService } from '../auth/auth.service';
 })
 export class VehiculoService {
   private apiUrl = 'http://127.0.0.1:8000/api';
-  private vehiculos: Vehiculo[] = [];
+  public vehiculos: Vehiculo[] = [];
 
   constructor(private http: HttpClient, private auth:AuthService){}
 
-  getVehiculos(clienteId: number): Observable<Vehiculo[]> {
+  getVehiculos(): Observable<Vehiculo[]> {
     const url = `${this.apiUrl}/clientes/vehiculos/`;
-    return this.http.get<Vehiculo[]>(url);
+    return this.http.get<Vehiculo[]>(url).pipe(
+      tap(v => {
+        this.vehiculos = v;
+        console.log('vehiculos:', v);
+      })
+    );
   }
 
 

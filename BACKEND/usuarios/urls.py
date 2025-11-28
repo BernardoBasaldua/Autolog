@@ -2,13 +2,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import AdministradorTecnicoViewSet, UsuarioViewSet, clienteViewSet
+from .views import AdministradorTecnicoViewSet, UsuarioViewSet, ClienteViewSet
 
 # Creamos un router y registramos nuestro viewset
 router = DefaultRouter()
 router.register(r"usuarios", UsuarioViewSet)
 router.register(r"tecnicos", AdministradorTecnicoViewSet, basename="tecnicos")
-router.register(r"clientes", clienteViewSet)
+router.register(r"clientes", ClienteViewSet)
 
 # router.register(r'ordenes', OrdenDeTrabajoViewSet)
 # router.register(r'vehiculos', VehiculoViewSet)

@@ -22,7 +22,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string): Observable<void> {
+  login(username: string, password: string): Observable<TokenPair> {
     const body = { username, password };
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -37,7 +37,7 @@ export class AuthService {
         console.log('ROL:', payload.role);
       }),
       
-      map(() => void 0) // <-- transforma Observable<TokenPair> en Observable<void>
+      // map(() => void 0) // <-- transforma Observable<TokenPair> en Observable<void>
     );
   }
 
@@ -49,11 +49,15 @@ export class AuthService {
     localStorage.removeItem('refresh'); 
     this.router.navigate(['/login']);
   }
-
+  // Desde aca direccionamos segun tipo de rol
   redirectByRole(role?: UserRole | null) {
     const r = role ?? this.role;
     if (r === 'cliente')      this.router.navigate(['/cliente']);
     else if (r === 'tecnico') this.router.navigate(['taller/ordenes']);
     else                      this.router.navigate(['/admin']);
+  }
+
+  getRole(){
+    return this.role
   }
 }

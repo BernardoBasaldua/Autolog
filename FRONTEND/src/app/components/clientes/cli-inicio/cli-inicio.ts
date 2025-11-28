@@ -16,13 +16,13 @@ import { CommonModule } from '@angular/common';
 export class CliInicio implements OnInit {
   vehiculos: Vehiculo[] = [];
   
-  clienteId = 3; //id simulado
+  
 
   constructor(private vehiculoService: VehiculoService, private router: Router) {}
 
   ngOnInit(): void {
-    console.log('Iniciando componente y esperando vehículos...');
-    this.vehiculoService.getVehiculos(this.clienteId).subscribe({
+    console.log('Iniciando componentec cliInicio y esperando vehículos...');
+    this.vehiculoService.getVehiculos().subscribe({
       next: (data) =>{ this.vehiculos = data;},
       error:(error)=>{
         console.log('error al obtener los vehiculos, back no responde');}

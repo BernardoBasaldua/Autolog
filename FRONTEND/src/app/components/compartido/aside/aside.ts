@@ -1,7 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
-import { Nav } from './nav/nav';
-import { NavigationEnd, Router } from '@angular/router';
+// aside.ts
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NavigationEnd, Router } from '@angular/router';
+
+import { Nav } from './nav/nav';
+import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
+import { ClienteModel } from '../../../models/usuarios/usuario.model';
 
 @Component({
   selector: 'app-aside',
@@ -10,14 +14,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './aside.html',
   styleUrl: './aside.css'
 })
-export class Aside {
+export class Aside implements OnInit {
   private router = inject(Router);
+  private clienteService = inject(ClienteService);
 
-  // Signal para guardar el tipo de usuario
+  // contexto de la UI según la URL
   userType = signal<'cliente' | 'taller' | null>(null);
 
+  // datos del cliente
+  cliente = signal<ClienteModel | null>(null);
+
   constructor() {
-    // Actualizar el tipo de usuario cuando cambia la URL
+    //la URL para saber en qué "modo" está la UI
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const url = this.router.url;
@@ -28,6 +36,20 @@ export class Aside {
         } else {
           this.userType.set(null);
         }
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    // traigo los datos del cliente al cargar el layout
+    this.clienteService.getMiCliente().subscribe({
+      next: (c) => {
+        this.cliente.set(this.clienteService.clienteActual())
+        //this.cliente.set(c);
+        console.log('Cliente en aside:', c);
+      },
+      error: (e) => {
+        console.error('Error cargando cliente en aside', e);
       }
     });
   }

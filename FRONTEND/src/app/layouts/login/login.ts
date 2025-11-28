@@ -1,24 +1,32 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
 import { AuthService } from '../../services/auth/auth.service';
+import { RegistroUsuarioService } from '../../services/usuarios/registro/registro-usuario.service';
+import { FormClientes } from "../../components/registro/form-clientes/form-clientes";
+import { FormTalleres } from "../../components/registro/form-talleres/form-talleres";
 
 @Component({
   selector: 'app-login',
   standalone: true,                 
-  imports: [CommonModule, ReactiveFormsModule], 
+  imports: [CommonModule, ReactiveFormsModule, FormClientes, FormTalleres], 
   templateUrl: './login.html',
   styleUrls: ['./login.css']        
 })
 export class Login{
   vistaActual: 'login' | 'register' = 'login';
-  form: FormGroup;
+  tipoRegistro: 'cliente'| 'taller'| null = null;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
-    this.form = this.fb.group({
+  loginForm: FormGroup;
+
+  constructor(private fb: FormBuilder, private authService: AuthService, private registroUsuario: RegistroUsuarioService) {
+
+    // CAMPOS FORM LOGIN
+    this.loginForm = this.fb.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
-  });
+    
+    });
   }
   
 
@@ -28,23 +36,30 @@ export class Login{
   showRegister() { 
     this.vistaActual = 'register'; console.log(this.vistaActual); 
   }
+  seleccionarTipoRegistro(tipo: 'cliente'|'taller') { 
+    this.tipoRegistro = tipo; console.log(this.tipoRegistro); 
+  }
+ 
 
   token(): void {
-    if (this.form.invalid) return;
+    if (this.loginForm.invalid) return;
 
-    const { username, password } = this.form.value;
+    const { username, password } = this.loginForm.value;
 
     // Llama al servicio con los valores (aseguramos no-nulos con !)
     this.authService.login(username!, password!).subscribe({
-      next: () => {
+      next: (tokens) => {
         // Éxito: ya guardaste tokens en el service (tap) o acá si preferís
-        console.log('Login exitoso');
+        console.log('Login exitoso', tokens);
         // Aquí podrías navegar: this.router.navigate(['/dashboard']);
       },
       error: (e) => {
         // Manejo simple de error (credenciales/servidor/CORS/etc.)
         console.error('Error de login', e);
+        alert("usuario o contraseña incorrectos")
       }
     });
   }
 }
+
+

@@ -1,4 +1,7 @@
 # auth/serializers.py
+# Importamos el serializer que usa SimpleJWT para el endpoint /api/token/.
+# Ese serializer es el que: valida username y password, y genera el par de tokens: 
+# access y refresh.
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 

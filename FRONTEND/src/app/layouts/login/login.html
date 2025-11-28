@@ -9,15 +9,28 @@
 
     <section class="card p-8">
       <!-- Tabs -->
-      <div class="flex justify-center mb-6 border-b border-gray-200">
-        <button class="tab-button" (click)="showLogin()">Iniciar Sesión</button>
-        <button class="tab-button" (click)="showRegister()">Registrarse</button>
+      <div class="flex justify-center mb-6 border-b border-gray-200 gap-4">
+        <button
+          type="button"
+          class="tab-button"
+          [ngClass]="{ 'active': vistaActual === 'login' }"
+          (click)="showLogin()">
+          Iniciar Sesión
+        </button>
+
+        <button
+          type="button"
+          class="tab-button"
+          [ngClass]="{ 'active': vistaActual === 'register' }"
+          (click)="showRegister()">
+          Registrarse
+        </button>
       </div>
 
       <!-- LOGIN -->
       @if (vistaActual === 'login') {
         <!-- Vinculamos el FormGroup y disparamos token() al submit -->
-        <form [formGroup]="form" (ngSubmit)="token()" class="space-y-6">
+        <form [formGroup]="loginForm" (ngSubmit)="token()" class="space-y-6">
 
           <div>
             <label for="login-username" class="block text-gray-700 font-semibold mb-2">
@@ -28,8 +41,7 @@
                    class="w-full"
                    formControlName="username"
                    autocomplete="username" />
-            <!-- Validación opcional -->
-            @if(form.get('username')?.touched && form.get('username')?.hasError('required')) {
+            @if(loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
               <small class="text-red-600">El usuario es requerido</small>
             }
           </div>
@@ -43,12 +55,12 @@
                    class="w-full"
                    formControlName="password"
                    autocomplete="current-password" />
-            @if(form.get('password')?.touched && form.get('password')?.hasError('required')) {
+            @if(loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
               <small class="text-red-600">La contraseña es requerida</small>
             }
           </div>
 
-          <button type="submit" class="button-primary w-full" [disabled]="form.invalid">
+          <button type="submit" class="button-primary w-full" [disabled]="loginForm.invalid">
             Iniciar Sesión
           </button>
 
@@ -65,47 +77,67 @@
         </form>
       }
 
-      <!-- REGISTER (placeholder visual) -->
+      <!-- REGISTER -->
       @else if (vistaActual === 'register') {
         <div class="space-y-6">
-          <button type="button" class="button-google w-full">
-            <i class="fab fa-google"></i>
-            Registrarse con Google
-          </button>
-
-          <div class="flex items-center">
-            <hr class="flex-grow border-gray-300" />
-            <span class="mx-4 text-gray-500">o</span>
-            <hr class="flex-grow border-gray-300" />
+          <!-- Título registro -->
+          <div class="text-center mb-4">
+            <h2 class="text-2xl font-semibold text-gray-800">Crear cuenta</h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Elegí si querés registrarte como cliente o como establecimiento.
+            </p>
           </div>
 
-          <!-- (Más adelante lo pasamos a otro FormGroup) -->
-          <div>
-            <label for="register-username" class="block text-gray-700 font-semibold mb-2">
-              Nombre de usuario
-            </label>
-            <input type="text" id="register-username" class="w-full" />
-          </div>
-          <div>
-            <label for="register-email" class="block text-gray-700 font-semibold mb-2">
-              Correo electrónico
-            </label>
-            <input type="email" id="register-email" class="w-full" />
-          </div>
-          <div>
-            <label for="register-password" class="block text-gray-700 font-semibold mb-2">
-              Contraseña
-            </label>
-            <input type="password" id="register-password" class="w-full" />
-          </div>
-          <div>
-            <label for="confirm-password" class="block text-gray-700 font-semibold mb-2">
-              Confirmar contraseña
-            </label>
-            <input type="password" id="confirm-password" class="w-full" />
+          <!-- Selector de tipo de registro -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              (click)="seleccionarTipoRegistro('cliente')"
+              class="tipo-button"
+              [ngClass]="{ 'active': tipoRegistro === 'cliente' }">
+              <span class="text-sm font-semibold">
+                Registrar cliente
+              </span>
+              <span class="text-xs text-gray-500">
+                Para usuarios que gestionan sus propios vehículos y órdenes.
+              </span>
+            </button>
+
+            <button
+              type="button"
+              (click)="seleccionarTipoRegistro('taller')"
+              class="tipo-button"
+              [ngClass]="{ 'active': tipoRegistro === 'taller' }">
+              <span class="text-sm font-semibold">
+                Registrar establecimiento
+              </span>
+              <span class="text-xs text-gray-500">
+                Para talleres que administran órdenes, técnicos y clientes.
+              </span>
+            </button>
           </div>
 
-          <button class="button-primary w-full">Registrarse</button>
+          <!-- Mensaje si no eligió aún -->
+          @if (!tipoRegistro) {
+            <p class="text-center text-gray-400 text-sm mt-2">
+              Seleccioná una opción para completar el formulario de registro.
+            </p>
+          }
+
+          <!-- Formulario: REGISTRO CLIENTE -->
+          @if (tipoRegistro === 'cliente') {
+            <app-form-clientes></app-form-clientes>
+          }
+            
+
+
+
+
+          <!-- Formulario: REGISTRO TALLER -->
+          @else if (tipoRegistro === 'taller') {
+            <app-form-talleres></app-form-talleres>
+          }
+          
         </div>
       }
     </section>

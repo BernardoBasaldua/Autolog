@@ -1,1 +1,54 @@
-<p>cli-config works!</p>
+<section class="space-y-6">
+  <!-- Título -->
+  <!-- <header class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">
+      Configuración de la cuenta
+    </h1>
+    <p class="text-sm text-gray-500">
+      Administrá los datos de tu perfil o eliminá tu cuenta de Autolog.
+    </p>
+  </header> -->
+
+  <!-- Configurar perfil -->
+  <div class="card p-6 flex flex-col gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+        <i class="fas fa-user-cog text-blue-600"></i>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800">Configurar perfil</h2>
+        <p class="text-sm text-gray-500">
+          Modificar tu nombre, email, teléfono y otros datos personales.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="button" class="button-primary" (click)="editarPerfil()">
+            Editar perfil
+        </button>
+    </div>
+  </div>
+
+  <!-- Eliminar cuenta -->
+  <div class="card p-6 flex flex-col gap-3 border border-red-100">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+        <i class="fas fa-user-slash text-red-600"></i>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-red-700">Eliminar cuenta</h2>
+        <p class="text-sm text-red-500">
+          Esta acción es permanente. Se eliminará tu cuenta y el acceso a tus vehículos.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="button" class="button-danger" (click)="eliminarCuenta()">
+        Eliminar mi cuenta
+      </button>
+    </div>
+  </div>
+</section>
+

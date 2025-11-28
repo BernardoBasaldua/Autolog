@@ -90,10 +90,10 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = ["usuario", "permisos_que_otorgo", "mis_vehiculos"]
 
-    def create(self, validated_date):
-        usuario_data = validated_date.pop("usuario")
+    def create(self, validated_data):
+        usuario_data = validated_data.pop("usuario")
         usuario = Usuario.objects.create_user(**usuario_data)
-        cliente = Cliente.objects.create(usuario=usuario, **validated_date)
+        cliente = Cliente.objects.create(usuario=usuario, **validated_data)
         return cliente
 
 

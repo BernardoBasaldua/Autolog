@@ -27,7 +27,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
 
 # ----------------------------CLIENTE-------------------------------------------#
-class clienteViewSet(viewsets.ModelViewSet):
+class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     # permission_classes = [AllowAny]
