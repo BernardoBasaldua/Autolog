@@ -3,7 +3,9 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map, tap, switchMap } from 'rxjs';
+
+
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
@@ -73,5 +75,28 @@ export class ClienteService {
       })
     );
   }
+
+    /** Elimina el CLIENTE actual: DELETE /api/clientes/<id>/ */
+  eliminarCuenta(): Observable<void> {
+    const actual = this.clienteActual();
+
+    // Si ya tenemos el cliente cargado en memoria, usamos ese id
+    if (actual && actual.id) {        // si tu modelo usa "pk", cambiá a actual.pk
+      const url = `${this.apiClientesUrl}${actual.id}/`;   // → http://127.0.0.1:8000/api/clientes/1/
+      return this.http.delete<void>(url);
+    }
+
+    // Si clienteActual es null, primero lo pedimos al backend
+    return this.getMiCliente().pipe(
+      switchMap(cliente => {
+        if (!cliente.id) {           // si es pk, cambiá a cliente.pk
+          throw new Error('El cliente no tiene id definido');
+        }
+        const url = `${this.apiClientesUrl}${cliente.id}/`;
+        return this.http.delete<void>(url);
+      })
+    );
+  }
+
 
 }

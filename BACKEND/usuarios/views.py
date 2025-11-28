@@ -52,6 +52,29 @@ class ClienteViewSet(viewsets.ModelViewSet):
         return Cliente.objects.filter(usuario=user)
         #return Cliente.objects.all()
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        Cuando se elimina un Cliente desde /api/clientes/<id>/,
+        también se elimina el Usuario asociado.
+        """
+        cliente = self.get_object()
+        usuario = cliente.usuario
+
+        # (Opcional) seguridad extra: solo puede borrar su propio cliente,
+        # salvo que sea staff/superuser
+        if usuario != request.user and not (request.user.is_staff or request.user.is_superuser):
+            return Response(
+                {"detail": "No tenés permiso para eliminar esta cuenta."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # 1) borrar el cliente
+        self.perform_destroy(cliente)
+
+        # 2) borrar el usuario asociado
+        usuario.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     # crear permiso de acceso

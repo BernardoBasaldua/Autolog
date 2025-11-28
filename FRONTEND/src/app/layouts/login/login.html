@@ -126,7 +126,7 @@
 
           <!-- Formulario: REGISTRO CLIENTE -->
           @if (tipoRegistro === 'cliente') {
-            <app-form-clientes modo()="'crear'"></app-form-clientes>
+            <app-form-clientes [modo]="'crear'"></app-form-clientes>
           }
 
           <!-- Formulario: REGISTRO TALLER -->
