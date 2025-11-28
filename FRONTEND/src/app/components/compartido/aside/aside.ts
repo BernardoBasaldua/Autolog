@@ -22,7 +22,7 @@ export class Aside implements OnInit {
   userType = signal<'cliente' | 'taller' | null>(null);
 
   // datos del cliente
-  cliente = signal<ClienteModel | null>(null);
+  cliente = this.clienteService.clienteActual;
 
   constructor() {
     //la URL para saber en qué "modo" está la UI
@@ -44,7 +44,7 @@ export class Aside implements OnInit {
     // traigo los datos del cliente al cargar el layout
     this.clienteService.getMiCliente().subscribe({
       next: (c) => {
-        this.cliente.set(this.clienteService.clienteActual())
+        //this.cliente.set(this.clienteService.clienteActual())
         //this.cliente.set(c);
         console.log('Cliente en aside:', c);
       },

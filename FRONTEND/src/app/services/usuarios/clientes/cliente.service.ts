@@ -7,7 +7,8 @@ import { Observable, map, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
-  private apiUrl = 'http://127.0.0.1:8000/api/clientes/';
+  private apiClientesUrl = 'http://127.0.0.1:8000/api/clientes/';
+  private apiUsuariosUrl = 'http://127.0.0.1:8000/api/usuarios/';
 
   // estado en memoria
   clienteActual = signal<ClienteModel | null>(null);
@@ -18,7 +19,7 @@ export class ClienteService {
   getMiCliente(): Observable<ClienteModel> {
     // ClienteViewSet hace filter(usuario=request.user),
     // así que GET /api/clientes/ debería devolver una LISTA con 1 elemento.
-    return this.http.get<ClienteModel[]>(this.apiUrl).pipe(
+    return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(listaCliente => {
         this.clienteActual.set(listaCliente[0]);
         console.log('cliente:', listaCliente[0]);
@@ -26,10 +27,11 @@ export class ClienteService {
       map(listaCliente => listaCliente[0])  // me quedo con el primer (y único) cliente
     );
   }
-
-  actualizarCliente(usuario: UsuarioModel): Observable<ClienteModel> {
+  //OJO QUE ACTUALIZA SOLO EL USUARIO
+  actualizarUsuario(usuario: UsuarioModel): Observable<UsuarioModel> {
     const actual = this.clienteActual();
-    if (!actual || !actual.id) {
+    
+    if (!actual || !actual.usuario || !actual.usuario.pk) {
       throw new Error('No hay clienteActual con id cargado en memoria');
     }
 
@@ -45,15 +47,27 @@ export class ClienteService {
       usuarioPayload.password = usuario.password;
     }
 
-    const clientePayload: ClienteModel = {
-      id: actual.id,
-      usuario: usuarioPayload,
-    };
+    const userId = actual.usuario.pk;
+    const url = `${this.apiUsuariosUrl}${userId}/`;
 
-    const url = `http://127.0.0.1:8000/api/usuarios/${actual.id}/`;
+    return this.http.patch<UsuarioModel>(url, usuarioPayload).pipe(
+      tap(usuarioActualizado => {
+        console.log('Usuario actualizado desde backend:', usuarioActualizado);
 
-    return this.http.patch<ClienteModel>(url, usuarioPayload).pipe(
-      tap(clienteActualizado => {
+        const clienteAnterior = this.clienteActual();
+        if (!clienteAnterior){
+          console.warn('No hay clienteActual en memoria al actualizar');  
+        return;}
+
+        const clienteActualizado : ClienteModel = {
+          ...clienteAnterior,
+          usuario: {
+            ...clienteAnterior.usuario,
+            ...usuarioActualizado
+          }
+        }
+
+
         this.clienteActual.set(clienteActualizado);
         console.log('cliente actualizado:', clienteActualizado);
       })

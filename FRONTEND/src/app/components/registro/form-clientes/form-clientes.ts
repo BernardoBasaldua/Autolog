@@ -139,7 +139,7 @@ export class FormClientes {
       })
     } else {
       // Edición – endpoint de actualización
-      this.clienteService.actualizarCliente(datosCliente).subscribe({
+      this.clienteService.actualizarUsuario(datosCliente).subscribe({
         next: (clienteActualizado) => {
           console.log('Cliente actualizado', clienteActualizado);
           alert('Perfil actualizado correctamente ✔');
