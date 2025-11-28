@@ -88,7 +88,7 @@ class ClienteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cliente
-        fields = ["usuario", "permisos_que_otorgo", "mis_vehiculos"]
+        fields = ["id","usuario", "permisos_que_otorgo", "mis_vehiculos"]
 
     def create(self, validated_data):
         usuario_data = validated_data.pop("usuario")

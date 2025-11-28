@@ -13,6 +13,7 @@ export interface UsuarioModel {
 }
 
 export interface ClienteModel {
+  id?:number;
   usuario: UsuarioModel;
   permisos_que_otorgo?: any[]; // después los tipás bien
   mis_vehiculos?: Vehiculo[];       // idem

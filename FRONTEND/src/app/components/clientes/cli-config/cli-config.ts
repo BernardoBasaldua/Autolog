@@ -1,19 +1,25 @@
 import { Component } from '@angular/core';
+import { FormClientes } from "../../registro/form-clientes/form-clientes";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cli-config',
   standalone: true,
-  imports: [],
+  imports: [FormClientes, CommonModule],
   templateUrl: './cli-config.html',
   styleUrl: './cli-config.css'
 })
 export class CliConfig {
 
+  editandoPerfil = false;
+
   editarPerfil() {
-    // Más adelante podés:
-    // - abrir un modal
-    // - o navegar a clienteForm
+    this.editandoPerfil = true;
     console.log('Editar perfil clickeado');
+  }
+
+  volver() {
+    this.editandoPerfil = false;
   }
 
   eliminarCuenta() {
