@@ -75,4 +75,63 @@
     </ng-template>
   </section>
 
+  <!-- Create New Permission Section -->
+<section class="card p-6 mt-8">
+  <h2 class="text-2xl font-bold text-gray-900 mb-4">Crear Nuevo Permiso</h2>
+
+  <button
+    class="button-primary mb-4"
+    (click)="mostrarFormulario = !mostrarFormulario">
+    + Nuevo permiso
+  </button>
+
+  <!-- Formulario para crear permiso -->
+  <div *ngIf="mostrarFormulario" class="space-y-4 mt-4">
+
+    <!-- Seleccionar destinatario -->
+    <div>
+      <label class="block font-medium mb-1">Otorgar acceso a</label>
+      <select class="input w-full"
+              [(ngModel)]="formNuevoPermiso.tipo_destinatario">
+        <option value="cliente">Cliente</option>
+        <option value="taller">Taller</option>
+      </select>
+    </div>
+
+    <!-- Seleccionar cliente o taller -->
+    <div *ngIf="formNuevoPermiso.tipo_destinatario === 'cliente'">
+      <label class="block font-medium mb-1">Seleccionar Cliente</label>
+      <select class="input w-full"
+              [(ngModel)]="formNuevoPermiso.destinatario_id">
+        <option *ngFor="let c of clientes" [value]="c.id">
+          {{ c.usuario.first_name }} {{ c.usuario.last_name }}
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="formNuevoPermiso.tipo_destinatario === 'taller'">
+      <label class="block font-medium mb-1">Seleccionar Taller</label>
+      <select class="input w-full"
+              [(ngModel)]="formNuevoPermiso.destinatario_id">
+        <option *ngFor="let t of talleres" [value]="t.id">
+          {{ t.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex space-x-4 mt-4">
+      <button class="button-primary" (click)="crearNuevoPermiso()">
+        Crear permiso
+      </button>
+
+      <button class="button-secondary" (click)="mostrarFormulario = false">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
 </main>

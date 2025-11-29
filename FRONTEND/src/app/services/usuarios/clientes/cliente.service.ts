@@ -2,6 +2,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
+import { PermisoDeAcceso } from '../../../models/permisos/permiso-acceso.model';
 
 import { Observable, map, tap, switchMap } from 'rxjs';
 
@@ -98,5 +99,13 @@ export class ClienteService {
     );
   }
 
+  crearPermiso(permiso: PermisoDeAcceso): Observable<void> {
+    const actual = this.clienteActual();
+    const userId = actual?.usuario.pk;
+    const url = `${this.apiClientesUrl}${userId}/acceso/`;
+    return this.http.post<PermisoDeAcceso>(url, permiso).pipe(
+      map(() => void 0) // convierte el resultado a 'void'
+    );
+  }
 
 }
