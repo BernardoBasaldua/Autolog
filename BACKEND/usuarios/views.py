@@ -190,6 +190,11 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     serializer_class = AdministradorTecnicoSerializer
     # permission_classes = [permissions.AllowAny] # 👈 acceso público por ahora para probar
 
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]  # registro público
+        return [IsAuthenticated()]  # el resto protegido
+
     def get_queryset(self):
         # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
         if self.request.user.is_authenticated:

@@ -1,58 +1,78 @@
 <main class="flex-1 p-8">
 
-    <!-- Pending Requests Section -->
-    <section class="card p-6 mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Solicitudes Pendientes</h2>
-        <div class="space-y-4">
-            <!-- Request Item 1 -->
-            <div class="p-4 border-b border-gray-200 last:border-b-0">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                        <p class="font-semibold text-lg text-gray-800">Mecánica Rápida S.A.</p>
-                        <p class="text-sm text-gray-600">Solicita acceso al historial de:</p>
-                        <p class="font-medium text-blue-800 mt-1">Volkswagen Amarok (AB 123 CD)</p>
-                    </div>
-                    <div class="flex space-x-4 mt-4 md:mt-0">
-                        <button class="button-primary text-sm">Aceptar</button>
-                        <button class="button-secondary text-sm">Denegar</button>
-                    </div>
-                </div>
-            </div>
+  <!-- Pending Requests Section -->
+  <section class="card p-6 mb-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Solicitudes Pendientes</h2>
 
-            <!-- Request Item 2 -->
-            <div class="p-4 border-b border-gray-200 last:border-b-0">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                        <p class="font-semibold text-lg text-gray-800">Taller del Norte</p>
-                        <p class="text-sm text-gray-600">Solicita acceso al historial de:</p>
-                        <p class="font-medium text-blue-800 mt-1">BMW 530i (AG 123 CD)</p>
-                    </div>
-                    <div class="flex space-x-4 mt-4 md:mt-0">
-                        <button class="button-primary text-sm">Aceptar</button>
-                        <button class="button-secondary text-sm">Denegar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="space-y-4" *ngIf="solicitudesPendientes.length > 0; else noPendientes">
 
-    <!-- Granted Permissions Section -->
-    <section class="card p-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Permisos Otorgados</h2>
-        <div class="space-y-4">
-            <div *ngFor="let t of talleres" class="p-4 border-b border-gray-200 last:border-b-0">
-                <div class="flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                        <p class="font-semibold text-lg text-gray-800">{{ t.taller }}</p>
-                        <p class="text-sm text-gray-600">Tiene acceso al historial de:</p>
-                        <p class="font-medium text-blue-800 mt-1">{{ t.vehiculo }}</p>
-                    </div>
-                    <div class="flex space-x-4 mt-4 md:mt-0">
-                        <button class="button-secondary text-sm" (click)="revocarPermiso(t)">Revocar</button>
-                    </div>
-                </div>
-            </div>
+      <div *ngFor="let s of solicitudesPendientes" class="p-4 border-b border-gray-200 last:border-b-0">
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between">
+
+          <div>
+            <p class="font-semibold text-lg text-gray-800">
+              <!-- Si es taller o cliente -->
+              {{ s.taller_autorizado?.nombre || s.cliente_autorizado?.usuario?.first_name + ' ' + s.cliente_autorizado?.usuario?.last_name }}
+            </p>
+
+            <p class="text-sm text-gray-600">Solicita acceso al historial de:</p>
+
+            <p class="font-medium text-blue-800 mt-1">
+              {{ s.vehiculo_autorizado.marca }} {{ s.vehiculo_autorizado.modelo }}
+              ({{ s.vehiculo_autorizado.dominio }})
+            </p>
+          </div>
+
+          <div class="flex space-x-4 mt-4 md:mt-0">
+            <button class="button-primary text-sm" (click)="aceptarSolicitud(s)">Aceptar</button>
+            <button class="button-secondary text-sm" (click)="denegarSolicitud(s)">Denegar</button>
+          </div>
+
         </div>
-    </section>
+      </div>
+
+    </div>
+
+    <ng-template #noPendientes>
+      <p class="text-gray-500">No hay solicitudes pendientes.</p>
+    </ng-template>
+  </section>
+
+  <!-- Granted Permissions Section -->
+  <section class="card p-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Permisos Otorgados</h2>
+
+    <div class="space-y-4" *ngIf="permisosOtorgados.length > 0; else noOtorgados">
+
+      <div *ngFor="let p of permisosOtorgados" class="p-4 border-b border-gray-200 last:border-b-0">
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between">
+
+          <div>
+            <p class="font-semibold text-lg text-gray-800">
+              {{ p.taller_autorizado?.nombre || p.cliente_autorizado?.usuario?.first_name + ' ' + p.cliente_autorizado?.usuario?.last_name }}
+            </p>
+
+            <p class="text-sm text-gray-600">Tiene acceso al historial desde:</p>
+
+            <p class="font-medium text-blue-800 mt-1">
+              {{ p.fecha_autorizacion }} 
+            </p>
+          </div>
+
+          <div class="flex space-x-4 mt-4 md:mt-0">
+            <button class="button-secondary text-sm" (click)="revocarPermiso(p)">Revocar</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <ng-template #noOtorgados>
+      <p class="text-gray-500">No hay permisos otorgados.</p>
+    </ng-template>
+  </section>
 
 </main>
