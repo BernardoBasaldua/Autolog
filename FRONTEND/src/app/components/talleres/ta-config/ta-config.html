@@ -116,6 +116,8 @@
       ← Volver
     </button>
 
-    <app-form-clientes [modo]="'editar'"></app-form-clientes>
+    <app-form-clientes 
+    [modo]="'editar'"
+    (perfilActualizado)="volver1()"></app-form-clientes>
   </section>
 }

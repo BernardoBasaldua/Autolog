@@ -8,6 +8,7 @@ import { ClienteService } from '../../../services/usuarios/clientes/cliente.serv
 import { TalleresService } from '../../../services/talleres/talleres.service';
 import { switchMap } from 'rxjs/operators';
 import { AdminTecService } from '../../../services/usuarios/adminTec/admin-tec.service';
+import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 
 @Component({
   selector: 'app-aside',
@@ -21,14 +22,16 @@ export class Aside implements OnInit {
   private clienteService = inject(ClienteService);
   private tallerService = inject(TalleresService);
   private tecnicoService = inject(AdminTecService);
+  private usuarioService = inject(UsuarioService);
 
   // contexto de la UI según la URL
   userType = signal<'cliente' | 'taller' | null>(null);
 
-  // datos del cliente y del taller
+  // datos del usuario y del taller
   cliente = this.clienteService.clienteActual;
   tecnico = this.tecnicoService.tecnicoActual;
   taller  = this.tallerService.tallerActual;
+  usuario = this.usuarioService.usuarioActual;
 
   constructor() {
     // escuchar cambios de ruta para actualizar contexto y datos
@@ -59,15 +62,20 @@ export class Aside implements OnInit {
   private cargarDatosSegunContexto() {
     const tipo = this.userType();
 
+    //SIEMPRE PRECARGO USUARIO
+    this.usuarioService.getMiUsuario().subscribe({
+        next: (usuario) => console.log('Usuario en ASIDE:', usuario),
+        error: (e) => console.error('Error de carga usuario en ASIDE', e)
+      });
+  
     if (tipo === 'cliente') {
-      // solo clientes
+    //PRECARGO CLIENTE
       this.clienteService.getMiCliente().subscribe({
         next: (c) => console.log('Cliente en aside:', c),
-        error: (e) => console.error('Error cargando cliente en aside', e)
+        error: (e) => console.error('Error cargando cliente en ASIDE', e)
       });
-
     } else if (tipo === 'taller') {
-      // usuario técnico / establecimiento
+    // PRECARGO TECNICO Y TALLER
       this.tecnicoService.getMiTecnico().pipe(
         switchMap((tec) => {
           console.log('Técnico en aside:', tec);

@@ -50,5 +50,7 @@
   </button>
 
   <!-- Reutilizás el mismo form pero en modo edición -->
-  <app-form-clientes [modo]="'editar'"></app-form-clientes>
+  <app-form-clientes 
+  [modo]="'editar'"
+  (perfilActualizado)="volver()"></app-form-clientes>
 </section>

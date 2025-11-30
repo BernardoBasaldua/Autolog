@@ -1,4 +1,4 @@
-import { Component, input, ViewChild } from '@angular/core';
+import { Component, inject, input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { Taller } from '../../../models/talleres/taller.model';
 import { FormClientes } from "../form-clientes/form-clientes";
-import { RegistroTallerService } from '../../../services/talleres/registro/registro-taller.service';
+import { TalleresService } from '../../../services/talleres/talleres.service';
 
 @Component({
   selector: 'app-form-talleres',
@@ -27,14 +27,14 @@ export class FormTalleres {
   @ViewChild(FormClientes) formClientes!: FormClientes;
 
   //  para precargar al editar un taller
-  tallerInicial = input<Taller | null>(null);
+  private servicioTaller = inject(TalleresService)
+  tallerActual = this.servicioTaller.tallerActual;
   tallerForm: FormGroup;
 
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private servicioRegistroTaller : RegistroTallerService       // para redireccionar si querés hacer 2 pasos
   ) {
     this.tallerForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -46,7 +46,7 @@ export class FormTalleres {
   }
 
   ngOnInit(): void {
-    const t = this.tallerInicial();
+    const t = this.tallerActual();
 
     if (this.modo() === 'editar' && t) {
       this.tallerForm.patchValue({
@@ -65,19 +65,20 @@ export class FormTalleres {
       return;
     }
 
-    // pedirle los datos al form hijo
-    const datosUsuario = this.formClientes.getUsuarioDesdeForm(true);
-    if (!datosUsuario) {
-      alert('Revisá los datos del administrador técnico');
-      return;
-    }
+    //LEVANTAMOS LOS DATOS FORM TALLER
     const datosTaller = this.tallerForm.value;
 
 
-    //LLAMOS A SERVICIO CREAR O ACTUALIZAR SEGUN CORRESPONDA
+    //LLAMOS A SERVICIO CREAR 
     if (this.modo() === 'crear') {
-      console.log('Paso 1 datos capturados, llamando al servicio:', datosTaller);
-      this.servicioRegistroTaller.crearEstablecimiento(datosUsuario,datosTaller).subscribe({
+      // datos del usuario admin técnico (form hijo)
+      const datosUsuario = this.formClientes.getUsuarioDesdeForm(true);
+      if (!datosUsuario) {
+        alert('Revisá los datos del administrador técnico');
+        return;
+      }
+      console.log('Paso 1 datos capturados, llamando al servicio CREAR:', datosTaller);
+      this.servicioTaller.crearEstablecimiento(datosUsuario,datosTaller).subscribe({
         next:(nuevoTaller)=>{
           console.log('servicio registro taller responde: ', nuevoTaller);
           alert('Establecimiento creado');
@@ -89,9 +90,22 @@ export class FormTalleres {
         },
       });
 
-    } else {
+    } else {//LLAMOS A SERVICIO ACTUALIZAR
       console.log('Actualizar establecimiento:', datosTaller);
       //servicio que haga PATCH del taller
+      console.log('Paso 1 datos capturados, llamando al servicio ACTUALIZAR:', datosTaller);
+      this.servicioTaller.updateTaller(datosTaller).subscribe({
+        next:(nuevoTaller)=>{
+          console.log('servicio registro taller responde: ', nuevoTaller);
+          alert('Establecimiento ACTUALIZADO');
+          this.router.navigate(['/taller/ordenes']);
+        },
+        error: (e) => {
+          console.error('Error al ACTUALIZAR establecimiento');
+          alert('No se pudo ACTUALIZAR establecimiento');
+        },
+      });
+
     }
   }
 }

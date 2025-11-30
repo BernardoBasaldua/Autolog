@@ -8,7 +8,7 @@ export interface Taller {
     horarioAtencion: string[]; // Formato "HH:mm - HH:mm"
 }
 
-export interface RegistoTecnicoTaller {
+export interface RegistroTecnicoTaller {
     usuario:{
         pk?: number;              // opcional → lo asigna el backend
         username: string;

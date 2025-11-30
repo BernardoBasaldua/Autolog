@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
-import { RegistroUsuarioService } from '../../../services/usuarios/registro/registro-usuario.service';
 import { FormTalleres } from "../form-talleres/form-talleres";
 import { FormClientes } from "../form-clientes/form-clientes";
 

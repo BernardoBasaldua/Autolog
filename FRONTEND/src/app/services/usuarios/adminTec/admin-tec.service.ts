@@ -23,7 +23,7 @@ export class AdminTecService {
     return this.http.get<AdministradorTecnicoModel[]>(this.apiTecnicosUrl).pipe(
       tap(adminTecnico => {
         this.tecnicoActual.set(adminTecnico[0]);
-        console.log('tecnico:', adminTecnico[0]);
+        console.log('tecnico en MEMORIA:', adminTecnico[0]);
       }),
        map(adminTecnico => adminTecnico[0])  // me quedo con el primer (y único) tecnico
     );

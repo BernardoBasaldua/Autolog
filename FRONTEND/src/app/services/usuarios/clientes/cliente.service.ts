@@ -18,6 +18,14 @@ export class ClienteService {
 
   constructor(private http: HttpClient) {}
 
+    // PARA REGISTRAR NUEVO CLIENTE
+  crearCliente(usuario:UsuarioModel): Observable<ClienteModel> {
+    //this.usuario = usuario;
+    const cliente: ClienteModel = {usuario};
+    const url = this.apiClientesUrl;
+    return this.http.post<ClienteModel>(url, cliente);
+  }
+
   /** Devuelve el cliente asociado al usuario logueado */
   getMiCliente(): Observable<ClienteModel> {
     // ClienteViewSet hace filter(usuario=request.user),
@@ -25,55 +33,9 @@ export class ClienteService {
     return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(listaCliente => {
         this.clienteActual.set(listaCliente[0]);
-        console.log('cliente:', listaCliente[0]);
+        console.log('client en MEMORIA:', listaCliente[0]);
       }),
       map(listaCliente => listaCliente[0])  // me quedo con el primer (y único) cliente
-    );
-  }
-  //OJO QUE ACTUALIZA SOLO EL USUARIO
-  actualizarUsuario(usuario: UsuarioModel): Observable<UsuarioModel> {
-    const actual = this.clienteActual();
-    
-    if (!actual || !actual.usuario || !actual.usuario.pk) {
-      throw new Error('No hay clienteActual con id cargado en memoria');
-    }
-
-    const usuarioPayload: any = {
-      first_name: usuario.first_name,
-      last_name: usuario.last_name,
-      email: usuario.email,
-      telefono: usuario.telefono,
-      direccion: usuario.direccion,
-    };
-
-    if (usuario.password && usuario.password.trim() !== '') {
-      usuarioPayload.password = usuario.password;
-    }
-
-    const userId = actual.usuario.pk;
-    const url = `${this.apiUsuariosUrl}${userId}/`;
-
-    return this.http.patch<UsuarioModel>(url, usuarioPayload).pipe(
-      tap(usuarioActualizado => {
-        console.log('Usuario actualizado desde backend:', usuarioActualizado);
-
-        const clienteAnterior = this.clienteActual();
-        if (!clienteAnterior){
-          console.warn('No hay clienteActual en memoria al actualizar');  
-        return;}
-
-        const clienteActualizado : ClienteModel = {
-          ...clienteAnterior,
-          usuario: {
-            ...clienteAnterior.usuario,
-            ...usuarioActualizado
-          }
-        }
-
-
-        this.clienteActual.set(clienteActualizado);
-        console.log('cliente actualizado:', clienteActualizado);
-      })
     );
   }
 

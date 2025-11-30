@@ -6,13 +6,13 @@
     </div>
 
     <!-- Cliente -->
-    @if (userType() === 'cliente' && cliente()) {
+    @if (userType() === 'cliente' && usuario()) {
       <div>
         <p class="font-semibold text-lg">
-          {{ cliente()!.usuario.first_name }} {{ cliente()!.usuario.last_name }}
+          {{ usuario()!.first_name }} {{ usuario()!.last_name }}
         </p>
         <p class="text-sm text-gray-400">
-          {{ cliente()!.usuario.email }}
+          {{ usuario()!.email }}
         </p>
       </div>
     }

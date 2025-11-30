@@ -1,10 +1,10 @@
 import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
-import { RegistroUsuarioService } from '../../../services/usuarios/registro/registro-usuario.service';
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 import { Router } from '@angular/router';
+import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 
 
 
@@ -16,15 +16,17 @@ import { Router } from '@angular/router';
 })
 export class FormClientes {
   modo= input<'crear' | 'editar'| 'establecimiento'>('crear');  // por defecto registrar
-  clienteActual: ClienteModel | null = null;  
+  clienteActual: ClienteModel | null = null; 
+  usuarioActual: UsuarioModel | null = null; 
   clienteForm: FormGroup;
   formInvalido = output<boolean>();
+  perfilActualizado = output<void>();
   private router = inject(Router);
   
   constructor(
     private fb: FormBuilder, 
-    private registroUsuarioService: RegistroUsuarioService,
-    private clienteService: ClienteService) 
+    private clienteService: ClienteService,
+    private usuarioService : UsuarioService) 
     {
 
       // CAMPOS CLIENTE FORM CLIENTE
@@ -55,10 +57,11 @@ export class FormClientes {
   ngOnInit(): void {
     if (this.modo() === 'editar') {
       // Traerel cliente del servicio 
-      this.clienteActual = this.clienteService.clienteActual();
+      //this.clienteActual = this.clienteService.clienteActual();
+      this.usuarioActual = this.usuarioService.usuarioActual();
 
-      if (this.clienteActual) {
-        const u = this.clienteActual.usuario;
+      if (this.usuarioActual) {
+        const u = this.usuarioActual;
 
         // Cargar datos en el formulario
         this.clienteForm.patchValue({
@@ -112,22 +115,22 @@ export class FormClientes {
   //REGISTRO CLIENTE
   registrarCliente(): void {
 
-    const datosCliente = this.getUsuarioDesdeForm(true); // true = marca como touched
+    const datosUsuario = this.getUsuarioDesdeForm(true); // true = marca como touched
     
-    if (!datosCliente) {
+    if (!datosUsuario) {
       return;
     }
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
 
     if (this.modo() === 'crear') {    
-      console.log('Datos de registro cliente:', datosCliente);
-      this.registroUsuarioService.crearUsuario(datosCliente).subscribe(
+      console.log('Datos de registro usuario:', datosUsuario);
+      this.clienteService.crearCliente(datosUsuario).subscribe(
         {next: (cliente) => {
           // Éxito: cramos usuario
           console.log('cliente crado', cliente);
           alert('Cuenta creada correctamente ✔');
-          //REDIRECCIONAR
+          this.router.navigate(['/login'])
           this.clienteForm.reset();
         },
         error: (e) => {
@@ -167,11 +170,12 @@ export class FormClientes {
       })
     } else {
       // Edición – endpoint de actualización
-      this.clienteService.actualizarUsuario(datosCliente).subscribe({
-        next: (clienteActualizado) => {
-          console.log('Cliente actualizado', clienteActualizado);
+      this.usuarioService.actualizarUsuario(datosUsuario).subscribe({
+        next: (usuarioActualizado) => {
+          console.log('Usuario actualizado', usuarioActualizado);
           alert('Perfil actualizado correctamente ✔');
-          this.router.navigate(['/login']);
+          // avisar al padre "ya terminé"
+          this.perfilActualizado.emit();
         },
         error: (e) => {
           console.error('Error al actualizar perfil', e);

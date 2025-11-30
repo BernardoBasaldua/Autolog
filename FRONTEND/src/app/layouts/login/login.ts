@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
 import { AuthService } from '../../services/auth/auth.service';
-import { RegistroUsuarioService } from '../../services/usuarios/registro/registro-usuario.service';
-import { FormClientes } from "../../components/registro/form-clientes/form-clientes";
-import { FormTalleres } from "../../components/registro/form-talleres/form-talleres";
+
 
 @Component({
   selector: 'app-login',
@@ -20,7 +18,7 @@ export class Login{
 
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private registroUsuario: RegistroUsuarioService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
 
     // CAMPOS FORM LOGIN
     this.loginForm = this.fb.group({
@@ -46,7 +44,6 @@ export class Login{
       next: (tokens) => {
         // Éxito: ya guardaste tokens en el service (tap) o acá si preferís
         console.log('Login exitoso', tokens);
-        // Aquí podrías navegar: this.router.navigate(['/dashboard']);
       },
       error: (e) => {
         // Manejo simple de error (credenciales/servidor/CORS/etc.)

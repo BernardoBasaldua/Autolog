@@ -82,12 +82,20 @@
         [modo]="'establecimiento'"
         (formInvalido)="formClienteInvalido = $event">
         </app-form-clientes>
-    }
 
-  <button type="submit"
+        <button type="submit"
           class="button-primary w-full mt-2"
           [disabled]="tallerForm.invalid || formClienteInvalido">
-    {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
-  </button>
+            {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
+        </button>
+    }@else {
+        <button type="submit"
+          class="button-primary w-full mt-2"
+          [disabled]="tallerForm.invalid">
+            {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
+        </button>
+    }
+
+  
 
 </form>
