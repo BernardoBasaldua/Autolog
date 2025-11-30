@@ -1,10 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from talleres.serializers import TallerSerializer
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 from ordenes.serializers import OrdenDeTrabajoSerializer
 from vehiculos.models import Vehiculo
@@ -188,7 +189,13 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
-    # permission_classes = [permissions.AllowAny] # 👈 acceso público por ahora para probar
+    
+    def get_permissions(self):
+        if self.action == "registrar_establecimiento":
+            # Registro público de establecimiento
+            return [AllowAny()]
+        return [IsAuthenticated()]
+    # permission_classes = [permissions.AllowAny] # acceso público por ahora para probar
 
     def get_permissions(self):
         if self.action == "create":
@@ -197,9 +204,50 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
+        #ESTO ESTA MAL, DEBERIA PODER ACCEDER A TODOS LOS PERFILES DE USUARIOS A LOS QUE TIENE PERMISO EL TALLER
         if self.request.user.is_authenticated:
             return AdministradorTecnico.objects.filter(usuario=self.request.user)
-        return AdministradorTecnico.objects.all()  # acceso abierto temporalmente
+    
+    # --- nuevo endpoint para registrar taller + usuario técnico ---
+    @action(detail=False, methods=["post"], url_path="registrar-establecimiento")
+    def registrar_establecimiento(self, request):
+        data = request.data
+
+        # 1) Separar bloques del body
+        usuario_data = data.get("usuario")
+        taller_data = data.get("taller")
+
+        if not usuario_data or not taller_data:
+            return Response(
+                {"detail": "Faltan datos de usuario o de taller"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # 2) Validar usuario y taller con sus serializers
+        user_serializer = UsuarioSerializer(data=usuario_data)
+        taller_serializer = TallerSerializer(data=taller_data)
+
+        user_serializer.is_valid(raise_exception=True)
+        taller_serializer.is_valid(raise_exception=True)
+
+        # 3) Crear todo dentro de una transacción
+        with transaction.atomic():
+            # crea usuario con tu lógica de UsuarioSerializer.create()
+            usuario = user_serializer.save()
+            # marcarlo como técnico / admin del taller
+            usuario.is_staff = True       # o también is_superuser=True si querés
+            usuario.save()
+
+            taller = taller_serializer.save()
+
+            admin = AdministradorTecnico.objects.create(
+                usuario=usuario,
+                taller=taller,
+            )
+
+        # 4) Responder usando el serializer de AdministradorTecnico
+        resp_serializer = AdministradorTecnicoSerializer(admin)
+        return Response(resp_serializer.data, status=status.HTTP_201_CREATED)
 
     # Crud Cliente desde tecnico
     @action(detail=True, methods=["post"])

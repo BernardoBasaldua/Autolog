@@ -1,6 +1,6 @@
 <form class="space-y-4 mt-4" [formGroup]="clienteForm" (ngSubmit)="registrarCliente()">
     <h3 class="text-lg font-semibold text-gray-800 mb-1">
-    Datos del cliente
+    Datos del usuario
     </h3>
 
     <div class="grid grid-cols-1 gap-4">
@@ -196,11 +196,12 @@
         }
     </div>
     </div>
-
-    <button type="submit"
-        class="button-primary w-full mt-2"
-        [disabled]="clienteForm.invalid">
-     {{ modo() ==='crear' ? 'Registrarse como cliente' : 'Guardar cambios' }}
-    </button>
+    @if (modo() !== 'establecimiento'){
+        <button type="submit"
+            class="button-primary w-full mt-2"
+            [disabled]="clienteForm.invalid">
+        {{ modo() ==='crear' ? 'Registrarse como cliente' : 'Guardar cambios' }}
+        </button>
+    }
 
 </form>

@@ -20,6 +20,7 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { Login } from './layouts/login/login';
 import { Permisos } from './components/clientes/cli-inicio/permisos/permisos';
+import { Registrarse } from './components/registro/registrarse/registrarse';
 
 export const routes: Routes = [
   {
@@ -47,14 +48,16 @@ export const routes: Routes = [
       { path: 'taller/vehiculos', component: TaVehiculos },
       { path: 'taller/turnos', component: TaTurnos },
       { path: 'taller/turnos/detalle', component: TaDetail },
-      { path: 'taller/config', component: TaConfig }
+      { path: 'taller/config', component: TaConfig },
+
     ]
   },
   {
     path: '',
     component: AuthLayout, // Layout solo para login
     children: [
-      { path: 'login', component: Login }
+      { path: 'login', component: Login },
+      { path: 'registrarse', component: Registrarse }
     ]
   }
 ];

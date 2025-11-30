@@ -1,3 +1,4 @@
+import { Taller } from "../talleres/taller.model";
 import { Vehiculo } from "../vehiculo/vehiculo.model";
 
 export interface UsuarioModel {
@@ -17,4 +18,10 @@ export interface ClienteModel {
   usuario: UsuarioModel;
   permisos_que_otorgo?: any[]; // después los tipás bien
   mis_vehiculos?: Vehiculo[];       // idem
+}
+
+export interface AdministradorTecnicoModel  {
+  id?: number;
+  usuario: UsuarioModel;
+  taller: number;
 }

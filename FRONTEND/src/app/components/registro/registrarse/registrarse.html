@@ -1,0 +1,88 @@
+<div class="flex items-center justify-center min-h-screen p-4">
+  <main class="w-full max-w-lg">
+    <header class="flex flex-col items-center mb-8">
+      <img src="icons/autolog-logo.png" alt="Logo Autolog"
+           class="h-24 w-24 object-contain rounded-lg shadow-sm"
+           onerror="this.onerror=null;this.src='Autolog.png';" />
+      <h1 class="text-3xl font-bold text-gray-800 mt-4">Bienvenido</h1>
+    </header>
+
+    <section class="card p-8">
+      <!-- Tabs -->
+      <div class="flex justify-center mb-6 border-b border-gray-200 gap-4">
+        <button
+          type="button"
+          class="tab-button"
+          (click)="showLogin()">
+          Iniciar Sesión
+        </button>
+
+        <button
+          type="button"
+          class="tab-button active">
+          Registrarse
+        </button>
+      </div>
+
+      <!-- REGISTER -->
+
+    <div class="space-y-6">
+        <!-- Título registro -->
+        <div class="text-center mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800">Crear cuenta</h2>
+        <p class="text-sm text-gray-500 mt-1">
+            Elegí si querés registrarte como cliente o como establecimiento.
+        </p>
+        </div>
+
+        <!-- Selector de tipo de registro -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+            type="button"
+            (click)="seleccionarTipoRegistro('cliente')"
+            class="tipo-button"
+            [ngClass]="{ 'active': tipoRegistro === 'cliente' }">
+            <span class="text-sm font-semibold">
+            Registrar cliente
+            </span>
+            <span class="text-xs text-gray-500">
+            Desde aca poder ver tus proximos servicios.
+            </span>
+        </button>
+
+        <button
+            type="button"
+            (click)="seleccionarTipoRegistro('taller')"
+            class="tipo-button"
+            [ngClass]="{ 'active': tipoRegistro === 'taller' }">
+            <span class="text-sm font-semibold">
+            Registrar establecimiento
+            </span>
+            <span class="text-xs text-gray-500">
+            Para talleres que administran órdenes, técnicos y clientes.
+            </span>
+        </button>
+        </div>
+
+        <!-- Mensaje si no eligió aún -->
+        @if (!tipoRegistro) {
+        <p class="text-center text-gray-400 text-sm mt-2">
+            Seleccioná una opción para completar el formulario de registro.
+        </p>
+        }
+
+        <!-- Formulario: REGISTRO CLIENTE -->
+        @if (tipoRegistro === 'cliente') {
+        <app-form-clientes [modo]="'crear'"></app-form-clientes>
+        }
+
+        <!-- Formulario: REGISTRO TALLER -->
+        @else if (tipoRegistro === 'taller') {
+        <app-form-talleres [modo]="'crear'"></app-form-talleres>
+        }
+        
+    </div>
+     
+    </section>
+  </main>
+</div>

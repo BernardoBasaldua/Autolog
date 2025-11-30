@@ -5,7 +5,9 @@ import { NavigationEnd, Router } from '@angular/router';
 
 import { Nav } from './nav/nav';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
-import { ClienteModel } from '../../../models/usuarios/usuario.model';
+import { TalleresService } from '../../../services/talleres/talleres.service';
+import { switchMap } from 'rxjs/operators';
+import { AdminTecService } from '../../../services/usuarios/adminTec/admin-tec.service';
 
 @Component({
   selector: 'app-aside',
@@ -17,40 +19,66 @@ import { ClienteModel } from '../../../models/usuarios/usuario.model';
 export class Aside implements OnInit {
   private router = inject(Router);
   private clienteService = inject(ClienteService);
+  private tallerService = inject(TalleresService);
+  private tecnicoService = inject(AdminTecService);
 
   // contexto de la UI según la URL
   userType = signal<'cliente' | 'taller' | null>(null);
 
-  // datos del cliente
+  // datos del cliente y del taller
   cliente = this.clienteService.clienteActual;
+  tecnico = this.tecnicoService.tecnicoActual;
+  taller  = this.tallerService.tallerActual;
 
   constructor() {
-    //la URL para saber en qué "modo" está la UI
+    // escuchar cambios de ruta para actualizar contexto y datos
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const url = this.router.url;
-        if (url.startsWith('/cliente')) {
-          this.userType.set('cliente');
-        } else if (url.startsWith('/taller')) {
-          this.userType.set('taller');
-        } else {
-          this.userType.set(null);
-        }
+        this.setUserTypeByUrl(event.urlAfterRedirects);
+        this.cargarDatosSegunContexto();
       }
     });
   }
 
   ngOnInit(): void {
-    // traigo los datos del cliente al cargar el layout
-    this.clienteService.getMiCliente().subscribe({
-      next: (c) => {
-        //this.cliente.set(this.clienteService.clienteActual())
-        //this.cliente.set(c);
-        console.log('Cliente en aside:', c);
-      },
-      error: (e) => {
-        console.error('Error cargando cliente en aside', e);
-      }
-    });
+    // al iniciar, setear tipo según la URL actual y cargar datos
+    this.setUserTypeByUrl(this.router.url);
+    this.cargarDatosSegunContexto();
+  }
+
+  private setUserTypeByUrl(url: string) {
+    if (url.startsWith('/cliente')) {
+      this.userType.set('cliente');
+    } else if (url.startsWith('/taller')) {
+      this.userType.set('taller');
+    } else {
+      this.userType.set(null);
+    }
+  }
+
+  private cargarDatosSegunContexto() {
+    const tipo = this.userType();
+
+    if (tipo === 'cliente') {
+      // solo clientes
+      this.clienteService.getMiCliente().subscribe({
+        next: (c) => console.log('Cliente en aside:', c),
+        error: (e) => console.error('Error cargando cliente en aside', e)
+      });
+
+    } else if (tipo === 'taller') {
+      // usuario técnico / establecimiento
+      this.tecnicoService.getMiTecnico().pipe(
+        switchMap((tec) => {
+          console.log('Técnico en aside:', tec);
+          const tallerId = tec.taller; //
+          console.log('Buscando taller id:', tallerId);
+          return this.tallerService.getTallerById(tallerId);
+        })
+      ).subscribe({
+        next: (taller) => console.log('Taller en aside:', taller),
+        error: (e) => console.error('Error cargando técnico/taller en aside', e,)
+      });
+    }
   }
 }

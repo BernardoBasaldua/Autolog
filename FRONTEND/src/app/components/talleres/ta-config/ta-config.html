@@ -1,1 +1,121 @@
-<p>ta-config works!</p>
+<!-- Vista “menú de configuración” -->
+@if (!editandoPerfil && !editandoUsuario) {
+  <section class="space-y-6">
+    <!-- Configurar perfil -->
+    <div class="card p-6 flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+          <i class="fas fa-user-cog text-blue-600"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800">Configurar perfil</h2>
+          <p class="text-sm text-gray-500">
+            Modificar nombre, cuit, teléfono y otros datos del establecimiento.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button type="button" class="button-primary" (click)="editarPerfil()">
+          Editar perfil
+        </button>
+      </div>
+    </div>
+
+    <!-- Configurar prácticas de mantenimiento -->
+    <div class="card p-6 flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+          <i class="fas fa-tools text-green-600"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800">
+            Configurar prácticas de mantenimiento
+          </h2>
+          <p class="text-sm text-gray-500">
+            Definir tipos de servicios, frecuencia sugerida, recordatorios y buenas prácticas.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-3 flex gap-3 flex-wrap">
+        <button type="button" class="button-primary" (click)="configurarMantenimiento()">
+          Gestionar prácticas
+        </button>
+      </div>
+    </div>
+
+    <!-- Usuarios / empleados del establecimiento -->
+    <div class="card p-6 flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+          <i class="fas fa-users-cog text-purple-600"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800">
+            Usuarios y empleados
+          </h2>
+          <p class="text-sm text-gray-500">
+            Gestionar tu usuario y los empleados del establecimiento.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-3 flex gap-3 flex-wrap">
+        <button type="button" class="button-primary" (click)="agregarEmpleado()">
+          Agregar empleado
+        </button>
+        <button type="button" class="button-secondary" (click)="gestionarUsuarios()">
+          Habilitar / deshabilitar usuarios
+        </button>
+        <!-- 👉 nuevo botón -->
+        <button type="button" class="button-secondary" (click)="editarUsuario()">
+          Editar usuario
+        </button>
+      </div>
+    </div>
+
+    <!-- Eliminar cuenta -->
+    <div class="card p-6 flex flex-col gap-3 border border-red-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+          <i class="fas fa-user-slash text-red-600"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-red-700">Eliminar cuenta</h2>
+          <p class="text-sm text-red-500">
+            Esta acción es permanente. Se eliminará la cuenta del establecimiento y el acceso a los vehículos.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button type="button" class="button-danger" (click)="eliminarCuenta()">
+          Eliminar mi cuenta
+        </button>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Vista “formulario de edición de perfil” -->
+@if (editandoPerfil) {
+  <section>
+    <button type="button" class="button-secondary mb-4" (click)="volver()">
+      ← Volver
+    </button>
+
+    <app-form-talleres [modo]="'editar'"></app-form-talleres>
+  </section>
+}
+
+<!-- Vista “formulario de edición de perfil” -->
+@if (editandoUsuario) {
+  <section>
+    <button type="button" class="button-secondary mb-4" (click)="volver1()">
+      ← Volver
+    </button>
+
+    <app-form-clientes [modo]="'editar'"></app-form-clientes>
+  </section>
+}

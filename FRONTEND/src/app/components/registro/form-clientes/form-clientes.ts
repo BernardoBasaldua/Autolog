@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
 import { RegistroUsuarioService } from '../../../services/usuarios/registro/registro-usuario.service';
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
+import { Router } from '@angular/router';
 
 
 
@@ -14,32 +15,42 @@ import { ClienteService } from '../../../services/usuarios/clientes/cliente.serv
   styleUrl: './form-clientes.css'
 })
 export class FormClientes {
-  modo= input<'crear' | 'editar'>('crear');  // por defecto registrar
+  modo= input<'crear' | 'editar'| 'establecimiento'>('crear');  // por defecto registrar
   clienteActual: ClienteModel | null = null;  
   clienteForm: FormGroup;
-
+  formInvalido = output<boolean>();
+  private router = inject(Router);
+  
   constructor(
     private fb: FormBuilder, 
     private registroUsuarioService: RegistroUsuarioService,
-    private clienteService: ClienteService
-  ) {
+    private clienteService: ClienteService) 
+    {
 
-    // CAMPOS CLIENTE FORM CLIENTE
-    this.clienteForm = this.fb.group({
-      username: ['', Validators.required],
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      dni: ['', Validators.required],
-      telefono: ['',Validators.required],
-      direccion: [''],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      confirmPassword: ['', Validators.required],},
-    
-      // validador de contraseñas iguales
-      {validators: this.passwordMatchValidator.bind(this)  
-    });
-  }
+      // CAMPOS CLIENTE FORM CLIENTE
+      this.clienteForm = this.fb.group({
+        username: ['', Validators.required],
+        nombre: ['', Validators.required],
+        apellido: ['', Validators.required],
+        dni: ['', Validators.required],
+        telefono: ['',Validators.required],
+        direccion: [''],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],},
+      
+        // validador de contraseñas iguales
+        {validators: this.passwordMatchValidator.bind(this) 
+      });
+
+      // Emito el estado inicial
+      this.formInvalido.emit(this.clienteForm.invalid);
+
+      // Cada vez que cambie el estado del form, aviso al padre
+      this.clienteForm.statusChanges.subscribe(() => {
+        this.formInvalido.emit(this.clienteForm.invalid);
+      });
+   }
 
   ngOnInit(): void {
     if (this.modo() === 'editar') {
@@ -73,25 +84,41 @@ export class FormClientes {
     }
   }
   
+  getUsuarioDesdeForm(marcarComoTocado = false): UsuarioModel | null {
+    if (marcarComoTocado) {
+      this.clienteForm.markAllAsTouched();
+    }
+
+    if (this.clienteForm.invalid) {
+      return null;
+    }
+
+    const raw = this.clienteForm.getRawValue();
+
+    const datos: UsuarioModel = {
+      username: raw.username,
+      first_name: raw.nombre,
+      last_name: raw.apellido,
+      email: raw.email,
+      password: raw.password,
+      dni: raw.dni,
+      telefono: raw.telefono,
+      direccion: raw.direccion
+    };
+
+    return datos;
+  }
+
   //REGISTRO CLIENTE
   registrarCliente(): void {
-    if (this.clienteForm.invalid) {
-      this.clienteForm.markAllAsTouched();
+
+    const datosCliente = this.getUsuarioDesdeForm(true); // true = marca como touched
+    
+    if (!datosCliente) {
       return;
     }
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
-
-    const datosCliente: UsuarioModel = {
-      username: form.username,
-      first_name: form.nombre,      // mapeo
-      last_name: form.apellido,     // mapeo
-      email: form.email,
-      password: form.password,
-      dni: form.dni,
-      telefono: form.telefono,
-      direccion: form.direccion
-    };
 
     if (this.modo() === 'crear') {    
       console.log('Datos de registro cliente:', datosCliente);
@@ -144,7 +171,7 @@ export class FormClientes {
         next: (clienteActualizado) => {
           console.log('Cliente actualizado', clienteActualizado);
           alert('Perfil actualizado correctamente ✔');
-          //REDIRECCIONAR
+          this.router.navigate(['/login']);
         },
         error: (e) => {
           console.error('Error al actualizar perfil', e);

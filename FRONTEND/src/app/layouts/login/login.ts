@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
 import { AuthService } from '../../services/auth/auth.service';
@@ -9,7 +10,7 @@ import { FormTalleres } from "../../components/registro/form-talleres/form-talle
 @Component({
   selector: 'app-login',
   standalone: true,                 
-  imports: [CommonModule, ReactiveFormsModule, FormClientes, FormTalleres], 
+  imports: [CommonModule, ReactiveFormsModule], 
   templateUrl: './login.html',
   styleUrls: ['./login.css']        
 })
@@ -19,7 +20,7 @@ export class Login{
 
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private registroUsuario: RegistroUsuarioService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private registroUsuario: RegistroUsuarioService, private router: Router) {
 
     // CAMPOS FORM LOGIN
     this.loginForm = this.fb.group({
@@ -30,17 +31,11 @@ export class Login{
   }
   
 
-  showLogin() { 
-    this.vistaActual = 'login'; console.log(this.vistaActual); 
-  }
-  showRegister() { 
-    this.vistaActual = 'register'; console.log(this.vistaActual); 
-  }
-  seleccionarTipoRegistro(tipo: 'cliente'|'taller') { 
-    this.tipoRegistro = tipo; console.log(this.tipoRegistro); 
+  showLogin() {}
+  showRegister() {
+    this.router.navigate(['/registrarse']);
   }
  
-
   token(): void {
     if (this.loginForm.invalid) return;
 

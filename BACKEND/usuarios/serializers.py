@@ -30,25 +30,16 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Sobrescribe el método create del serializer. Se llama cuando se hace .save() en un serializer.
         # .save() es un método que se llama cuando querés crear o actualizar un objeto de tu modelo a través del serializer.
-
         # Internamente, .save() hace esto:
-
         # Llama al método .is_valid()
-
         # Si los datos son válidos, llama a create() o update()
-
         # Crea o actualiza el objeto del modelo
-
         # Guarda ese objeto en la base de datos (.save() del modelo)
-
         # validated_data es un diccionario con los datos limpios/validados por el serializer. Es decir, es lo que te devuelve el metodo .is_valid()
-
         # Este método se asegura de que la contraseña se guarde de forma segura (hasheada)
         password = validated_data.pop("password", None)
         # Extrae (y elimina) la clave 'password' de validated_data.
-
         # pop devuelve el valor si existe, o None si no.
-
         # Se usa pop porque no queremos pasar la contraseña en texto plano al constructor del modelo (evita que se guarde sin hashear).
         instance = self.Meta.model(**validated_data)
         # Crea una instancia del modelo (Usuario) sin guardar aún en la BD, pasando el resto de campos (username, email, etc.) como argumentos.
@@ -132,3 +123,4 @@ class AdministradorTecnicoSerializer(serializers.ModelSerializer):
             instance.taller = taller
             instance.save()
         return instance
+
