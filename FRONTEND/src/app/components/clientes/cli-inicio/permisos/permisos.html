@@ -11,7 +11,7 @@
 
           <div>
             <p class="font-semibold text-lg text-gray-800">
-              {{ p.taller_autorizado?.nombre || p.cliente_autorizado?.usuario?.first_name + ' ' + p.cliente_autorizado?.usuario?.last_name }}
+              {{ p.taller_autorizado?.nombre || getNombreCliente(p.cliente_autorizado) }}
             </p>
 
             <p class="text-sm text-gray-600">Tiene acceso al historial desde:</p>
@@ -63,7 +63,7 @@
       <label class="block font-medium mb-1">Seleccionar Cliente</label>
       <select class="input w-full"
               [(ngModel)]="formNuevoPermiso.destinatario_id">
-        <option *ngFor="let c of clientes" [value]="c.id">
+        <option *ngFor="let c of clientesExistentes" [value]="c.id">
           {{ c.usuario.first_name }} {{ c.usuario.last_name }}
         </option>
       </select>

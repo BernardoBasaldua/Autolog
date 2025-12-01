@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { UsuarioModel } from '../../../models/usuarios/usuario.model';
+import { UsuarioModel, ClienteModel } from '../../../models/usuarios/usuario.model';
 
 
 @Injectable({
@@ -9,10 +9,12 @@ import { UsuarioModel } from '../../../models/usuarios/usuario.model';
 })
 export class UsuarioService {
   private apiUsuariosUrl = 'http://127.0.0.1:8000/api/usuarios/';
+  private apiClientesUrl = 'http://127.0.0.1:8000/api/clientes/';
   private usuario: UsuarioModel | null=null;
   //private clienteService = inject(ClienteService);
 
   usuarioActual = signal<UsuarioModel | null>(null);
+  clientesExistentes : ClienteModel[] = [];
 
 
   constructor(private http: HttpClient){ }
@@ -26,8 +28,17 @@ export class UsuarioService {
         map(usuariosLogeado => usuariosLogeado[0])
         
     );
-    
+
+    }
+
+
+  getClientes(): Observable<ClienteModel[]> {
+    return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
+      tap(clientes => this.clientesExistentes = clientes) // ← reemplaza el array
+    );
   }
+
+
 
   
   actualizarUsuario(usuario: UsuarioModel): Observable<UsuarioModel> {

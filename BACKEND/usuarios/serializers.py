@@ -61,10 +61,21 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return instance
 
 
+from talleres.serializers import TallerSerializer
+
 class PermisoSerializer(serializers.ModelSerializer):
+    vehiculo_autorizado = VehiculoSerializer(read_only=True)
+    taller_autorizado = TallerSerializer(read_only=True)
+
+
     class Meta:
         model = PermisoDeAcceso
-        fields = ["vehiculo_autorizado", "cliente_autorizado", "taller_autorizado"]
+        fields = [
+            "fecha_autorizacion",
+            "vehiculo_autorizado",
+            "cliente_autorizado",
+            "taller_autorizado",
+        ]
 
 
 class ClienteSerializer(serializers.ModelSerializer):
