@@ -73,7 +73,7 @@
       <label class="block font-medium mb-1">Seleccionar Taller</label>
       <select class="input w-full"
               [(ngModel)]="formNuevoPermiso.destinatario_id">
-        <option *ngFor="let t of talleres" [value]="t.id">
+        <option *ngFor="let t of talleresExistentes" [value]="t.id">
           {{ t.nombre }}
         </option>
       </select>

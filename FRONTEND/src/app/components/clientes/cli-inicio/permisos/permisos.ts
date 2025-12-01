@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ClienteService } from  '../../../../services/usuarios/clientes/cliente.service'
 import { UsuarioService } from  '../../../../services/usuarios/usuarios/usuario.service'
 import { VehiculoService } from  '../../../../services/vehiculo/vehiculo.service'
+import { TalleresService } from  '../../../../services/talleres/talleres.service'
 import { PermisoDeAcceso } from '../../../../models/permisos/permiso-acceso.model';
 import { NgIf, NgForOf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ export class Permisos implements OnInit {
   clienteService = inject(ClienteService); 
   usuarioService = inject(UsuarioService); 
   vehiculoService = inject(VehiculoService); 
+  tallerService = inject(TalleresService); 
   route = inject(ActivatedRoute);
 
   vehiculoId!: number;
@@ -37,6 +39,7 @@ export class Permisos implements OnInit {
   cliente_ids: number[] = [];
   taller_ids: number [] = [];
   clientesConAcceso : ClienteModel[] = [];
+  talleresConAcceso: Taller[] = [];
   // hacer que pueda obtener todos los talleres existentes
   talleres : Taller[] = [];
   vehiculoActual?: Vehiculo;
@@ -58,6 +61,11 @@ export class Permisos implements OnInit {
 
     // this.clienteService.getClientes().subscribe((data: ClienteModel[]) => this.clientes = data);
     // this.clienteService.getTalleres().subscribe((data: Taller[]) => this.talleres = data);
+
+    this.tallerService.getTalleres().subscribe(talleres => {
+      this.talleresExistentes = talleres;
+      console.log("TALLERES EXISTENTES:", this.talleresExistentes);
+    });
 
   }
 
@@ -103,7 +111,9 @@ export class Permisos implements OnInit {
 
       console.log("CLIENTES CON PERMISOS:", this.clientesConAcceso);
       this.vehiculoActual = cliente.mis_vehiculos?.find(v => v.id === this.vehiculoId);
+
     });
+
   }
 
 
@@ -121,17 +131,19 @@ export class Permisos implements OnInit {
     autoriza: this.clienteService.clienteActual(),
   };
 
+  const destinatarioId = Number(this.formNuevoPermiso.destinatario_id);
+
   if (this.formNuevoPermiso.tipo_destinatario === 'cliente') {
-    const clienteSeleccionado = this.clientesExistentes.find((c: ClienteModel) => c.id === this.formNuevoPermiso.destinatario_id);
+    const clienteSeleccionado = this.clientesExistentes.find((c: ClienteModel) => c.id === destinatarioId);
     if (!clienteSeleccionado) return alert('Cliente no encontrado');
-      if (this.formNuevoPermiso.destinatario_id != null) {
-        nuevoPermiso.cliente_autorizado = this.formNuevoPermiso.destinatario_id;
+      if (destinatarioId != null) {
+        nuevoPermiso.cliente_autorizado = destinatarioId;
       } else {
         alert('Cliente no seleccionado');
         return;
       }
   } else if (this.formNuevoPermiso.tipo_destinatario === 'taller') {
-     const tallerSeleccionado = this.talleresExistentes.find((t: Taller) => t.id === this.formNuevoPermiso.destinatario_id);
+     const tallerSeleccionado = this.talleresExistentes.find((t: Taller) => t.id === destinatarioId);
     if (!tallerSeleccionado) return alert('Taller no encontrado');
     nuevoPermiso.taller_autorizado = tallerSeleccionado;
   }
