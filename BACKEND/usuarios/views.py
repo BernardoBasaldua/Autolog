@@ -26,6 +26,12 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all().order_by("-date_joined")
     serializer_class = UsuarioSerializer
 
+    def get_queryset(self):
+        # Cualquier usuario solo puede acceder a su propio perfil.
+        if self.request.user.is_authenticated:
+            return Usuario.objects.filter(pk=self.request.user.pk)
+        else:
+            return Usuario.objects.none()
 
 # ----------------------------CLIENTE-------------------------------------------#
 class ClienteViewSet(viewsets.ModelViewSet):
@@ -53,6 +59,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
         return Cliente.objects.filter(usuario=user)
         #return Cliente.objects.all()
 
+    #CAMI fijate en el modelo cliente, la propiedad usuario
     def destroy(self, request, *args, **kwargs):
         """
         Cuando se elimina un Cliente desde /api/clientes/<id>/,
@@ -197,14 +204,8 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         return [IsAuthenticated()]
     # permission_classes = [permissions.AllowAny] # acceso público por ahora para probar
 
-    def get_permissions(self):
-        if self.action == "create":
-            return [AllowAny()]  # registro público
-        return [IsAuthenticated()]  # el resto protegido
-
     def get_queryset(self):
         # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
-        #ESTO ESTA MAL, DEBERIA PODER ACCEDER A TODOS LOS PERFILES DE USUARIOS A LOS QUE TIENE PERMISO EL TALLER
         if self.request.user.is_authenticated:
             return AdministradorTecnico.objects.filter(usuario=self.request.user)
     
@@ -249,6 +250,7 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         resp_serializer = AdministradorTecnicoSerializer(admin)
         return Response(resp_serializer.data, status=status.HTTP_201_CREATED)
 
+    
     # Crud Cliente desde tecnico
     @action(detail=True, methods=["post"])
     def crear_cliente(self, request, pk=None):

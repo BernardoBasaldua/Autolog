@@ -7,8 +7,9 @@ from vehiculos.models.vehiculo import Vehiculo
 
 
 class Cliente(models.Model):
-
-    usuario = models.OneToOneField("Usuario", on_delete=models.PROTECT, related_name="clientes")
+    #CAMI: si pones on_delete en cascade, no necesitas reescribir el metodo destroy en la view.
+    # haciendo eso decis si se borra un usuario, tambien se borra cliente
+    usuario = models.OneToOneField("Usuario", on_delete=models.CASCADE, related_name="clientes")
 
     # PERMISOS QUE OTORGA
     @property
