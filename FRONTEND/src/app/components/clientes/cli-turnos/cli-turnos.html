@@ -1,7 +1,7 @@
 <!-- Future Maintenances Section -->
-<section *ngIf="activeTab() === 'turnos'" id="turnosContent" class="space-y-6">
+<!-- <section *ngIf="activeTab() === 'turnos'" id="turnosContent" class="space-y-6"> -->
     <!-- Maintenance Card Example 1 -->
-    <div class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+    <!-- <div class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
         <div class="flex-1 mb-4 md:mb-0">
             <h2 class="text-xl font-bold text-gray-900 mb-2">#ORD-2025-007</h2>
             <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Volkswagen Amarok</span></p>
@@ -23,5 +23,149 @@
             <button class="button-secondary">Cancelar</button>
         </div>
     </div>
-</section>
+</section> -->
 
+<section *ngIf="activeTab() === 'turnos'" id="turnosContent" class="space-y-6">
+
+    <div
+        *ngIf="!loading() && !error() && vehiculosUnicos().length > 1"
+        class="flex justify-end mb-4"
+    >
+        <div class="flex items-center space-x-3">
+            <label for="filtroVehiculo" class="text-gray-700 font-medium whitespace-nowrap">
+                <i class="fas fa-filter text-blue-500 mr-1"></i>
+                Filtrar por Vehículo:
+            </label>
+            
+            <select
+                id="filtroVehiculo"
+                (change)="onVehiculoChange($event)"
+                class="
+                    p-2
+                    border border-gray-300 
+                    rounded-md 
+                    shadow-sm 
+                    text-gray-900
+                    focus:ring-blue-500 
+                    focus:border-blue-500
+                    focus:ring-1
+                    hover:border-gray-400
+                    transition duration-150
+                "
+            >
+                <option value="todos">Todos los Vehículos</option>
+                <option *ngFor="let vehiculoId of vehiculosUnicos()" [value]="vehiculoId">
+                    Vehículo #{{ vehiculoId }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <hr class="border-t border-gray-200">
+
+    <div *ngIf="loading()" class="text-gray-600">
+        Cargando historial de órdenes...
+    </div>
+
+    <div *ngIf="!loading() && error()" class="text-red-600">
+        {{ error() }}
+    </div>
+
+    <ng-container *ngIf="!loading() && !error()">
+
+        <div *ngIf="turnosFiltrados().length === 0" class="text-gray-600">
+            No hay órdenes para los vehículos seleccionados.
+        </div>
+
+        <div
+            *ngFor="let turno of turnosFiltrados()"
+            class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center"
+        >
+            <div class="flex-1 mb-4 md:mb-0">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">
+                    #ORD-{{ turno.id }}
+                </h2>
+
+                <p class="text-gray-700 mb-1">
+                    Vehículo:
+                    <span class="font-semibold">
+                        #{{ turno.vehiculo }}
+                    </span>
+                </p>
+
+                <p class="text-gray-700 mb-4">
+                    Dominio:
+                    <span class="font-semibold">
+                        (no disponible)
+                    </span>
+                </p>
+
+                <ul class="list-disc list-inside text-gray-700 mb-4 ml-4">
+                    <li>
+                        Tipo de mantenimiento: {{ turno.mantenimiento }}
+                    </li>
+                    <li>
+                        Próximo servicio: {{ turno.fecha_siguiente_servicio | date:'dd/MM/yyyy' }}
+                        · {{ turno.kilometraje_siguiente_servicio }} km
+                    </li>
+                    <li>
+                        Kilometraje actual: {{ turno.kilometraje }} km
+                    </li>
+                </ul>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+
+                    <p>
+                        <i class="fas fa-industry mr-2 text-blue-600"></i>
+                        Taller (ID):
+                        <span class="font-semibold">
+                            {{ turno.taller }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <i class="fas fa-calendar-check mr-2 text-purple-600"></i>
+                        Entrega:
+                        <span class="font-semibold">
+                            {{ turno.fecha_entrega | date:'dd \'de\' MMMM \'de\' yyyy' }}
+                        </span>
+                    </p>
+
+                    <p>
+                        <i class="fas fa-road mr-2 text-red-600"></i>
+                        Odómetro:
+                        <span class="font-semibold">
+                            {{ turno.kilometraje }} km
+                        </span>
+                    </p>
+
+                    <p>
+                        <i class="fas fa-user mr-2 text-gray-600"></i>
+                        Cliente (ID):
+                        <span class="font-semibold">
+                            {{ turno.cliente }}
+                        </span>
+                    </p>
+                </div>
+
+                <p class="text-gray-700 mt-4">
+                    <i class="fas fa-file-alt mr-2 text-gray-500"></i>
+                    Observaciones:
+                    <span class="font-semibold">
+                        {{ turno.observaciones_tecnicas }}
+                    </span>
+                </p>
+            </div>
+
+            <div class="flex flex-col items-center md:items-end">
+                <p class="text-gray-700 mb-4">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    {{ turno.fecha_turno | date:'dd \'de\' MMMM \'de\' yyyy, HH:mm\'hs\'' }}
+                </p>
+                <button class="button-secondary">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+    </ng-container>
+</section>
