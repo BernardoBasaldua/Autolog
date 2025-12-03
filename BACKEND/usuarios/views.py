@@ -10,6 +10,7 @@ from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 from ordenes.serializers import OrdenDeTrabajoSerializer
 from vehiculos.models import Vehiculo
 from vehiculos.serializers import VehiculoSerializer
+from usuarios.models import PermisoDeAcceso
 
 from .models import AdministradorTecnico, Cliente, Usuario
 from .serializers import (
@@ -86,16 +87,39 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
 
     # crear permiso de acceso
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["post", "get"])
     def acceso(self, request, pk=None):
-        serializer = PermisoSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if request.method == "POST":
+            serializer = PermisoSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        data_request = serializer.validated_data
-        # print(data_request)
+            data_request = serializer.validated_data
+            # print(data_request)
+            cliente = self.get_object()
+            permiso = cliente.crear_permiso(**data_request)
+            return Response(PermisoSerializer(permiso).data, status=status.HTTP_201_CREATED)
+        
+        elif request.method == "GET":
+            cliente = self.get_object()
+            # aquí asumo que tienes una relación cliente.permisos
+            permisos = cliente.permisos_otorgados.all()
+            serializer = PermisoSerializer(permisos, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["delete"])
+    def eliminar_permiso(self, request, pk=None):
         cliente = self.get_object()
-        permiso = cliente.crear_permiso(**data_request)
-        return Response(PermisoSerializer(permiso).data, status=status.HTTP_201_CREATED)
+        # Aquí asumo que mandas el ID del permiso en el body o en query params
+        permiso_id = request.data.get("permiso_id") or request.query_params.get("permiso_id")
+        if not permiso_id:
+            return Response({"error": "Se requiere permiso_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            permiso = cliente.permisos_otorgados.get(id=permiso_id)
+            permiso.delete()
+            return Response({"detail": "Permiso eliminado correctamente"}, status=status.HTTP_204_NO_CONTENT)
+        except PermisoDeAcceso.DoesNotExist:
+            return Response({"error": "Permiso no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
     # ver historial
     @action(detail=True, methods=["get"])

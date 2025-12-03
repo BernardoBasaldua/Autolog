@@ -61,13 +61,21 @@ export class ClienteService {
     );
   }
 
-  crearPermiso(permiso: PermisoDeAcceso): Observable<void> {
-    const actual = this.clienteActual();
-    const userId = actual?.usuario.pk;
-    const url = `${this.apiClientesUrl}${userId}/acceso/`;
+  crearPermiso(permiso: PermisoDeAcceso, vehiculoId: number): Observable<void> {
+    // ahora recibís el id del vehículo como argumento
+    const url = `${this.apiClientesUrl}${vehiculoId}/acceso/`;
     return this.http.post<PermisoDeAcceso>(url, permiso).pipe(
       map(() => void 0) // convierte el resultado a 'void'
     );
   }
+
+eliminarPermiso(vehiculoId: number, permisoId: number): Observable<void> {
+  // construimos la URL con el id del vehículo y el permiso_id como query param
+  const url = `${this.apiClientesUrl}${vehiculoId}/eliminar_permiso/?permiso_id=${permisoId}`;
+  
+  return this.http.delete<void>(url).pipe(
+    map(() => void 0) // convierte el resultado a 'void'
+  );
+}
 
 }

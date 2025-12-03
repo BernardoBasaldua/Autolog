@@ -5,7 +5,6 @@ from django.db import models
 from usuarios.models.pemisoAcceso import PermisoDeAcceso
 from vehiculos.models.vehiculo import Vehiculo
 
-
 class Cliente(models.Model):
     #CAMI: si pones on_delete en cascade, no necesitas reescribir el metodo destroy en la view.
     # haciendo eso decis si se borra un usuario, tambien se borra cliente

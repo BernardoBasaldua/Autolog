@@ -1,4 +1,5 @@
 # users/serializers.py
+from vehiculos.models.vehiculo import Vehiculo
 from rest_framework import serializers
 
 from talleres.models.taller import Taller
@@ -62,21 +63,37 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 from talleres.serializers import TallerSerializer
-
 class PermisoSerializer(serializers.ModelSerializer):
-    vehiculo_autorizado = VehiculoSerializer(read_only=True)
-    taller_autorizado = TallerSerializer(read_only=True)
+    vehiculo_autorizado = serializers.PrimaryKeyRelatedField(
+        queryset=Vehiculo.objects.all()
+    )
+    taller_autorizado = serializers.PrimaryKeyRelatedField(
+        queryset=Taller.objects.all(),
+        required=False,
+        allow_null=True
+    )
+    cliente_autorizado = serializers.PrimaryKeyRelatedField(
+        queryset=Cliente.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
+    autoriza = serializers.PrimaryKeyRelatedField(
+        queryset=Cliente.objects.all()
+    )
+    fecha_autorizacion = serializers.DateField(read_only=True)
 
     class Meta:
         model = PermisoDeAcceso
         fields = [
+            "id",
             "fecha_autorizacion",
             "vehiculo_autorizado",
             "cliente_autorizado",
             "taller_autorizado",
+            "autoriza",
         ]
-
+        read_only_fields = ["id", "fecha_autorizacion"]
 
 class ClienteSerializer(serializers.ModelSerializer):
 

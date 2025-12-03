@@ -11,7 +11,7 @@
 
           <div>
             <p class="font-semibold text-lg text-gray-800">
-              {{ p.taller_autorizado?.nombre || getNombreCliente(p.cliente_autorizado) }}
+              {{ getNombreTaller(p.taller_autorizado) || getNombreCliente(p.cliente_autorizado) }}
             </p>
 
             <p class="text-sm text-gray-600">Tiene acceso al historial desde:</p>

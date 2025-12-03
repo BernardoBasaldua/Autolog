@@ -5,8 +5,8 @@ import { Taller } from "../talleres/taller.model";
 export interface PermisoDeAcceso {
   id?: number;
   fecha_autorizacion?: string;
-  vehiculo_autorizado: Vehiculo;
+  vehiculo_autorizado: number;
   autoriza?: any; // cliente dueño
   cliente_autorizado?: number;
-  taller_autorizado?: Taller;
+  taller_autorizado?: number;
 }

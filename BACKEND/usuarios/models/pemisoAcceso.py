@@ -5,7 +5,7 @@ class PermisoDeAcceso(models.Model):
 
     fecha_autorizacion = models.DateField()
 
-    vehiculo_autorizado = models.OneToOneField(
+    vehiculo_autorizado = models.ForeignKey(
         "vehiculos.Vehiculo", on_delete=models.PROTECT, null=True, blank=True
     )
 
