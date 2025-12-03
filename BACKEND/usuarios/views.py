@@ -121,6 +121,54 @@ class ClienteViewSet(viewsets.ModelViewSet):
         except PermisoDeAcceso.DoesNotExist:
             return Response({"error": "Permiso no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
+    #historial de todas las ordenes de todos los vehiculos e un cliente
+    @action(detail=False, methods=['get'], url_path='historial_todos')
+    def historial_todos(self, request):
+        """
+        Devuelve TODAS las órdenes de TODOS los vehículos DEL CLIENTE AUTENTICADO.
+        """
+        user = request.user
+
+        # Obtener el cliente asociado al usuario autenticado
+        try:
+            cliente = user.clientes
+        except Exception:
+            return Response(
+                {'mensaje': 'El usuario autenticado no tiene un cliente asociado.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Obtener vehículos relacionados al cliente
+        vehiculos = cliente.mis_vehiculos.all()
+
+        if not vehiculos.exists():
+            return Response(
+                {'mensaje': 'El cliente no tiene vehículos asociados.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Obtener órdenes
+        from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
+        ordenes = (
+            OrdenDeTrabajo.objects
+            .filter(vehiculo__in=vehiculos)
+            .order_by('-fecha_turno', '-id')
+        )
+
+        if not ordenes.exists():
+            return Response(
+                {'mensaje': 'No hay órdenes para ninguno de tus vehículos.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        from ordenes.serializers import OrdenDeTrabajoSerializer
+        serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    
+    
     # ver historial
     @action(detail=True, methods=["get"])
     def historial(self, request, pk=None):
