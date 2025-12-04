@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Nav } from './nav/nav';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 import { TalleresService } from '../../../services/talleres/talleres.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { AdminTecService } from '../../../services/usuarios/adminTec/admin-tec.service';
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
@@ -23,6 +24,7 @@ export class Aside implements OnInit {
   private tallerService = inject(TalleresService);
   private tecnicoService = inject(AdminTecService);
   private usuarioService = inject(UsuarioService);
+  private authService = inject(AuthService);
 
   // contexto de la UI según la URL
   userType = signal<'cliente' | 'taller' | null>(null);
@@ -49,6 +51,9 @@ export class Aside implements OnInit {
     this.cargarDatosSegunContexto();
   }
 
+  logout(): void {
+    this.authService.logout();
+  }
   private setUserTypeByUrl(url: string) {
     if (url.startsWith('/cliente')) {
       this.userType.set('cliente');

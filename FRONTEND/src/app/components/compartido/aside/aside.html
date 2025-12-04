@@ -1,43 +1,48 @@
-<div>
-  <!-- User Profile -->
-  <div class="flex items-center mb-10">
-    <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
-      <i class="fas fa-user text-white text-xl"></i>
+<div class="flex flex-col h-screen">
+  <!-- Parte superior: perfil + menú -->
+  <div>
+    <!-- User Profile -->
+    <div class="flex items-center mb-10">
+      <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+        <i class="fas fa-user text-white text-xl"></i>
+      </div>
+
+      @if (userType() === 'cliente' && usuario()) {
+        <div>
+          <p class="font-semibold text-lg">
+            {{ usuario()!.first_name }} {{ usuario()!.last_name }}
+          </p>
+          <p class="text-sm text-gray-400">
+            {{ usuario()!.email }}
+          </p>
+        </div>
+      }
+      @else if (userType() === 'taller' && taller()) {
+        <div>
+          <p class="font-semibold text-lg">
+            {{ taller()!.nombre }}
+          </p>
+          <p class="text-sm text-gray-400">
+            {{ taller()!.direccion }}
+          </p>
+        </div>
+      }
+      @else {
+        <div>
+          <p class="font-semibold text-lg">Usuario</p>
+          <p class="text-sm text-gray-400">cargando...</p>
+        </div>
+      }
     </div>
 
-    <!-- Cliente -->
-    @if (userType() === 'cliente' && usuario()) {
-      <div>
-        <p class="font-semibold text-lg">
-          {{ usuario()!.first_name }} {{ usuario()!.last_name }}
-        </p>
-        <p class="text-sm text-gray-400">
-          {{ usuario()!.email }}
-        </p>
-      </div>
-    }
-
-    <!-- Taller() -->
-    @else if (userType() === 'taller' && taller()) {
-      <div>
-        <p class="font-semibold text-lg">
-          {{ taller()!.nombre }}
-        </p>
-        <p class="text-sm text-gray-400">
-          {{ taller()!.direccion }}
-        </p>
-      </div>
-    }
-
-    <!-- Fallback mientras carga o si no hay datos -->
-    @else {
-      <div>
-        <p class="font-semibold text-lg">Usuario</p>
-        <p class="text-sm text-gray-400">cargando...</p>
-      </div>
-    }
+    <!-- Navigation Menu -->
+    <app-nav></app-nav>
   </div>
 
-  <!-- Navigation Menu -->
-  <app-nav></app-nav>
+  <!-- Parte inferior: botón logout -->
+  <div class="mt-auto">
+    <button class="button-secondary w-full" (click)="logout()">
+      <i class="fas fa-sign-out-alt mr-2"></i> Logout
+    </button>
+  </div>
 </div>
