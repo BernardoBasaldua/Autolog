@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { inject } from '@angular/core';
+
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
+import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
+import { ClienteModel } from '../../../models/usuarios/usuario.model';
 
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -14,7 +18,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cli-inicio.css'
 })
 export class CliInicio implements OnInit {
-  vehiculos: Vehiculo[] = [];
+  mis_vehiculos?: Vehiculo[] = [];
+  vehiculos_autorizados?: Vehiculo[] = [];
+  clienteService = inject(ClienteService); 
+  clienteActual: ClienteModel | null = null;
   
   
 
@@ -22,14 +29,20 @@ export class CliInicio implements OnInit {
 
   ngOnInit(): void {
     console.log('Iniciando componentec cliInicio y esperando vehículos...');
-    this.vehiculoService.getVehiculos().subscribe({
-      next: (data) =>{ this.vehiculos = data;},
+    this.clienteService.getMiCliente().subscribe({
+      next: (data) =>{ 
+        this.clienteActual = data;
+        this.mis_vehiculos = this.clienteActual.mis_vehiculos;
+        this.vehiculos_autorizados = this.clienteActual.vehiculos_externos;
+
+      },
       error:(error)=>{
-        console.log('error al obtener los vehiculos, back no responde');}
+        console.log('error al obtener cliente, back no responde');}
     });
     //Una Promesa (Promise) te trae un solo valor en el futuro (por ejemplo, el resultado de una petición HTTP). Un Observable (Observable) puede traerte uno, varios o infinitos valores en distintos momentos del tiempo (como un stream/canal de datos). Cuando hacés una petición HTTP en Angular con HttpClient, no obtenés el resultado directo. En cambio, te devuelve un Observable. 
     // Un Observable es como un “canal de datos” al que vos te suscribís para recibir lo que emita (los datos o los errores).
-  }   
+  }
+  
 
   administrarPermisos(vehiculo: Vehiculo) {
     console.log(`Permisos para: ${vehiculo.dominio}`);

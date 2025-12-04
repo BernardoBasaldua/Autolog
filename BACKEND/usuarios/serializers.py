@@ -95,25 +95,33 @@ class PermisoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "fecha_autorizacion"]
 
+    
 class ClienteSerializer(serializers.ModelSerializer):
-
-    # usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), write_only=True)
     usuario = UsuarioSerializer()
-    mis_vehiculos = VehiculoSerializer(many=True, read_only=True)
+    mis_vehiculos = VehiculoSerializer(many=True, read_only=True)  # ya son los propios
     permisos_que_otorgo = PermisoSerializer(many=True, read_only=True)
-    # vehiculo_autorizado = VehiculoSerializer(many=True)
-    # usuarios_autorizados = serializers.SerializerMethodField()
-    # talleres_autorizados = serializers.SerializerMethodField()
+
+    vehiculos_externos = serializers.SerializerMethodField()
 
     class Meta:
         model = Cliente
-        fields = ["id","usuario", "permisos_que_otorgo", "mis_vehiculos"]
+        fields = [
+            "id",
+            "usuario",
+            "mis_vehiculos",        # propios
+            "vehiculos_externos",   # externos
+            "permisos_que_otorgo",
+        ]
 
     def create(self, validated_data):
         usuario_data = validated_data.pop("usuario")
         usuario = Usuario.objects.create_user(**usuario_data)
         cliente = Cliente.objects.create(usuario=usuario, **validated_data)
         return cliente
+
+    def get_vehiculos_externos(self, obj):
+        return VehiculoSerializer(obj.vehiculos_externos_autorizados, many=True).data
+
 
 
 class AdministradorTecnicoSerializer(serializers.ModelSerializer):

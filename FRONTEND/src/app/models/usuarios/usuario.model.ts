@@ -1,5 +1,6 @@
 import { Taller } from "../talleres/taller.model";
 import { Vehiculo } from "../vehiculo/vehiculo.model";
+import { PermisoDeAcceso } from "../permisos/permiso-acceso.model";
 
 export interface UsuarioModel {
   pk?: number;              // opcional → lo asigna el backend
@@ -14,11 +15,13 @@ export interface UsuarioModel {
 }
 
 export interface ClienteModel {
-  id?:number;
+  id?: number;
   usuario: UsuarioModel;
-  permisos_que_otorgo?: any[]; // después los tipás bien
-  mis_vehiculos?: Vehiculo[];       // idem
+  permisos_que_otorgo?: PermisoDeAcceso[];  
+  mis_vehiculos?: Vehiculo[];               // propios
+  vehiculos_externos?: Vehiculo[];          // externos (nuevos en el serializer)
 }
+
 
 export interface AdministradorTecnicoModel  {
   id?: number;
