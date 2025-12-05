@@ -1,0 +1,166 @@
+.card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.button-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #2a69ac;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.button-primary:hover {
+    background-color: #1c4a7e;
+}
+
+.button-google {
+    background-color: #4285f4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-google:hover {
+    background-color: #357ae8;
+}
+
+.button-google .fa-google {
+    margin-right: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    border: 1px solid #cbd5e0;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2a69ac;
+}
+
+/* Tabs superiores: Iniciar sesión / Registrarse */
+/* Tabs superiores: Iniciar sesión / Registrarse */
+.tab-button {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;   /* solo subrayado */
+    padding: 0.5rem 0.25rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #4a5568; /* gris medio */
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.tab-button:hover {
+    border-bottom-color: #cbd5e0; /* subrayado gris suave */
+    background-color: #f9fafb;   /* opcional, muy sutil */
+}
+
+.tab-button.active {
+    border-bottom-color: #2a69ac; /* subrayado azul al estar activa */
+    color: #2a69ac;               /* texto azul en activa */
+}
+
+/* Botones selector cliente / taller: estilo pestaña subrayada */
+/* Tabs superiores: Iniciar sesión / Registrarse */
+.tab-button {
+    background-color: transparent;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #4a5568; /* gris medio */
+    text-decoration: none;
+    transition: color 0.2s, background-color 0.2s, text-decoration-color 0.2s;
+}
+
+.tab-button:hover {
+    background-color: #f9fafb; /* opcional, muy sutil */
+    text-decoration: underline;
+    text-decoration-color: #cbd5e0;  /* gris clarito */
+    text-underline-offset: 0.3rem;   /* separa la línea del texto */
+    text-decoration-thickness: 2px;  /* un poquito más gruesa */
+}
+
+.tab-button.active {
+    color: #2a69ac;                 /* texto azul */
+    text-decoration: underline;
+    text-decoration-color: #2a69ac; /* subrayado azul */
+    text-underline-offset: 0.3rem;
+    text-decoration-thickness: 2px;
+}
+
+
+/* Botones selector cliente / taller */
+.tipo-button {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid #e2e8f0; /* gris clarito */
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.tipo-button:hover {
+    border-color: #cbd5e0;
+    background-color: #f9fafb; /* leve fondo gris muy claro */
+}
+
+.tipo-button.active {
+    border-color: #2a69ac;          /* resalta el borde */
+    box-shadow: 0 0 0 1px #2a69ac33; /* sombra suave azul */
+    background-color: #f0f7ff;       /* sutil azul muy claro */
+}
+/* Tarjeta de usuario en selección de usuario */
+.card-usuario {
+  border: 1px solid #e2e8f0;              /* gris clarito */
+  cursor: pointer;                        /* mano al pasar */
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              border-color 0.15s ease,
+              background-color 0.15s ease;
+}
+
+/* Efecto hover: levanta un poquito y resalta */
+.card-usuario:hover {
+  background-color: #f7fafc;              /* gris muy clarito */
+  border-color: #2a69ac33;                /* borde azulado suave */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Opcional: una pequeña barra de color a la izquierda */
+.card-usuario::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(#2a69ac, #63b3ed); /* azul -> celeste */
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.card-usuario:hover::before {
+  opacity: 1;
+}
+

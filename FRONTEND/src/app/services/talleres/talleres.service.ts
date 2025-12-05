@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { RegistroTecnicoTaller, Taller } from '../../models/talleres/taller.model';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AdministradorTecnicoModel, UsuarioModel } from '../../models/usuarios/usuario.model';
+import { AdministradorTecnicoModel, ClienteModel, UsuarioModel } from '../../models/usuarios/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,8 @@ export class TalleresService {
   
   readonly listaTalleres = signal<Taller[]>([]);
   readonly tallerActual = signal<Taller | null>(null);
+  taller = this.tallerActual()
+  tallerId = this.taller?.id
 
   constructor(private http: HttpClient) {}
 
@@ -56,5 +58,20 @@ export class TalleresService {
     return this.http.patch<Taller>(url,taller).pipe(
       tap((tallerActualizado)=> this.tallerActual.set(tallerActualizado))
     );
+  }
+
+  deleteTaller(): Observable<void>{
+    const tallerActual = this.tallerActual();
+
+    if(!tallerActual || !tallerActual.id){
+      throw new Error('No se puede eliminar un taller sin id');
+    }
+    const idTaller = tallerActual.id;
+    const url = `${this.apiTalleresUrl}${idTaller}/`;
+    return this.http.delete<void>(url);
+  }
+
+   getClientesDeTaller() {
+    return this.http.get<ClienteModel[]>(`${this.apiTalleresUrl}${this.tallerId}/clientes/`);
   }
 }

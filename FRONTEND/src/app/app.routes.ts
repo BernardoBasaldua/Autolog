@@ -21,6 +21,8 @@ import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { Login } from './layouts/login/login';
 import { Permisos } from './components/clientes/cli-inicio/permisos/permisos';
 import { Registrarse } from './components/registro/registrarse/registrarse';
+import { FormClientes } from './components/registro/form-clientes/form-clientes';
+import { SeleccionUsuario } from './components/seleccion/seleccion-usuario/seleccion-usuario';
 
 export const routes: Routes = [
   {
@@ -45,10 +47,14 @@ export const routes: Routes = [
       { path: 'taller/ordenes', component: TaOrdenes },
       { path: 'taller/ordenes/nueva', component: TaNewOrder },
       { path: 'taller/clientes', component: TaClientes },
+      { path: 'taller/clientes/seleccionUsuario', component: SeleccionUsuario },
+      { path: 'taller/form-cliente', component: FormClientes },
       { path: 'taller/vehiculos', component: TaVehiculos },
       { path: 'taller/turnos', component: TaTurnos },
       { path: 'taller/turnos/detalle', component: TaDetail },
       { path: 'taller/config', component: TaConfig },
+
+      
 
     ]
   },

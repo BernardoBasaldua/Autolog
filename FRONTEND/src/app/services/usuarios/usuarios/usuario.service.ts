@@ -15,7 +15,7 @@ export class UsuarioService {
 
   usuarioActual = signal<UsuarioModel | null>(null);
   clientesExistentes : ClienteModel[] = [];
-
+  usuarios = signal<UsuarioModel[] | null>(null);
 
   constructor(private http: HttpClient){ }
 
@@ -25,13 +25,24 @@ export class UsuarioService {
         tap(usuariosLogeado => {
             this.usuarioActual.set(usuariosLogeado[0])
             console.log('usuario en MEMORIA: ', this.usuarioActual())}), 
-        map(usuariosLogeado => usuariosLogeado[0])
-        
+        map(usuariosLogeado => usuariosLogeado[0])  
     );
+  }
 
-    }
+      /** Devuelve todos los cliente del sistema si sos staff op superuser 
+   * ACA VAMOS A TENER QUE CAMBIAR EL BACK Y LLAMAR A OTRO ENDPOINT PARA QUE CON EL TOKEN DEL CLIENTE DEVUELVA TODOS LOS CLIENTES
+  */
+  listarTodos(): Observable<UsuarioModel[]> {
 
+    return this.http.get<UsuarioModel[]>(this.apiUsuariosUrl).pipe(
+      tap(listaUsuarios => {
+        this.usuarios.set(listaUsuarios);
+        console.log('usuarios en MEMORIA:', listaUsuarios);
+      }),
+    );
+  }
 
+  //VER ESTO DEBERIA IR EN EL SERVICIO DE CLIENTES
   getClientes(): Observable<ClienteModel[]> {
     return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(clientes => this.clientesExistentes = clientes) // ← reemplaza el array
@@ -45,7 +56,7 @@ export class UsuarioService {
     const usuarioActual = this.usuarioActual();
     console.log('Usuario actual antes de actualizar:', this.usuarioActual());
     if (!usuarioActual || !usuarioActual.pk) {
-      throw new Error('No hay clienteActual con id cargado en memoria');
+      throw new Error('No hay usuarioActual con id cargado en memoria');
     }
 
     const usuarioPayload: any = {
@@ -72,21 +83,11 @@ export class UsuarioService {
     );
   }
 
+  deleteUsuario():Observable<void>{
+    const user = this.usuarioActual();
+    if (!user || !user.pk){
+      throw new Error('No hay usuarioActual con id cargado en memoria');
+    };
+    return this.http.delete<void>(`${this.apiUsuariosUrl}${user.pk}`);
+  }
 }
-
-// const clienteAnterior = this.clienteService.clienteActual();
-//         if (!clienteAnterior){
-//           console.warn('No hay clienteActual en memoria al actualizar');  
-//         return;}
-
-//         const clienteActualizado : ClienteModel = {
-//           ...clienteAnterior,
-//           usuario: {
-//             ...clienteAnterior.usuario,
-//             ...usuarioActualizado
-//           }
-//         }
-
-
-//         this.clienteActual.set(clienteActualizado);
-//         console.log('cliente actualizado:', clienteActualizado);

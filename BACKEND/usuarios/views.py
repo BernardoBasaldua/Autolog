@@ -28,8 +28,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
 
     def get_queryset(self):
+        user = self.request.user
         # Cualquier usuario solo puede acceder a su propio perfil.
-        if self.request.user.is_authenticated:
+        if user.is_staff or user.is_superuser:
+            return Usuario.objects.all()
+        elif user.is_authenticated:
             return Usuario.objects.filter(pk=self.request.user.pk)
         else:
             return Usuario.objects.none()

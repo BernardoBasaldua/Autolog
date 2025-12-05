@@ -11,7 +11,7 @@ import { Observable, map, tap, switchMap } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
   private apiClientesUrl = 'http://127.0.0.1:8000/api/clientes/';
-  private apiUsuariosUrl = 'http://127.0.0.1:8000/api/usuarios/';
+  private apiTalleresUrl = 'http://127.0.0.1:8000/api/talleres/';
 
   // estado en memoria
   clienteActual = signal<ClienteModel | null>(null);
@@ -28,7 +28,7 @@ export class ClienteService {
 
   /** Devuelve el cliente asociado al usuario logueado */
   getMiCliente(): Observable<ClienteModel> {
-    // ClienteViewSet hace filter(usuario=request.user),
+    // ClienteViewSet hace filter(usuario=request.user) si no es staff o super user,
     // así que GET /api/clientes/ debería devolver una LISTA con 1 elemento.
     return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(listaCliente => {

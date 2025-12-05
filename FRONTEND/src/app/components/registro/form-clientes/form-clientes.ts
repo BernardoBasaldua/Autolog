@@ -1,11 +1,12 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms'; // si vas a usar [(ngModel)]
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 
+type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller';
 
 
 @Component({
@@ -15,13 +16,15 @@ import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.serv
   styleUrl: './form-clientes.css'
 })
 export class FormClientes {
-  modo= input<'crear' | 'editar'| 'establecimiento'>('crear');  // por defecto registrar
+  modo = input<Modo>('crear');  // por defecto registrar
+  modoInterno = signal<Modo>('crear');
   clienteActual: ClienteModel | null = null; 
   usuarioActual: UsuarioModel | null = null; 
   clienteForm: FormGroup;
   formInvalido = output<boolean>();
   perfilActualizado = output<void>();
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   
   constructor(
     private fb: FormBuilder, 
@@ -55,7 +58,19 @@ export class FormClientes {
    }
 
   ngOnInit(): void {
-    if (this.modo() === 'editar') {
+
+    // 1) Empezamos con lo que venga del padre (input)
+    this.modoInterno.set(this.modo());   // si el padre usa [modo]="'editar'", arranca en 'editar'
+
+    // 2) Si la ruta trae ?modo=..., tiene prioridad
+    const modoParam = this.route.snapshot.queryParamMap.get('modo') as Modo | null;
+    if (modoParam) {
+      this.modoInterno.set(modoParam);   // esto pisa al valor del padre si venís por URL
+    }
+
+    //2)CONFIGURAR SEGUN EL MODOINTERNO
+    //MODO EDICION DE CLIENTE
+    if (this.modoInterno() === 'editar') {
       // Traerel cliente del servicio 
       //this.clienteActual = this.clienteService.clienteActual();
       this.usuarioActual = this.usuarioService.usuarioActual();
@@ -84,6 +99,25 @@ export class FormClientes {
         this.clienteForm.get('confirmPassword')?.clearValidators();
         this.clienteForm.updateValueAndValidity();
       }
+    }
+
+    // MODO ALTA CLIENTE DESDE TALLER
+    if (this.modoInterno() === 'alta-desde-taller') {
+      // En este modo NO quiero pedir password al técnico
+      // (el HTML ya oculta los campos con @if, pero el form
+      //  SACO Validators.required)
+
+      this.clienteForm.get('password')?.clearValidators();
+      this.clienteForm.get('confirmPassword')?.clearValidators();
+      this.clienteForm.get('password')?.updateValueAndValidity({ emitEvent: false });
+      this.clienteForm.get('confirmPassword')?.updateValueAndValidity({ emitEvent: false });
+
+      // precargar una contraseña por defecto
+      // que el cliente tendrá que cambiar luego:
+      this.clienteForm.patchValue({
+        password: '123456',
+        confirmPassword: '123456',
+      });
     }
   }
   
@@ -123,14 +157,19 @@ export class FormClientes {
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
 
-    if (this.modo() === 'crear') {    
+    if (this.modo() === 'crear'|| this.modo() === 'alta-desde-taller') {    
       console.log('Datos de registro usuario:', datosUsuario);
       this.clienteService.crearCliente(datosUsuario).subscribe(
         {next: (cliente) => {
           // Éxito: cramos usuario
           console.log('cliente crado', cliente);
           alert('Cuenta creada correctamente ✔');
-          this.router.navigate(['/login'])
+          //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
+          if (this.modo() === 'alta-desde-taller') {
+            this.router.navigate(['/taller/clientes']);
+          } else {
+            this.router.navigate(['/login']);
+          }
           this.clienteForm.reset();
         },
         error: (e) => {

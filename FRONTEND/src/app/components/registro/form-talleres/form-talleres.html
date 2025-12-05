@@ -79,7 +79,7 @@
     <!--AGREGO FORMULARIO CLIENTE-->
     @if(modo() == 'crear'){
         <app-form-clientes 
-        [modo]="'establecimiento'"
+        [modo]="'registroEstablecimiento'"
         (formInvalido)="formClienteInvalido = $event">
         </app-form-clientes>
 
