@@ -9,13 +9,13 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class VehiculoService {
-  private apiUrl = 'http://127.0.0.1:8000/api/vehiculos/';
+  private apiVehiculosUrl = 'http://127.0.0.1:8000/api/vehiculos/';
   public vehiculos: Vehiculo[] = [];
 
   constructor(private http: HttpClient, private auth:AuthService){}
 
   getVehiculos(): Observable<Vehiculo[]> {
-    const url = `${this.apiUrl}`;
+    const url = `${this.apiVehiculosUrl}`;
     return this.http.get<Vehiculo[]>(url).pipe(
       tap(v => {
         this.vehiculos = v;
