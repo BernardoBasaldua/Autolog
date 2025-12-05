@@ -1,0 +1,92 @@
+<section>
+  <button type="button" class="button-secondary mb-4" (click)="volver()">
+    ← Volver
+  </button>
+</section>
+
+<section class="mb-4 card p-4 flex flex-col gap-4">
+  <!-- 🔹 Tabs -->
+  <div class="flex justify-center mb-2 border-b border-gray-200 gap-4">
+    <button
+      type="button"
+      class="tab-button"
+      [ngClass]="{ 'active': modo === 'default' }"
+      (click)="mostrarVehiculosExistentes()"
+    >
+      Vehículos existentes
+    </button>
+
+    <button
+      type="button"
+      class="tab-button"
+      [ngClass]="{ 'active': modo === 'nuevo-desde-taller' }"
+      (click)="crearVehiculoNuevo()"
+    >
+      Crear nuevo vehículo
+    </button>
+  </div>
+
+  <!-- 🔹 Filtro: solo en vehículos existentes -->
+  @if (modo === 'default') {
+    <div class="flex flex-col md:flex-row gap-4">
+      <input
+        type="text"
+        class="w-full"
+        placeholder="Buscar por patente, marca o modelo..."
+        [(ngModel)]="terminoBusqueda"
+        (input)="filtrar()"
+      />
+    </div>
+  }
+</section>
+
+<!-- 🔹 Contenido según modo -->
+@if (modo === 'default') {
+  <!-- Lista de vehículos existentes -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (vehiculo of vehiculosFiltrados; track vehiculo.id) {
+      <div
+        class="card card-vehiculo p-4 flex flex-col"
+        (click)="verVehiculo(vehiculo)"
+      >
+        <h2 class="font-bold text-lg">
+          {{ vehiculo.marca }} {{ vehiculo.modelo }}
+        </h2>
+
+        <p class="text-sm text-gray-600">
+          Patente: {{ vehiculo.dominio }}
+        </p>
+
+        <p class="text-sm text-gray-600">
+          Año: {{ vehiculo['año'] }}
+        </p>
+
+        <p class="text-sm text-gray-600">
+          Próx. servicio:
+          @if (vehiculo.fecha_prox_servicio) {
+            {{ vehiculo.fecha_prox_servicio | date:'dd/MM/yyyy' }}
+          } @else {
+            No configurado
+          }
+        </p>
+
+        <div class="mt-4 flex justify-end">
+          <button
+            class="button-secondary"
+            (click)="seleccionarVehiculo(vehiculo); $event.stopPropagation()"
+          >
+            Usar este vehículo
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full text-center text-gray-500">
+        No se encontraron vehículos.
+      </div>
+    }
+  </section>
+
+} @else if (modo === 'nuevo-desde-taller') {
+  <!-- Formulario para crear vehículo nuevo desde el taller -->
+  <app-form-vehiculos ></app-form-vehiculos>
+}

@@ -3,7 +3,7 @@ export interface Marca {
   nombre: string;
 }
 
-export interface Historial {
+export interface HistorialModel {
   id: number;
   fecha_siguiente_servicio: string;
   kilometraje_siguiente_servicio: number;
@@ -29,7 +29,7 @@ export interface Vehiculo {
   marca: Marca;
   fecha_prox_servicio: string;
   kilometraje_prox_servicio: number;
-  historial: Historial[];
+  historial: HistorialModel[];
   año: number;
   dominio: string;
   intervalo_servicio_km: number;

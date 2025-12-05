@@ -23,6 +23,7 @@ import { Permisos } from './components/clientes/cli-inicio/permisos/permisos';
 import { Registrarse } from './components/registro/registrarse/registrarse';
 import { FormClientes } from './components/registro/form-clientes/form-clientes';
 import { SeleccionUsuario } from './components/seleccion/seleccion-usuario/seleccion-usuario';
+import { SeleccionVehiculo } from './components/seleccion/seleccion-vehiculos/seleccion-vehiculos';
 
 export const routes: Routes = [
   {
@@ -49,7 +50,9 @@ export const routes: Routes = [
       { path: 'taller/clientes', component: TaClientes },
       { path: 'taller/clientes/seleccionUsuario', component: SeleccionUsuario },
       { path: 'taller/form-cliente', component: FormClientes },
+
       { path: 'taller/vehiculos', component: TaVehiculos },
+      { path: 'taller/vehiculos/seleccion-vehiculo', component: SeleccionVehiculo },
       { path: 'taller/turnos', component: TaTurnos },
       { path: 'taller/turnos/detalle', component: TaDetail },
       { path: 'taller/config', component: TaConfig },

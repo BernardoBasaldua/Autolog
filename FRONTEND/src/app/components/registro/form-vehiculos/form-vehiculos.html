@@ -1,0 +1,257 @@
+<form
+  class="space-y-4 mt-4"
+  [formGroup]="vehiculoForm"
+  (ngSubmit)="guardarVehiculo()"
+>
+  <h3 class="text-lg font-semibold text-gray-800 mb-1">
+    Datos del vehículo
+  </h3>
+
+  <div class="grid grid-cols-1 gap-4">
+    <!-- MARCA -->
+    <div>
+      <div class="flex justify-between items-center mb-1">
+        <label
+          for="vehiculo-marca"
+          class="block text-gray-700 text-sm font-medium"
+        >
+          Marca
+        </label>
+
+        <button
+          type="button"
+          class="inline-add-button"
+          (click)="abrirFormMarca()"
+        >
+          <i class="fas fa-plus mr-1 text-xs"></i>
+          Nueva marca
+        </button>
+      </div>
+
+      <select
+        id="vehiculo-marca"
+        formControlName="marcaId"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('marcaId') }"
+        (change)="onMarcaChange()"
+      >
+        <option [ngValue]="null">Seleccioná una marca</option>
+        @for (marca of marcas; track marca.id) {
+          <option [ngValue]="marca.id">{{ marca.nombre }}</option>
+        }
+      </select>
+
+      @if (vehiculoForm.get('marcaId')?.hasError('required') && isInvalid('marcaId')) {
+        <small class="text-red-600">La marca es obligatoria.</small>
+      }
+
+      <!-- Mini-form para crear marca -->
+      @if (mostrarFormMarca) {
+        <div class="mini-form mt-2">
+          <input
+            type="text"
+            [(ngModel)]="nuevaMarcaNombre"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Nombre de la nueva marca"
+            class="w-full mini-input"
+          />
+          <div class="flex justify-end gap-2 mt-2">
+            <button
+              type="button"
+              class="button-secondary text-xs"
+              (click)="cancelarNuevaMarca()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="button-primary text-xs"
+              (click)="guardarNuevaMarca()"
+            >
+              Guardar marca
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- MODELO -->
+    <div>
+      <div class="flex justify-between items-center mb-1">
+        <label
+          for="vehiculo-modelo"
+          class="block text-gray-700 text-sm font-medium"
+        >
+          Modelo
+        </label>
+
+        <button
+          type="button"
+          class="inline-add-button"
+          (click)="abrirFormModelo()"
+        >
+          <i class="fas fa-plus mr-1 text-xs"></i>
+          Nuevo modelo
+        </button>
+      </div>
+
+      <select
+        id="vehiculo-modelo"
+        formControlName="modeloId"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('modeloId') }"
+      >
+        <option [ngValue]="null">Seleccioná un modelo</option>
+        @for (modelo of modelosFiltrados; track modelo.id) {
+          <option [ngValue]="modelo.id">{{ modelo.nombre }}</option>
+        }
+      </select>
+
+      @if (vehiculoForm.get('modeloId')?.hasError('required') && isInvalid('modeloId')) {
+        <small class="text-red-600">El modelo es obligatorio.</small>
+      }
+
+      <!-- Mini-form para crear modelo -->
+      @if (mostrarFormModelo) {
+        <div class="mini-form mt-2">
+          <input
+            type="text"
+            [(ngModel)]="nuevoModeloNombre"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Nombre del nuevo modelo"
+            class="w-full mini-input"
+          />
+          <p class="text-xs text-gray-500 mt-1">
+            Se creará asociado a la marca seleccionada.
+          </p>
+          <div class="flex justify-end gap-2 mt-2">
+            <button
+              type="button"
+              class="button-secondary text-xs"
+              (click)="cancelarNuevoModelo()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="button-primary text-xs"
+              (click)="guardarNuevoModelo()"
+            >
+              Guardar modelo
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- DOMINIO -->
+    <div>
+      <label
+        for="vehiculo-dominio"
+        class="block text-gray-700 text-sm font-medium mb-1"
+      >
+        Dominio / Patente
+      </label>
+      <input
+        type="text"
+        id="vehiculo-dominio"
+        formControlName="dominio"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('dominio') }"
+      />
+
+      @if (vehiculoForm.get('dominio')?.hasError('required') && isInvalid('dominio')) {
+        <small class="text-red-600">La patente es obligatoria.</small>
+      }
+      @if (vehiculoForm.get('dominio')?.hasError('maxlength') && isInvalid('dominio')) {
+        <small class="text-red-600">La patente no puede tener más de 7 caracteres.</small>
+      }
+    </div>
+
+    <!-- AÑO -->
+    <div>
+      <label
+        for="vehiculo-anio"
+        class="block text-gray-700 text-sm font-medium mb-1"
+      >
+        Año
+      </label>
+      <input
+        type="number"
+        id="vehiculo-anio"
+        formControlName="anio"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('anio') }"
+        placeholder="Ej: 2018"
+      />
+
+      @if (vehiculoForm.get('anio')?.hasError('required') && isInvalid('anio')) {
+        <small class="text-red-600">El año es obligatorio.</small>
+      }
+    </div>
+
+    <!-- INTERVALO KM -->
+    <div>
+      <label
+        for="vehiculo-intervalo-km"
+        class="block text-gray-700 text-sm font-medium mb-1"
+      >
+        Intervalo de servicio (km)
+      </label>
+      <input
+        type="number"
+        id="vehiculo-intervalo-km"
+        formControlName="intervaloKm"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('intervaloKm') }"
+      />
+
+      @if (vehiculoForm.get('intervaloKm')?.hasError('required') && isInvalid('intervaloKm')) {
+        <small class="text-red-600">El intervalo de km es obligatorio.</small>
+      }
+    </div>
+
+    <!-- INTERVALO MESES -->
+    <div>
+      <label
+        for="vehiculo-intervalo-meses"
+        class="block text-gray-700 text-sm font-medium mb-1"
+      >
+        Intervalo de servicio (meses)
+      </label>
+      <input
+        type="number"
+        id="vehiculo-intervalo-meses"
+        formControlName="intervaloMeses"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('intervaloMeses') }"
+      />
+
+      @if (vehiculoForm.get('intervaloMeses')?.hasError('required') && isInvalid('intervaloMeses')) {
+        <small class="text-red-600">El intervalo en meses es obligatorio.</small>
+      }
+    </div>
+
+    <!-- Mensaje si viene con propietario preseleccionado -->
+    @if (propietarioId() !== null) {
+      <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
+        Este vehículo se asociará al cliente con ID
+        <strong>{{ propietarioId() }}</strong>.
+      </p>
+    }
+  </div>
+
+  <button
+    type="submit"
+    class="button-primary w-full mt-2"
+    [disabled]="vehiculoForm.invalid"
+  >
+    {{ modo() === 'alta-desde-taller' ? 'Registrar vehículo' : 'Guardar cambios' }}
+  </button>
+</form>

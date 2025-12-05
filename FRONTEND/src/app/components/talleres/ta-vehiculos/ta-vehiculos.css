@@ -1,0 +1,65 @@
+/* Reutiliza tu .card global, acá solo sumamos estilo específico */
+
+/* Contenedor de filtros */
+.filter-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4a5568; /* gris medio */
+  margin-bottom: 0.25rem;
+}
+
+.filter-input {
+  border: 1px solid #cbd5e0;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #2a69ac;
+  box-shadow: 0 0 0 1px rgba(42, 105, 172, 0.15);
+}
+
+/* Tarjeta de vehículo: similar a card-usuario */
+.card-vehiculo {
+  border: 1px solid #e2e8f0;              /* gris clarito */
+  cursor: pointer;                        /* mano al pasar */
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.card-vehiculo:hover {
+  background-color: #f7fafc;              /* gris muy clarito */
+  border-color: #2a69ac33;                /* borde azulado suave */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Si tu .card global no tiene position: relative, sumalo para el before opcional */
+.card {
+  position: relative;
+}
+
+/* Barra de color a la izquierda (opcional, queda buena) */
+.card-vehiculo::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(#2a69ac, #63b3ed); /* azul -> celeste */
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.card-vehiculo:hover::before {
+  opacity: 1;
+}

@@ -21,6 +21,18 @@ class Taller(models.Model):
         # self.orden_de_trabajo viene del related_name en OrdenDeTrabajo.taller
         cliente_ids = self.orden_de_trabajo.values_list("cliente_id", flat=True).distinct()
         return Cliente.objects.filter(id__in=cliente_ids)
+    
+    @property
+    def vehiculos(self):
+        """
+        Devuelve un queryset de Vehiculos que tienen al menos
+        una OrdenDeTrabajo en este taller.
+        """
+        from vehiculos.models.vehiculo import Vehiculo  # import local para evitar ciclos
+
+        # self.orden_de_trabajo viene del related_name en OrdenDeTrabajo.taller
+        vehiculo_ids = self.orden_de_trabajo.values_list("vehiculo_id", flat=True).distinct()
+        return Vehiculo.objects.filter(id__in=vehiculo_ids)
 
     def __str__(self):
         return self.nombre

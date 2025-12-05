@@ -1,86 +1,176 @@
-<!-- Search and Filter Section -->
-<section class="mb-6 card p-4 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+<!-- Filtros -->
+<section class="mb-6 card p-4 flex flex-col gap-4">
+  <!-- Título + botón agregar vehículo -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+    <h2 class="text-lg font-semibold text-gray-800">
+      Vehículos del taller
+    </h2>
+
+    <button
+      type="button"
+      class="button-primary boton-agregar-vehiculo"
+      (click)="irASelectorVehiculo()"
+    >
+      + Agregar vehículo
+    </button>
+  </div>
+
+  <!-- Línea 1: búsqueda + botones -->
+  <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-end">
     <div class="flex-1">
-        <input type="text" placeholder="Buscar vehículo por patente, marca o modelo..." class="w-full">
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        Buscar vehículo
+      </label>
+      <input
+        type="text"
+        placeholder="Por patente, marca o modelo..."
+        [(ngModel)]="terminoBusqueda"
+        (keyup.enter)="onBuscar()"
+        class="w-full"
+      />
     </div>
-    <div class="w-full md:w-auto">
-        <select class="w-full">
-            <option>Marca</option>
-            <option>Ford</option>
-            <option>Chevrolet</option>
-            <option>Toyota</option>
-        </select>
+
+    <div class="flex gap-2 justify-end">
+      <button
+        type="button"
+        class="button-primary"
+        (click)="onBuscar()"
+      >
+        Buscar
+      </button>
+      <button
+        type="button"
+        class="button-secondary"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar
+      </button>
     </div>
-    <div class="w-full md:w-auto">
-        <select class="w-full">
-            <option>Tipo de servicio</option>
-            <option>Mecánica general</option>
-            <option>Chapa y pintura</option>
-            <option>Service</option>
-        </select>
+  </div>
+
+  <!-- Línea 2: filtros (marca, modelo, año, tipo servicio) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+    <!-- Marca -->
+    <div>
+      <label class="filter-label">Marca</label>
+      <select
+        class="filter-input w-full"
+        [(ngModel)]="filtroMarca"
+      >
+        <option value="">Todas</option>
+        @for (marca of marcasDisponibles; track marca) {
+          <option [value]="marca">{{ marca }}</option>
+        }
+      </select>
     </div>
-    <button class="button-primary w-full md:w-auto">Buscar</button>
+
+    <!-- Modelo -->
+    <div>
+      <label class="filter-label">Modelo</label>
+      <select
+        class="filter-input w-full"
+        [(ngModel)]="filtroModelo"
+      >
+        <option value="">Todos</option>
+        @for (modelo of modelosDisponibles; track modelo) {
+          <option [value]="modelo">{{ modelo }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Año -->
+    <div>
+      <label class="filter-label">Año</label>
+      <input
+        type="number"
+        class="filter-input w-full"
+        [(ngModel)]="filtroAnio"
+        placeholder="Ej: 2018"
+      />
+    </div>
+
+    <!-- Tipo de servicio -->
+    <div>
+      <label class="filter-label">Tipo de servicio</label>
+      <select
+        class="filter-input w-full"
+        [(ngModel)]="filtroTipoServicio"
+      >
+        <option [ngValue]="null">Todos</option>
+        @for (tipo of tiposServicio; track tipo.id) {
+          <option [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+        }
+      </select>
+    </div>
+  </div>
 </section>
 
-<!-- Vehicle List Section -->
+<!-- Lista de vehículos -->
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Vehicle Card Example 1 -->
-    <div class="card p-6 flex flex-col">
-        <div class="flex items-center mb-4">
-            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-                <i class="fas fa-car text-gray-600 text-3xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-gray-900">Ford Focus</h2>
-                <p class="text-gray-600 text-sm">Patente: ABC 123</p>
-            </div>
+  @for (vehiculo of vehiculosFiltrados; track vehiculo.id) {
+    <div
+      class="card card-vehiculo p-6 flex flex-col"
+      (click)="verVehiculo(vehiculo)"
+    >
+      <div class="flex items-center mb-4">
+        <div
+          class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4"
+        >
+          <i class="fas fa-car text-gray-600 text-3xl"></i>
         </div>
-        <div class="text-gray-700 flex-grow mb-4">
-            <p class="mb-2"><i class="fas fa-calendar-alt mr-2 text-gray-500"></i>Modelo: 2018</p>
-            <p class="mb-2"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Propietario: Juan Pérez</p>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">
+            {{ vehiculo.marca }} {{ vehiculo.modelo }}
+          </h2>
+          <p class="text-gray-600 text-sm">
+            Patente: {{ vehiculo.dominio }}
+          </p>
         </div>
-        <div class="flex justify-end">
-            <button class="button-secondary text-sm">Ver detalles</button>
-        </div>
-    </div>
+      </div>
 
-    <!-- Vehicle Card Example 2 -->
-    <div class="card p-6 flex flex-col">
-        <div class="flex items-center mb-4">
-            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-                <i class="fas fa-truck-monster text-gray-600 text-3xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-gray-900">Chevrolet S-10</h2>
-                <p class="text-gray-600 text-sm">Patente: XYZ 789</p>
-            </div>
-        </div>
-        <div class="text-gray-700 flex-grow mb-4">
-            <p class="mb-2"><i class="fas fa-calendar-alt mr-2 text-gray-500"></i>Modelo: 2020</p>
-            <p class="mb-2"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Propietario: María Rodriguez</p>
-        </div>
-        <div class="flex justify-end">
-            <button class="button-secondary text-sm">Ver detalles</button>
-        </div>
-    </div>
+      <div class="text-gray-700 flex-grow mb-4">
+        <p class="mb-2">
+          <i class="fas fa-calendar-alt mr-2 text-gray-500"></i>
+          Modelo: {{ vehiculo['año'] }}
+        </p>
 
-    <!-- Vehicle Card Example 3 -->
-    <div class="card p-6 flex flex-col">
-        <div class="flex items-center mb-4">
-            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-                <i class="fas fa-motorcycle text-gray-600 text-3xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-gray-900">Honda CB250 Twister</h2>
-                <p class="text-gray-600 text-sm">Patente: MNO 456</p>
-            </div>
-        </div>
-        <div class="text-gray-700 flex-grow mb-4">
-            <p class="mb-2"><i class="fas fa-calendar-alt mr-2 text-gray-500"></i>Modelo: 2021</p>
-            <p class="mb-2"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Propietario: José Fernández</p>
-        </div>
-        <div class="flex justify-end">
-            <button class="button-secondary text-sm">Ver detalles</button>
-        </div>
+        <p class="mb-2">
+          <i class="fas fa-user-circle mr-2 text-gray-500"></i>
+          Propietario:
+          {{ vehiculo.propietario}}
+          {{ vehiculo.propietario }}
+        </p>
+
+        @if (vehiculo.fecha_prox_servicio) {
+          <p class="mb-2">
+            <i class="fas fa-wrench mr-2 text-gray-500"></i>
+            Próximo servicio:
+            {{ vehiculo.fecha_prox_servicio | date:'dd/MM/yyyy' }}
+          </p>
+        }
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          class="button-secondary text-sm"
+          (click)="crearOrdenParaVehiculo(vehiculo); $event.stopPropagation()"
+        >
+          Crear orden
+        </button>
+
+        <button
+          type="button"
+          class="button-secondary text-sm"
+          (click)="verVehiculo(vehiculo); $event.stopPropagation()"
+        >
+          Ver detalles
+        </button>
+      </div>
     </div>
+  } @empty {
+    <div class="col-span-full text-center text-gray-500">
+      No se encontraron vehículos con los filtros actuales.
+    </div>
+  }
 </section>

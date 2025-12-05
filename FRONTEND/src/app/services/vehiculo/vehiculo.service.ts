@@ -9,13 +9,13 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class VehiculoService {
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = 'http://127.0.0.1:8000/api/vehiculos/';
   public vehiculos: Vehiculo[] = [];
 
   constructor(private http: HttpClient, private auth:AuthService){}
 
   getVehiculos(): Observable<Vehiculo[]> {
-    const url = `${this.apiUrl}/clientes/vehiculos/`;
+    const url = `${this.apiUrl}`;
     return this.http.get<Vehiculo[]>(url).pipe(
       tap(v => {
         this.vehiculos = v;
@@ -28,10 +28,6 @@ export class VehiculoService {
   getVehiculoById(id: number): Observable<Vehiculo | undefined> {
     const vehiculo = this.vehiculos.find(v => v.id === id);
     return of(vehiculo);
-  }
-
-  getTalleresAutorizados(clienteId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/${clienteId}/talleres_autorizados/`);
   }
 
 }

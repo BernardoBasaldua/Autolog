@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { inject } from '@angular/core';
+import { inject, signal } from '@angular/core';
 
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
@@ -8,6 +8,7 @@ import { ClienteModel } from '../../../models/usuarios/usuario.model';
 
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Historial } from './historial/historial';
 
 
 @Component({
@@ -17,12 +18,12 @@ import { CommonModule } from '@angular/common';
   templateUrl: './cli-inicio.html',
   styleUrl: './cli-inicio.css'
 })
+
+
 export class CliInicio implements OnInit {
-  mis_vehiculos?: Vehiculo[] = [];
-  vehiculos_autorizados?: Vehiculo[] = [];
   clienteService = inject(ClienteService); 
-  clienteActual: ClienteModel | null = null;
-  
+
+  clienteActual = this.clienteService.clienteActual //: ClienteModel | null = null;
   
 
   constructor(private vehiculoService: VehiculoService, private router: Router) {}
@@ -30,17 +31,11 @@ export class CliInicio implements OnInit {
   ngOnInit(): void {
     console.log('Iniciando componentec cliInicio y esperando vehículos...');
     this.clienteService.getMiCliente().subscribe({
-      next: (data) =>{ 
-        this.clienteActual = data;
-        this.mis_vehiculos = this.clienteActual.mis_vehiculos;
-        this.vehiculos_autorizados = this.clienteActual.vehiculos_externos;
-
-      },
+      next: () =>{},
       error:(error)=>{
-        console.log('error al obtener cliente, back no responde');}
+        console.log('error al obtener cliente, back no responde', error);}
     });
-    //Una Promesa (Promise) te trae un solo valor en el futuro (por ejemplo, el resultado de una petición HTTP). Un Observable (Observable) puede traerte uno, varios o infinitos valores en distintos momentos del tiempo (como un stream/canal de datos). Cuando hacés una petición HTTP en Angular con HttpClient, no obtenés el resultado directo. En cambio, te devuelve un Observable. 
-    // Un Observable es como un “canal de datos” al que vos te suscribís para recibir lo que emita (los datos o los errores).
+    
   }
   
 

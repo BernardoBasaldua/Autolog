@@ -4,17 +4,22 @@ import { HttpClient } from '@angular/common/http';
 import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { PermisoDeAcceso } from '../../../models/permisos/permiso-acceso.model';
 
-import { Observable, map, tap, switchMap } from 'rxjs';
+import { Observable, map, tap, switchMap, of } from 'rxjs';
+import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
+import { AuthService } from '../../auth/auth.service';
 
 
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
   private apiClientesUrl = 'http://127.0.0.1:8000/api/clientes/';
-  private apiTalleresUrl = 'http://127.0.0.1:8000/api/talleres/';
+  
 
   // estado en memoria
   clienteActual = signal<ClienteModel | null>(null);
+  mis_vehiculos = signal<Vehiculo[]>([]);
+  vehiculos_autorizados = signal<Vehiculo[]>([]);
+  
 
   constructor(private http: HttpClient) {}
 
@@ -32,8 +37,11 @@ export class ClienteService {
     // así que GET /api/clientes/ debería devolver una LISTA con 1 elemento.
     return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(listaCliente => {
-        this.clienteActual.set(listaCliente[0]);
-        console.log('client en MEMORIA:', listaCliente[0]);
+        const cliente = listaCliente[0];
+        this.clienteActual.set(cliente);
+        this.mis_vehiculos.set(cliente.mis_vehiculos ?? []);
+        this.vehiculos_autorizados.set(cliente.vehiculos_externos ?? []);
+        console.log('client en MEMORIA:', cliente);
       }),
       map(listaCliente => listaCliente[0])  // me quedo con el primer (y único) cliente
     );
@@ -69,13 +77,12 @@ export class ClienteService {
     );
   }
 
-eliminarPermiso(vehiculoId: number, permisoId: number): Observable<void> {
-  // construimos la URL con el id del vehículo y el permiso_id como query param
-  const url = `${this.apiClientesUrl}${vehiculoId}/eliminar_permiso/?permiso_id=${permisoId}`;
-  
-  return this.http.delete<void>(url).pipe(
-    map(() => void 0) // convierte el resultado a 'void'
-  );
-}
-
+  eliminarPermiso(vehiculoId: number, permisoId: number): Observable<void> {
+    // construimos la URL con el id del vehículo y el permiso_id como query param
+    const url = `${this.apiClientesUrl}${vehiculoId}/eliminar_permiso/?permiso_id=${permisoId}`;
+    
+    return this.http.delete<void>(url).pipe(
+      map(() => void 0) // convierte el resultado a 'void'
+    );
+  }
 }
