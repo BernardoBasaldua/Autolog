@@ -41,9 +41,10 @@
 
   <button
     class="button-primary mb-4"
-    (click)="mostrarFormulario = !mostrarFormulario">
+    [routerLink]="['/cliente/seleccion-usuario', vehiculoId]">
     + Nuevo permiso
   </button>
+
 
   <!-- Formulario para crear permiso -->
   <div *ngIf="mostrarFormulario" class="space-y-4 mt-4">

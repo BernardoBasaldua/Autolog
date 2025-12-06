@@ -10,6 +10,7 @@ import { Vehiculo } from  '../../../../models/vehiculo/vehiculo.model'
 import { Taller } from  '../../../../models/talleres/taller.model'
 import { ClienteModel } from  '../../../../models/usuarios/usuario.model'
 import { ActivatedRoute } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
@@ -18,7 +19,7 @@ import { Observable } from 'rxjs';
   selector: 'app-permisos',
   templateUrl: './permisos.html',
   imports: [NgIf, NgForOf, CommonModule,
-    FormsModule]
+    FormsModule, RouterModule] 
 })
 export class Permisos implements OnInit {
 
@@ -54,16 +55,7 @@ export class Permisos implements OnInit {
 
   ngOnInit(): void {
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
-    
-
-    // 1) Cargar clientes primero
-    this.usuarioService.getClientes().subscribe(clientes => {
-      this.clientesExistentes = clientes;
-      console.log("CLIENTES EXISTENTES:", this.clientesExistentes);
-
-      // 2) Luego cargar permisos
-      this.cargarPermisosYProcesar();
-    });
+    this.cargarPermisosYProcesar();
     // cargar listas de clientes y talleres si las necesitás en el select
 
     // this.clienteService.getClientes().subscribe((data: ClienteModel[]) => this.clientes = data);

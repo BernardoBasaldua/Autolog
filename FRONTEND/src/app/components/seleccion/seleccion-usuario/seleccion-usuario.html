@@ -16,14 +16,26 @@
       Usuarios existentes
     </button>
 
+      @if (tipo != "permisos"){ 
     <button
-      type="button"
-      class="tab-button"
-      [ngClass]="{ 'active': modo === 'nuevo-desde-taller' }"
-      (click)="crearUsuarioNuevo()"
-    >
-      Crear nuevo usuario
+        type="button"
+        class="tab-button"
+        [ngClass]="{ 'active': modo === 'nuevo-desde-taller' }"
+        (click)="crearUsuarioNuevo()"
+      >
+        Crear usuario nuevo
     </button>
+    }
+    @else {
+      <button
+        type="button"
+        class="tab-button"
+        [ngClass]="{ 'active': modo === 'permisos' }"
+        (click)="mostrarTalleresExistentes()"
+      >
+        Talleres existentes
+    </button>
+    }
   </div>
 
   <!-- 🔹 Filtro: solo tiene sentido en usuarios existentes -->
@@ -58,14 +70,22 @@
         <p class="text-sm text-gray-600">Direccion: {{ usuario.direccion }}</p>
 
         <div class="mt-4 flex justify-end">
-          <!-- @if (modo != "permisos"){ -->
+          @if (tipo != "permisos"){ 
             <button
               class="button-secondary"
               (click)="crearOrden(usuario); $event.stopPropagation()"
             >
               Crear orden de trabajo
             </button>
-          <!-- } -->
+          }
+          @else {
+            <button
+              class="button-secondary"
+              (click)="otorgarPermiso(usuario); $event.stopPropagation()"
+            >
+              Otorgar permiso
+            </button>
+          } 
         </div>
       </div>
     } @empty {
@@ -78,4 +98,45 @@
 } @else if (modo === 'nuevo-desde-taller') {
   <!-- Formulario para crear cliente/usuario nuevo -->
   <app-form-clientes [modo]="'alta-desde-taller'"></app-form-clientes>
+} @else if (modo === 'permisos') {
+<!-- Lista de usuarios existentes -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (usuario of usuariosFiltrados; track usuario.pk) {
+      <div
+        class="card card-usuario p-4 flex flex-col"
+        (click)="verUsuario(usuario)"
+      >
+        <h2 class="font-bold text-lg">
+          {{ usuario.first_name }} {{ usuario.last_name }}
+        </h2>
+        <p class="text-sm text-gray-600">DNI: {{ usuario.dni }}</p>
+        <p class="text-sm text-gray-600">Email: {{ usuario.email }}</p>
+        <p class="text-sm text-gray-600">Telefono: {{ usuario.telefono }}</p>
+        <p class="text-sm text-gray-600">Direccion: {{ usuario.direccion }}</p>
+
+        <div class="mt-4 flex justify-end">
+          @if (tipo != "permisos"){ 
+            <button
+              class="button-secondary"
+              (click)="crearOrden(usuario); $event.stopPropagation()"
+            >
+              Crear orden de trabajo
+            </button>
+          }
+          @else {
+            <button
+              class="button-secondary"
+              (click)="otorgarPermiso(usuario); $event.stopPropagation()"
+            >
+              Otorgar permiso
+            </button>
+          } 
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full text-center text-gray-500">
+        No se encontraron usuarios.
+      </div>
+    }
+  </section>
 }
