@@ -20,14 +20,16 @@
           Propietario
         </label>
 
-        <button
-          type="button"
-          class="inline-add-button"
-          (click)="nuevoCliente()"
-        >
-          <i class="fas fa-plus mr-1 text-xs"></i>
-          Nuevo cliente
-        </button>
+        @if (!esDesdeCliente()) {
+          <button
+            type="button"
+            class="inline-add-button"
+            (click)="nuevoCliente()"
+          >
+            <i class="fas fa-plus mr-1 text-xs"></i>
+            Nuevo cliente
+          </button>
+        }
       </div>
 
       <select
@@ -252,51 +254,55 @@
       }
     </div>
 
-    <!-- INTERVALO KM -->
-    <div>
-      <label
-        for="vehiculo-intervalo-km"
-        class="block text-gray-700 text-sm font-medium mb-1"
-      >
-        Intervalo de servicio (km)
-      </label>
-      <input
-        type="number"
-        id="vehiculo-intervalo-km"
-        formControlName="intervaloKm"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        [ngClass]="{ 'input-invalid': isInvalid('intervaloKm') }"
-      />
+    <!-- INTERVALO KM Y MESES: solo visibles para TALLER -->
+    @if (!esDesdeCliente()) {
 
-      @if (vehiculoForm.get('intervaloKm')?.hasError('required') && isInvalid('intervaloKm')) {
-        <small class="text-red-600">El intervalo de km es obligatorio.</small>
-      }
+      <!-- INTERVALO KM -->
+      <div>
+        <label
+          for="vehiculo-intervalo-km"
+          class="block text-gray-700 text-sm font-medium mb-1"
+        >
+          Intervalo de servicio (km)
+        </label>
+        <input
+          type="number"
+          id="vehiculo-intervalo-km"
+          formControlName="intervaloKm"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [ngClass]="{ 'input-invalid': isInvalid('intervaloKm') }"
+        />
+
+        @if (vehiculoForm.get('intervaloKm')?.hasError('required') && isInvalid('intervaloKm')) {
+          <small class="text-red-600">El intervalo de km es obligatorio.</small>
+        }
+      </div>
+
+      <!-- INTERVALO MESES -->
+      <div>
+        <label
+          for="vehiculo-intervalo-meses"
+          class="block text-gray-700 text-sm font-medium mb-1"
+        >
+          Intervalo de servicio (meses)
+        </label>
+        <input
+          type="number"
+          id="vehiculo-intervalo-meses"
+          formControlName="intervaloMeses"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          [ngClass]="{ 'input-invalid': isInvalid('intervaloMeses') }"
+        />
+
+        @if (vehiculoForm.get('intervaloMeses')?.hasError('required') && isInvalid('intervaloMeses')) {
+          <small class="text-red-600">El intervalo en meses es obligatorio.</small>
+        }
+      </div>
+    }
     </div>
 
-    <!-- INTERVALO MESES -->
-    <div>
-      <label
-        for="vehiculo-intervalo-meses"
-        class="block text-gray-700 text-sm font-medium mb-1"
-      >
-        Intervalo de servicio (meses)
-      </label>
-      <input
-        type="number"
-        id="vehiculo-intervalo-meses"
-        formControlName="intervaloMeses"
-        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        [ngClass]="{ 'input-invalid': isInvalid('intervaloMeses') }"
-      />
-
-      @if (vehiculoForm.get('intervaloMeses')?.hasError('required') && isInvalid('intervaloMeses')) {
-        <small class="text-red-600">El intervalo en meses es obligatorio.</small>
-      }
-    </div>
-
-  </div>
 
   <button
     type="submit"

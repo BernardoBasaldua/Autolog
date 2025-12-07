@@ -19,7 +19,11 @@
     <button
       type="button"
       class="tab-button"
-      [ngClass]="{ 'active': modo === 'nuevo-desde-taller' }"
+      [ngClass]="{
+        'active':
+          modo === 'nuevo-desde-taller' ||
+          modo === 'nuevo-desde-cliente'
+      }"
       (click)="crearVehiculoNuevo()"
     >
       Crear nuevo vehículo
@@ -70,14 +74,16 @@
           }
         </p>
 
-        <div class="mt-4 flex justify-end">
-          <button
-            class="button-secondary"
-            (click)="seleccionarVehiculo(vehiculo); $event.stopPropagation()"
-          >
-            Usar este vehículo
-          </button>
-        </div>
+        @if (!esDesdeCliente) {
+          <div class="mt-4 flex justify-end">
+            <button
+              class="button-secondary"
+              (click)="seleccionarVehiculo(vehiculo); $event.stopPropagation()"
+            >
+              Usar este vehículo
+            </button>
+          </div>
+        }
       </div>
     } @empty {
       <div class="col-span-full text-center text-gray-500">
@@ -86,9 +92,10 @@
     }
   </section>
 
-} @else if (modo === 'nuevo-desde-taller') {
+} @else if (modo === 'nuevo-desde-taller' || modo === 'nuevo-desde-cliente') {
   <!-- Formulario para crear vehículo nuevo desde el taller -->
   <app-form-vehiculos
    (vehiculoCreado)="onVehiculoCreado($event)" 
+   [esDesdeCliente]="esDesdeCliente"
    ></app-form-vehiculos>
 }

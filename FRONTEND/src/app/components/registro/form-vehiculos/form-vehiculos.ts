@@ -41,6 +41,8 @@ export class FormVehiculos {
   //propietario preseleccionado desde el lado del cliente
   propietarioId = input<number | null>(null);
 
+  esDesdeCliente = input<boolean>(false);
+
   vehiculoForm: FormGroup;
 
   // Listas auxiliares
@@ -74,20 +76,41 @@ export class FormVehiculos {
   }
 
   ngOnInit(): void {
-    this.cargarPropietarios();
+    // Siempre cargamos marcas y modelos
     this.cargarMarcasYModelos();
 
-    // Si viene un propietarioId desde afuera, lo precargamos
-    const pre = this.propietarioId();
-    if (pre) {
-      this.vehiculoForm.get('propietarioId')?.setValue(pre);
-    }
-      // Al inicio, sin marca => deshabilito modelo
+    // Al inicio, sin marca => deshabilito modelo
     const modeloCtrl = this.vehiculoForm.get('modeloId');
     modeloCtrl?.disable();
 
+    // 🔹 Si el form se está usando desde el CLIENTE
+    if (this.esDesdeCliente()) {
+      // NO cargamos todos los propietarios, solo usamos el cliente logueado
+      this.clienteService.getMiCliente().subscribe({
+        next: (cli) => {
+          // seteamos el propietario con el cliente actual
+          this.vehiculoForm.get('propietarioId')?.setValue(cli.id);
+          // y lo bloqueamos para que no se pueda cambiar
+          this.vehiculoForm.get('propietarioId')?.disable();
+        },
+        error: (e) => console.error('Error obteniendo cliente actual', e),
+      });
+    }
+    
+    // 🔹 Si el form se está usando desde el TALLER → queda como antes
+    else {
+      this.cargarPropietarios();
+
+      // Si viene un propietarioId desde afuera, lo precargamos (comportamiento original)
+      const pre = this.propietarioId();
+      if (pre) {
+        this.vehiculoForm.get('propietarioId')?.setValue(pre);
+      }
+    }
+
     // TODO: si modo() === 'editar', cargar datos del vehículo a editar
   }
+
 
   // ---------------- PROPIETARIOS ----------------
 
@@ -246,61 +269,132 @@ export class FormVehiculos {
 
   // ---------------- GUARDAR ----------------
 
-  guardarVehiculo(): void {
-    if (this.vehiculoForm.invalid) {
-      this.vehiculoForm.markAllAsTouched();
-      return;
-    }
+  // guardarVehiculo(): void {
+  //   if (this.vehiculoForm.invalid) {
+  //     this.vehiculoForm.markAllAsTouched();
+  //     return;
+  //   }
 
-    const formValue = this.vehiculoForm.value;
+  //   const formValue = this.vehiculoForm.getRawValue();
 
-    const payload: VehiculoCreatePayload = {
-      propietario: formValue.propietarioId,
-      año: formValue.anio,
-      dominio: formValue.dominio,
-      intervalo_servicio_km: formValue.intervaloKm,
-      intervalo_servicio_meses: formValue.intervaloMeses,
-      modelo_id: formValue.modeloId,
-    };
+  //   const payload: VehiculoCreatePayload = {
+  //     propietario: formValue.propietarioId,
+  //     año: formValue.anio,
+  //     dominio: formValue.dominio,
+  //     intervalo_servicio_km: formValue.intervaloKm,
+  //     intervalo_servicio_meses: formValue.intervaloMeses,
+  //     modelo_id: formValue.modeloId,
+  //   };
 
-    if (this.modo() === 'alta-desde-taller') {
-    console.log('Payload para crear vehículo:', payload);
+  //   if (this.modo() === 'alta-desde-taller') {
+  //   console.log('Payload para crear vehículo:', payload);
 
-    this.vehiculoService.crearVehiculo(payload).subscribe({
-      next: (vehiculoCreado) => {
-        console.log('Vehículo creado:', vehiculoCreado);
-        alert('Vehículo creado correctamente');
+  //   this.vehiculoService.crearVehiculo(payload).subscribe({
+  //     next: (vehiculoCreado) => {
+  //       console.log('Vehículo creado:', vehiculoCreado);
+  //       alert('Vehículo creado correctamente');
 
-        this.vehiculoForm.reset();
+  //       this.vehiculoForm.reset();
 
         
+  //       this.vehiculoCreado.emit(vehiculoCreado);
+  //     },
+  //     error: (e) => {
+  //       console.error('Error creando vehículo:', e);
+  //       // alert('No se pudo crear el vehículo');
+  //       // DRF suele mandar errores en err.error
+  //       const data = e?.error;
+
+  //       // Caso típico: { dominio: ["..."] }
+  //       const msgDominio =
+  //         Array.isArray(data?.dominio) ? data.dominio.join(' ') : null;
+
+  //       // Fallbacks
+  //       const msgGeneral =
+  //         data?.detail ||
+  //         data?.message ||
+  //         'No se pudo crear el vehículo ';
+
+  //       alert(msgDominio ?? msgGeneral);
+  //         },
+  //   });
+
+  // } else {
+  //   // editar...
+  // }
+
+  // }
+
+  guardarVehiculo(): void {
+  if (this.vehiculoForm.invalid) {
+    this.vehiculoForm.markAllAsTouched();
+    return;
+  }
+
+  const formValue = this.vehiculoForm.getRawValue();
+  console.log('Form raw value:', formValue);
+
+  const payload: VehiculoCreatePayload = {
+    propietario: formValue.propietarioId,
+    año: formValue.anio,
+    dominio: formValue.dominio,
+    intervalo_servicio_km: formValue.intervaloKm,
+    intervalo_servicio_meses: formValue.intervaloMeses,
+    modelo_id: formValue.modeloId,
+  };
+
+  console.log('Payload que se envía:', payload);
+
+  if (this.modo() === 'editar') {
+    // TODO editar
+    return;
+  }
+
+  if (this.esDesdeCliente()) {
+    const clienteId = formValue.propietarioId;
+    this.vehiculoService.crearVehiculoCliente(clienteId, payload).subscribe({
+      next: (vehiculoCreado) => {
+        console.log('Vehículo creado DESDE CLIENTE:', vehiculoCreado);
+        alert('Vehículo creado correctamente');
+        this.vehiculoForm.reset();
         this.vehiculoCreado.emit(vehiculoCreado);
       },
       error: (e) => {
-        console.error('Error creando vehículo:', e);
-        // alert('No se pudo crear el vehículo');
-        // DRF suele mandar errores en err.error
+        console.error('Error creando vehículo DESDE CLIENTE:', e);
         const data = e?.error;
-
-        // Caso típico: { dominio: ["..."] }
         const msgDominio =
           Array.isArray(data?.dominio) ? data.dominio.join(' ') : null;
-
-        // Fallbacks
+        const msgGeneral =
+          data?.detail ||
+          data?.message ||
+          'No se pudo crear el vehículo desde cliente';
+        alert(msgDominio ?? msgGeneral);
+      },
+    });
+  } else {
+    this.vehiculoService.crearVehiculo(payload).subscribe({
+      next: (vehiculoCreado) => {
+        console.log('Vehículo creado DESDE TALLER:', vehiculoCreado);
+        alert('Vehículo creado correctamente');
+        this.vehiculoForm.reset();
+        this.vehiculoCreado.emit(vehiculoCreado);
+      },
+      error: (e) => {
+        console.error('Error creando vehículo DESDE TALLER:', e);
+        const data = e?.error;
+        const msgDominio =
+          Array.isArray(data?.dominio) ? data.dominio.join(' ') : null;
         const msgGeneral =
           data?.detail ||
           data?.message ||
           'No se pudo crear el vehículo ';
-
         alert(msgDominio ?? msgGeneral);
-          },
+      },
     });
-
-  } else {
-    // editar...
   }
+}
 
-  }
+
 
   // Helpers
   isInvalid(controlName: string): boolean {

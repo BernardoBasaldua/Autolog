@@ -11,6 +11,7 @@ import { AuthService } from '../auth/auth.service';
 export class VehiculoService {
   private apiUrl = 'http://127.0.0.1:8000/api/';
   private apiVehiculosUrl = 'http://127.0.0.1:8000/api/vehiculo/';
+  private apiClientesUrl = 'http://localhost:8000/api/clientes';
   private apiMarcasUrl = 'http://127.0.0.1:8000/api/marca/';
   private apiModelosUrl = 'http://127.0.0.1:8000/api/modelo/';
   vehiculos = signal<Vehiculo[]>([]);
@@ -50,6 +51,21 @@ export class VehiculoService {
       })
     );
   }
+  crearVehiculoCliente(
+  clienteId: number,
+  vehiculo: VehiculoCreatePayload
+  ): Observable<any> {
+
+    const url = `${this.apiClientesUrl}/${clienteId}/crear_vehiculo/`;
+
+    return this.http.post<any>(url, vehiculo).pipe(
+      tap(() => {
+        // Igual que crearVehiculo()
+        this.listarTodos().subscribe();
+      })
+    );
+  }
+
 
   crearMarca(marca: MarcaCreatePayload): Observable<any> {
     return this.http.post<MarcaCreatePayload>(this.apiMarcasUrl, marca).pipe(

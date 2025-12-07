@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router , ActivatedRoute} from '@angular/router';
 
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
 import { FormVehiculos } from '../../registro/form-vehiculos/form-vehiculos';
 
-type Modo = 'default' | 'nuevo-desde-taller';
+type Modo = 'default' | 'nuevo-desde-taller'| 'nuevo-desde-cliente';
+
 
 @Component({
   selector: 'app-seleccion-vehiculo',
@@ -18,15 +19,25 @@ type Modo = 'default' | 'nuevo-desde-taller';
 export class SeleccionVehiculo {
   private vehiculosService = inject(VehiculoService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   modo: Modo = 'default';
+  esDesdeCliente = false;
 
   vehiculos: Vehiculo[] = [];
   vehiculosFiltrados: Vehiculo[] = [];
   terminoBusqueda = '';
 
   ngOnInit(): void {
-    this.cargarVehiculos();
+    this.route.queryParams.subscribe((params) => {
+      const modoParam = params['modo'] as string | undefined;
+
+      
+      // Si vino con modo = 'alta-desde-cliente', marcamos que viene del cliente
+      this.esDesdeCliente = modoParam === 'alta-desde-cliente';
+
+      this.cargarVehiculos();
+    });
   }
 
   onVehiculoCreado(v: any) {
@@ -49,9 +60,13 @@ export class SeleccionVehiculo {
   }
 
   volver(): void {
-    // Volver a la vista principal de vehículos del taller
+  if (this.esDesdeCliente) {
+    this.router.navigate(['/cliente']);
+  } else {
     this.router.navigate(['/taller/vehiculos']);
   }
+}
+
 
   filtrar(): void {
     const termino = this.terminoBusqueda.toLowerCase().trim();
@@ -92,8 +107,15 @@ export class SeleccionVehiculo {
   }
 
   crearVehiculoNuevo(): void {
-    this.modo = 'nuevo-desde-taller';
+    // Si ya vengo como cliente, mantengo el modo cliente.
+    // Si no, uso el modo taller.
+    if (this.esDesdeCliente) {
+      this.modo = 'nuevo-desde-cliente';
+    } else {
+      this.modo = 'nuevo-desde-taller';
+    }
   }
+
 
   verVehiculo(vehiculo: Vehiculo): void {
     // TODO opcional:
