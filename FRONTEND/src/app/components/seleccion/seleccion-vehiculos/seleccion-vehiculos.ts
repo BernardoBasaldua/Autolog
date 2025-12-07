@@ -29,18 +29,23 @@ export class SeleccionVehiculo {
     this.cargarVehiculos();
   }
 
+  onVehiculoCreado(v: any) {
+    
+    this.cargarVehiculos();
+    // cambiar tab
+    this.modo = 'default';
+  }
+
   cargarVehiculos(): void {
-    // TODO:
-    // - Llamar al servicio que lista los vehículos que pueden usarse desde el taller.
-    //   Ejemplo (ajustá al método real):
-    //
-    //   this.vehiculosService.listarTodos().subscribe({
-    //     next: (vehiculos) => {
-    //       this.vehiculos = vehiculos;
-    //       this.vehiculosFiltrados = vehiculos;
-    //     },
-    //     error: (e) => console.error('Error cargando vehículos', e),
-    //   });
+    
+      this.vehiculosService.listarTodos().subscribe({
+        next: (vehiculos) => {
+          this.vehiculos = vehiculos;
+          this.vehiculosFiltrados = vehiculos;
+        },
+        error: (e) => console.error('Error cargando vehículos', e),
+      });
+  
   }
 
   volver(): void {

@@ -37,6 +37,8 @@ class VehiculoSerializer(serializers.ModelSerializer):
 
 
 class MarcaSerializer(serializers.ModelSerializer):
+    modelos = ModeloSerializer(many=True, read_only=True)
+
     class Meta:
         model = Marca
         fields = "__all__"

@@ -21,7 +21,6 @@ type TipoServicio = {
 })
 export class TaVehiculos implements OnInit {
   // Inyecciones de servicios
-  private vehiculosService = inject(VehiculoService);
   private talleresService = inject(TalleresService);
   private router = inject(Router);
 
@@ -46,9 +45,10 @@ export class TaVehiculos implements OnInit {
   ngOnInit(): void {
     // TODO:
     // - Llamar a cargarVehiculos() para traer los vehículos del taller.
+    this.cargarVehiculos();
     // - Llamar a cargarTiposServicio() para traer las prácticas de mantenimiento.
-    // - Una vez que tengas vehiculos, podés calcular marcas/modelos únicos
-    //   con cargarMarcasYModelosDisponibles().
+    // - Llamar a cargarMarcasYModelosDisponibles() para traer marcas/modelos.
+    
   }
 
   cargarVehiculos(): void {
@@ -59,6 +59,14 @@ export class TaVehiculos implements OnInit {
     //     this.vehiculosFiltrados = respuesta;
     // - Luego llamar a this.cargarMarcasYModelosDisponibles() para armar
     //   las listas de marcas y modelos únicas para los filtros.
+    this.talleresService.getVehiculosDeTaller().subscribe(
+      {
+        next:(vehiculos) => {
+          this.vehiculos = vehiculos;
+          this.vehiculosFiltrados = vehiculos;
+        },
+        error:(e)=>{console.log('vehiculos no encontrados')}
+    });
   }
 
   cargarTiposServicio(): void {

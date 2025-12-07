@@ -7,7 +7,58 @@
     Datos del vehículo
   </h3>
 
+  <!-- ✅ UN SOLO GRID CONTENEDOR -->
   <div class="grid grid-cols-1 gap-4">
+
+    <!-- PROPIETARIO OBLIGATORIO -->
+    <div>
+      <div class="flex justify-between items-center mb-1">
+        <label
+          for="vehiculo-propietario"
+          class="block text-gray-700 text-sm font-medium"
+        >
+          Propietario
+        </label>
+
+        <button
+          type="button"
+          class="inline-add-button"
+          (click)="nuevoCliente()"
+        >
+          <i class="fas fa-plus mr-1 text-xs"></i>
+          Nuevo cliente
+        </button>
+      </div>
+
+      <select
+        id="vehiculo-propietario"
+        formControlName="propietarioId"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        [ngClass]="{ 'input-invalid': isInvalid('propietarioId') }"
+      >
+        <option [ngValue]="null">Seleccioná un propietario</option>
+
+        @for (p of propietarios(); track p.id) {
+          <option [ngValue]="p.id">
+            {{ formatPropietario(p) }}
+          </option>
+        }
+      </select>
+
+      @if (vehiculoForm.get('propietarioId')?.hasError('required') && isInvalid('propietarioId')) {
+        <small class="text-red-600">El propietario es obligatorio.</small>
+      }
+
+      <!-- Mensaje si viene con propietario preseleccionado -->
+      @if (propietarioId() !== null) {
+        <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
+          Este vehículo se asociará al cliente con ID
+          <strong>{{ propietarioId() }}</strong>.
+        </p>
+      }
+    </div>
+
     <!-- MARCA -->
     <div>
       <div class="flex justify-between items-center mb-1">
@@ -37,7 +88,7 @@
         (change)="onMarcaChange()"
       >
         <option [ngValue]="null">Seleccioná una marca</option>
-        @for (marca of marcas; track marca.id) {
+        @for (marca of marcas(); track marca.id) {
           <option [ngValue]="marca.id">{{ marca.nombre }}</option>
         }
       </select>
@@ -90,11 +141,18 @@
           type="button"
           class="inline-add-button"
           (click)="abrirFormModelo()"
+          [disabled]="!vehiculoForm.get('marcaId')?.value"
         >
           <i class="fas fa-plus mr-1 text-xs"></i>
           Nuevo modelo
         </button>
       </div>
+
+      @if (!vehiculoForm.get('marcaId')?.value) {
+        <small class="text-blue-500">
+          Seleccioná una marca para habilitar modelos.
+        </small>
+      }
 
       <select
         id="vehiculo-modelo"
@@ -238,13 +296,6 @@
       }
     </div>
 
-    <!-- Mensaje si viene con propietario preseleccionado -->
-    @if (propietarioId() !== null) {
-      <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
-        Este vehículo se asociará al cliente con ID
-        <strong>{{ propietarioId() }}</strong>.
-      </p>
-    }
   </div>
 
   <button
