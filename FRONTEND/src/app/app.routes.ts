@@ -44,6 +44,7 @@ export const routes: Routes = [
       { path: 'cliente/talleres/:tallerId/pedir_turno/:turnoFecha/seleccionar', component: CliSelTurno },
       { path: 'cliente/pm', component: CliPm },
       { path: 'cliente/config', component: CliConfig },
+      { path: 'cliente/vehiculos/seleccion-vehiculo', component: SeleccionVehiculo },
 
       { path: 'taller/ordenes', component: TaOrdenes },
       { path: 'taller/ordenes/nueva', component: TaNewOrder },

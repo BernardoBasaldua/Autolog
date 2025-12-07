@@ -49,6 +49,14 @@ export class CliInicio implements OnInit {
     this.router.navigate(['/cliente', 'historial', vehiculo.id]);
   }
 
+  agregarVehiculo(): void {
+  console.log('Click en agregar vehículo desde CLIENTE');
+  this.router.navigate(['/cliente/vehiculos/seleccion-vehiculo'], {
+    queryParams: { modo: 'alta-desde-cliente' },
+  });
+}
+
+
   proximoMantenimiento(vehiculo: Vehiculo) {
 
   }
