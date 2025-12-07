@@ -74,13 +74,6 @@
           }
         </p>
 
-        <div class="mt-4 flex justify-end">
-          <button
-            class="button-secondary"
-            (click)="seleccionarVehiculo(vehiculo); $event.stopPropagation()"
-          >
-            Crear orden de trabajo
-          </button>
         </div>
         @if (!esDesdeCliente) {
           <div class="mt-4 flex justify-end">
@@ -88,11 +81,11 @@
               class="button-secondary"
               (click)="seleccionarVehiculo(vehiculo); $event.stopPropagation()"
             >
-              Usar este vehículo
+              Crear orden de trabajo
             </button>
           </div>
         }
-      </div>
+        
     } @empty {
       <div class="col-span-full text-center text-gray-500">
         No se encontraron vehículos.
