@@ -1,0 +1,21 @@
+.tabs{
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #e5e7eb; /* gris suave */
+  margin-bottom: 12px;
+}
+
+.tab-button{
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #374151;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent; /* clave */
+  cursor: pointer;
+}
+
+.tab-button.active{
+  color: #2563eb;
+  border-bottom-color: #2563eb; /* subrayado solo bajo el tab */
+}

@@ -16,7 +16,6 @@ class VehiculoSerializer(serializers.ModelSerializer):
     modelo_id = serializers.PrimaryKeyRelatedField(
         queryset=Modelo.objects.all(), source="modelo", write_only=True
     )
-
     marca = serializers.SerializerMethodField()
     modelo = ModeloSerializer(read_only=True)
     fecha_prox_servicio = serializers.DateField(read_only=True)
