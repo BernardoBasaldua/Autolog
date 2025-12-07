@@ -39,7 +39,7 @@
   </div>
 
   <!-- 🔹 Filtro: solo tiene sentido en usuarios existentes -->
-  @if (modo === 'default') {
+  @if (modo === 'default'|| modo === 'permisos') {
     <div class="flex flex-col md:flex-row gap-4">
       <input
         type="text"
@@ -81,7 +81,7 @@
           @else {
             <button
               class="button-secondary"
-              (click)="otorgarPermiso(usuario); $event.stopPropagation()"
+              (click)="otorgarPermisoUsuario(usuario); $event.stopPropagation()"
             >
               Otorgar permiso
             </button>
@@ -126,7 +126,7 @@
           @else {
             <button
               class="button-secondary"
-              (click)="otorgarPermiso(usuario); $event.stopPropagation()"
+              (click)="otorgarPermisoUsuario(usuario); $event.stopPropagation()"
             >
               Otorgar permiso
             </button>

@@ -8,7 +8,7 @@ import { NgIf, NgForOf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Vehiculo } from  '../../../../models/vehiculo/vehiculo.model'
 import { Taller } from  '../../../../models/talleres/taller.model'
-import { ClienteModel } from  '../../../../models/usuarios/usuario.model'
+import { ClienteModel, UsuarioModel } from  '../../../../models/usuarios/usuario.model'
 import { ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 
@@ -43,9 +43,9 @@ export class Permisos implements OnInit {
 
   
   // hacer que pueda obtener todos los clientes existentes
-  clientesExistentes : ClienteModel[] = [];
+  clientesExistentes : UsuarioModel[] = [];
   talleresExistentes : Taller[] = [];
-  clientesConAcceso : ClienteModel[] = [];
+  clientesConAcceso : UsuarioModel[] = [];
   talleresConAcceso: Taller[] = [];
   // hacer que pueda obtener todos los talleres existentes
   talleres : Taller[] = [];
@@ -55,7 +55,14 @@ export class Permisos implements OnInit {
 
   ngOnInit(): void {
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
-    this.cargarPermisosYProcesar();
+    this.usuarioService.listarTodos().subscribe({
+      next: (usuarios: UsuarioModel[]) => {
+        this.clientesExistentes = usuarios; // directamente
+        console.log('clientes existentes', this.clientesExistentes);
+        this.cargarPermisosYProcesar();
+      },
+      error: (err) => console.error(err)
+    });
     // cargar listas de clientes y talleres si las necesitás en el select
 
     // this.clienteService.getClientes().subscribe((data: ClienteModel[]) => this.clientes = data);
@@ -120,9 +127,10 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
       console.log("TALLER IDS:", this.cliente_ids);
 
       // filtrar objetos clientes que tienen ids dentro de la lista cliente_ids
-      this.clientesConAcceso = this.clientesExistentes.filter(
-        c => c.id !== undefined && this.cliente_ids.includes(c.id)
-      );
+      this.clientesConAcceso = this.clientesExistentes?.filter(
+        (c: UsuarioModel) => c.pk !== undefined && this.cliente_ids.includes(c.pk)
+      ) || [];
+
       console.log("CLIENTES CON PERMISOS:", this.clientesConAcceso);
 
       // filtrar objetos talleres que tienen ids dentro de la lista taller_ids
@@ -136,14 +144,14 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
   }
 
 
-  getNombreCliente(id: number | undefined): string {
+  getNombreCliente(id: number | null | undefined): string {
     if (!id) return '';
-    const cliente = this.clientesConAcceso.find(c => c.id === id);
+    const cliente = this.clientesConAcceso.find(c => c.pk === id);
     if (!cliente) return '';
-    return cliente.usuario.first_name + ' ' + cliente.usuario.last_name;
+    return cliente.first_name + ' ' + cliente.last_name;
   }
 
-  getNombreTaller(id: number | undefined): string {
+  getNombreTaller(id: number | null | undefined): string {
     if (!id) return '';
     const taller = this.talleresConAcceso.find(c => c.id === id);
     if (!taller) return '';
@@ -160,7 +168,7 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
   const destinatarioId = Number(this.formNuevoPermiso.destinatario_id);
 
   if (this.formNuevoPermiso.tipo_destinatario === 'cliente') {
-    const clienteSeleccionado = this.clientesExistentes.find((c: ClienteModel) => c.id === destinatarioId);
+    const clienteSeleccionado = this.clientesExistentes.find((c: UsuarioModel) => c.pk === destinatarioId);
     if (!clienteSeleccionado) {
       return alert('Cliente no encontrado');
     } else {

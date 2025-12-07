@@ -3,6 +3,7 @@ import { UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 import { ClienteModel } from '../../../models/usuarios/usuario.model';
+import { Taller } from '../../../models/talleres/taller.model';
 import { PermisoDeAcceso } from '../../../models/permisos/permiso-acceso.model';
 
 import { Router, ActivatedRoute } from '@angular/router';
@@ -34,7 +35,8 @@ export class SeleccionUsuario {
   tipo: string = "";
 
 
-  clienteActual!: ClienteModel;
+  clienteActual: ClienteModel | null = null;
+
   vehiculoId!: number;
 
   usuarios: UsuarioModel[] = [];
@@ -44,6 +46,7 @@ export class SeleccionUsuario {
   ngOnInit(): void {
     this.cargarUsuarios();
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
+    this.clienteActual = this.clienteService.clienteActual(); 
 
    this.route.data.subscribe((data: any) => {
       const modoParam = data['modo'];
@@ -108,17 +111,48 @@ export class SeleccionUsuario {
     console.log('click en ver usuario', usuario);
   }
 
-  otorgarPermiso(usuario: UsuarioModel): void {
-    const nuevoPermiso: Partial<PermisoDeAcceso> = {
-      vehiculo_autorizado: this.vehiculoId,
-      autoriza: this.clienteActual.id,
-      cliente_autorizado: usuario.pk // usar id correcto
-    };
+ otorgarPermisoUsuario(usuario: UsuarioModel): void {
+  if (!this.vehiculoId || !this.clienteActual?.id || !usuario.pk) {
+    console.error('Faltan datos para crear permiso', {
+      vehiculoId: this.vehiculoId,
+      autoriza: this.clienteActual?.id,
+      cliente: usuario.pk
+    });
+    return;
+  }
 
+  const nuevoPermiso: PermisoDeAcceso = {
+    vehiculo_autorizado: this.vehiculoId,
+    autoriza: this.clienteActual.id,        // ← bien
+    cliente_autorizado: usuario.pk,         // ← bien
+    taller_autorizado: null                 // ← dejalo null si no aplica
+  };
+
+  this.crearPermiso(nuevoPermiso, this.vehiculoId);
+}
+
+
+
+  otorgarPermisoTaller(taller: Taller): void {
+    if (this.vehiculoId && this.clienteActual?.id && taller.id) {
+      const nuevoPermiso: PermisoDeAcceso = {
+        vehiculo_autorizado: this.vehiculoId,
+        autoriza: this.clienteActual.id,
+        taller_autorizado: taller.id
+      };
+
+      this.crearPermiso(nuevoPermiso, this.vehiculoId);
+    } else {
+      console.error('Faltan datos para crear permiso');
+    }
+
+  }
+
+  crearPermiso(nuevoPermiso : PermisoDeAcceso, vehiculoId : number): void {
     this.clienteService.crearPermiso(nuevoPermiso as PermisoDeAcceso, this.vehiculoId).subscribe({
       next: () => {
         alert('Permiso creado con éxito');
-        this.router.navigate(['/permisos', this.vehiculoId]);
+        this.router.navigate(['/cliente/permisos', this.vehiculoId]);
       },
       error: (err: any) => {
         console.error(err);
