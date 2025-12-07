@@ -7,6 +7,6 @@ export interface PermisoDeAcceso {
   fecha_autorizacion?: string;
   vehiculo_autorizado: number;
   autoriza?: any; // cliente dueño
-  cliente_autorizado?: number;
-  taller_autorizado?: number;
+  cliente_autorizado?: number | null;
+  taller_autorizado?: number | null;
 }

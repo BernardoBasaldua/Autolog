@@ -1,6 +1,7 @@
 export interface Marca {
   id: number;
   nombre: string;
+  modelos: Modelo[];
 }
 
 export interface HistorialModel {
@@ -36,4 +37,22 @@ export interface Vehiculo {
   intervalo_servicio_meses: number;
   modelo: Modelo;
   propietario: number;
+}
+
+export interface VehiculoCreatePayload {
+  propietario: number;   // id de Cliente
+  año: number;
+  dominio: string;
+  intervalo_servicio_km: number;
+  intervalo_servicio_meses: number;
+  modelo_id: number;
+}
+
+export interface MarcaCreatePayload {
+  nombre: string;
+}
+
+export interface ModeloCreatePayload {
+  nombre: string;
+  marca : number;
 }

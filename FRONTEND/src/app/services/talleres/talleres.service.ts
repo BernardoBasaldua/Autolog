@@ -4,6 +4,7 @@ import { RegistroTecnicoTaller, Taller } from '../../models/talleres/taller.mode
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AdministradorTecnicoModel, ClienteModel, UsuarioModel } from '../../models/usuarios/usuario.model';
+import { Vehiculo } from '../../models/vehiculo/vehiculo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -70,8 +71,12 @@ export class TalleresService {
     const url = `${this.apiTalleresUrl}${idTaller}/`;
     return this.http.delete<void>(url);
   }
-
-   getClientesDeTaller() {
+  //DEVUELVE LOS CLIENTES QUE TIENEN ASOCIADA UNA ORDEN AL TALLER
+  getClientesDeTaller() {
     return this.http.get<ClienteModel[]>(`${this.apiTalleresUrl}${this.tallerId}/clientes/`);
+  }
+  //DEVUELVE LOS VEHICULOS QUE TIENEN ASOCIADA UNA ORDEN AL TALLER
+  getVehiculosDeTaller() {
+    return this.http.get<Vehiculo[]>(`${this.apiTalleresUrl}${this.tallerId}/vehiculos/`);
   }
 }

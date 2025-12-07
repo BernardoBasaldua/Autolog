@@ -37,6 +37,7 @@ export const routes: Routes = [
     children: [
       { path: 'cliente', component: CliInicio },
       { path: 'cliente/permisos/:vehiculoId', component: Permisos },
+      { path: 'cliente/seleccion-usuario/:vehiculoId', component: SeleccionUsuario, data: { modo: 'permisos' } },
       { path: 'cliente/historial/:vehiculoId', component: Historial },
       { path: 'cliente/turnos', component: CliTurnos },
       { path: 'cliente/talleres', component: CliTalleres },

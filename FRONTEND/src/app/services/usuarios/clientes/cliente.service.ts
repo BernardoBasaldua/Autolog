@@ -19,6 +19,7 @@ export class ClienteService {
   clienteActual = signal<ClienteModel | null>(null);
   mis_vehiculos = signal<Vehiculo[]>([]);
   vehiculos_autorizados = signal<Vehiculo[]>([]);
+  clientes = signal<ClienteModel[]>([]);
   
 
   constructor(private http: HttpClient) {}
@@ -38,12 +39,29 @@ export class ClienteService {
     return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
       tap(listaCliente => {
         const cliente = listaCliente[0];
+
+        this.clientes.set(listaCliente);
         this.clienteActual.set(cliente);
         this.mis_vehiculos.set(cliente.mis_vehiculos ?? []);
         this.vehiculos_autorizados.set(cliente.vehiculos_externos ?? []);
         console.log('client en MEMORIA:', cliente);
       }),
       map(listaCliente => listaCliente[0])  // me quedo con el primer (y único) cliente
+    );
+  }
+
+   /** Devuelve todos los cliente si staf true */
+  listarTodos(): Observable<ClienteModel[]> {
+    // ClienteViewSet hace filter(usuario=request.user) si no es staff o super user,
+    // así que GET /api/clientes/ debería devolver una LISTA con 1 elemento.
+    return this.http.get<ClienteModel[]>(this.apiClientesUrl).pipe(
+      tap(listaClientes => {
+        const clientes = listaClientes;
+
+        this.clientes.set(listaClientes);
+        console.log('client en MEMORIA:', clientes);
+      }),
+     
     );
   }
 
