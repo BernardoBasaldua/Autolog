@@ -6,7 +6,7 @@ import { ClienteService } from '../../../services/usuarios/clientes/cliente.serv
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 
-type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller';
+type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller-CLI' | 'alta-desde-taller-VEHI';
 
 
 @Component({
@@ -22,6 +22,7 @@ export class FormClientes {
   usuarioActual: UsuarioModel | null = null; 
   clienteForm: FormGroup;
   formInvalido = output<boolean>();
+  perfilCreado = output<void>();
   perfilActualizado = output<void>();
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -102,7 +103,7 @@ export class FormClientes {
     }
 
     // MODO ALTA CLIENTE DESDE TALLER
-    if (this.modoInterno() === 'alta-desde-taller') {
+    if (this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI' ) {
       // En este modo NO quiero pedir password al técnico
       // (el HTML ya oculta los campos con @if, pero el form
       //  SACO Validators.required)
@@ -157,16 +158,23 @@ export class FormClientes {
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
 
-    if (this.modo() === 'crear'|| this.modo() === 'alta-desde-taller') {    
+    if (this.modoInterno() === 'crear'|| this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI') {    
       console.log('Datos de registro usuario:', datosUsuario);
       this.clienteService.crearCliente(datosUsuario).subscribe(
         {next: (cliente) => {
           // Éxito: cramos usuario
-          console.log('cliente crado', cliente);
+          console.log('cliente crado', cliente, this.modoInterno());
           alert('Cuenta creada correctamente ✔');
           //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
-          if (this.modo() === 'alta-desde-taller') {
-            this.router.navigate(['/taller/clientes']);
+          if (this.modoInterno() === 'alta-desde-taller-CLI') {
+            this.perfilCreado.emit();
+          
+          }else if (this.modoInterno()=== 'alta-desde-taller-VEHI'){
+            this.router.navigate(
+              ['/taller/vehiculos/seleccion-vehiculo'],
+              {queryParams: { modo: 'alta-desde-taller-VEHI'}}
+            );
+          
           } else {
             this.router.navigate(['/login']);
           }

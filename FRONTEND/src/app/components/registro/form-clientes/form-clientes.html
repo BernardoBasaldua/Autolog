@@ -145,7 +145,7 @@
             }
         </div>
 
-        @if (modoInterno() !== 'alta-desde-taller') {
+        @if (modoInterno() !== 'alta-desde-taller-CLI' && modoInterno() !== 'alta-desde-taller-VEHI') {
             <!-- PASSWORD -->
             <div>
                 <label for="cliente-password" class="block text-gray-700 text-sm font-medium mb-1">
@@ -199,7 +199,7 @@
         }@else {
             <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
                 Recordale al cliente que su contraseña inicial es 123456
-                <strong>{{ clienteForm.get('dni')?.value }}</strong>
+                <!-- <strong>{{ clienteForm.get('dni')?.value }}</strong> -->
             </p>
         }
 

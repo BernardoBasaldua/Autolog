@@ -147,7 +147,7 @@ export class TaVehiculos implements OnInit {
     // - Navegar al componente "selector de vehículo" (similar a SeleccionUsuario).
     //   Ejemplo:
         this.router.navigate(['/taller/vehiculos/seleccion-vehiculo'], {
-          queryParams: { modo: 'alta-desde-taller' },
+          //queryParams: { modo: 'alta-desde-taller-VEHI' },
         });
   }
 }

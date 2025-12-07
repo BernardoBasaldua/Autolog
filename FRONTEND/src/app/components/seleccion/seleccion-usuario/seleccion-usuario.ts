@@ -104,7 +104,7 @@ export class SeleccionUsuario {
 
 
   crearUsuarioNuevo(): void {
-    this.modo = "nuevo-desde-taller";
+    this.modo = "nuevo-desde-taller-CLI";
   }
 
   verUsuario(usuario: UsuarioModel): void {

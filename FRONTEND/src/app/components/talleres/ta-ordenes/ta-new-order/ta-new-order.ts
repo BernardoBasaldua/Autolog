@@ -3,21 +3,10 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-interface ClienteLite {
-  id: number;
-  first_name?: string;
-  last_name?: string;
-  telefono?: string;
-  email?: string;
-}
-
-interface VehiculoLite {
-  id: number;
-  clienteId: number; // dueño
-  marca?: string;
-  modelo?: string;
-  dominio?: string;
-}
+import { ClienteService } from '../../../../services/usuarios/clientes/cliente.service';
+import { ClienteModel } from '../../../../models/usuarios/usuario.model';
+import { Vehiculo } from '../../../../models/vehiculo/vehiculo.model';
+import { VehiculoService } from '../../../../services/vehiculo/vehiculo.service';
 
 @Component({
   selector: 'app-ta-new-order',
@@ -28,30 +17,18 @@ interface VehiculoLite {
 })
 export class TaNewOrder {
   private router = inject(Router);
+  private clienteService = inject(ClienteService);
+  private vehiculoService = inject(VehiculoService);
+
+  // ✅ Guardamos la referencia al SIGNAL
+  clientesSig = this.clienteService.clientes;
+  vehiculosSig = this.vehiculoService.vehiculos;
 
   // =========================
   // CONFIG UX
   // =========================
   bloquearVehiculoPorCliente = false;
-  // Si lo ponés en true:
-  // - no deja tipear vehículo hasta elegir cliente
-  // Pero como vos querés permitir seleccionar vehículo primero,
-  // lo dejamos en false.
-
-  // =========================
-  // DATA (mock por ahora)
-  // =========================
-  clientes: ClienteLite[] = [
-    { id: 1, first_name: 'Juan', last_name: 'Ramirez', telefono: '11-5555', email: 'juan@mail.com' },
-    { id: 2, first_name: 'Ana', last_name: 'Lopez', telefono: '11-2222', email: 'ana@mail.com' },
-    { id: 3, first_name: 'Pedro', last_name: 'Gomez', telefono: '11-9999', email: 'pedro@mail.com' },
-  ];
-
-  vehiculos: VehiculoLite[] = [
-    { id: 10, clienteId: 1, marca: 'Volkswagen', modelo: 'Amarok', dominio: 'AG999ZZ' },
-    { id: 11, clienteId: 1, marca: 'Ford', modelo: 'Ranger', dominio: 'AA123BB' },
-    { id: 12, clienteId: 2, marca: 'Toyota', modelo: 'Hilux', dominio: 'AC444DD' },
-  ];
+  clienteAutoPorVehiculo = false;
 
   // =========================
   // STATE AUTOCOMPLETE
@@ -62,11 +39,26 @@ export class TaNewOrder {
   mostrarDropdownClientes = false;
   mostrarDropdownVehiculos = false;
 
-  clientesFiltrados: ClienteLite[] = [...this.clientes];
-  vehiculosFiltrados: VehiculoLite[] = [...this.vehiculos];
+  clientesFiltrados: ClienteModel[] = [];
+  vehiculosFiltrados: Vehiculo[] = [];
 
-  clienteSeleccionado: ClienteLite | null = null;
-  vehiculoSeleccionado: VehiculoLite | null = null;
+  clienteSeleccionado: ClienteModel | null = null;
+  vehiculoSeleccionado: Vehiculo | null = null;
+
+  ngOnInit(): void {
+    
+    this.clienteService.listarTodos().subscribe({
+      next: (clientes) => this.clienteService.clientes.set(clientes),
+    });
+
+    this.vehiculoService.listarTodos().subscribe({
+      next: (vehiculos) => this.vehiculoService.vehiculos.set(vehiculos),
+    });
+
+    // Inicializo filtrados con lo que haya en signals en ese momento
+    this.clientesFiltrados = [...this.clientesSig()];
+    this.vehiculosFiltrados = [...this.vehiculosSig()];
+  }
 
   // =========================
   // TABS
@@ -83,24 +75,21 @@ export class TaNewOrder {
   // NAVEGACIÓN A ALTAS
   // =========================
   nuevoCliente(): void {
-    
-      // ✅ Debería navegar a tu flujo real de alta de cliente
-      // Ej:
-      this.router.navigate(['/taller/clientes/seleccionUsuario'], {
-        queryParams: { modo: 'alta-desde-taller' }
-      });
-     
+    // TODO:
+    this.router.navigate(['/taller/clientes/seleccionUsuario'], {
+      queryParams: { modo: 'alta-desde-taller-ORD' }
+    });
     console.log('Ir a crear cliente');
   }
 
   nuevoVehiculo(): void {
-    /**
-     * ✅ Debería navegar a tu flujo real de alta de vehículo
-     * Podrías pasar el cliente seleccionado si existe:
-     * this.router.navigate(['/taller/vehiculos/nuevo'], {
-     *   queryParams: { propietarioId: this.clienteSeleccionado?.id }
-     * });
-     */
+    // TODO:
+    // this.router.navigate(['/taller/vehiculos/seleccion-vehiculo'], {
+    //   queryParams: {
+    //     modo: 'nuevo-desde-taller-VEHI',
+    //     propietarioId: this.clienteSeleccionado?.id ?? null
+    //   }
+    // });
     console.log('Ir a crear vehículo');
   }
 
@@ -119,41 +108,39 @@ export class TaNewOrder {
   onClienteQueryChange() {
     this.mostrarDropdownClientes = true;
     this.filtrarClientes();
-
-    // Si el usuario está escribiendo de nuevo, se puede considerar
-    // que quiere cambiar el cliente
-    // => opcionalmente podrías limpiar selecciones
-    // this.clienteSeleccionado = null;
-    // this.vehiculoSeleccionado = null;
   }
 
   filtrarClientes() {
+    const clientes = this.clientesSig();
     const t = this.clienteQuery.trim().toLowerCase();
 
     if (!t) {
-      this.clientesFiltrados = [...this.clientes];
+      this.clientesFiltrados = [...clientes];
       return;
     }
 
-    this.clientesFiltrados = this.clientes.filter((c) => {
-      const nombre = `${c.first_name ?? ''} ${c.last_name ?? ''}`.toLowerCase();
-      const tel = (c.telefono ?? '').toLowerCase();
-      const email = (c.email ?? '').toLowerCase();
+    this.clientesFiltrados = clientes.filter((c) => {
+      const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.toLowerCase();
+      const tel = (c.usuario?.telefono ?? '').toLowerCase();
+      const email = (c.usuario?.email ?? '').toLowerCase();
       return nombre.includes(t) || tel.includes(t) || email.includes(t);
     });
   }
 
-  seleccionarCliente(c: ClienteLite) {
-    // set seleccionado
+  seleccionarCliente(c: ClienteModel) {
+    const vehiculos = this.vehiculosSig();
+
+    this.clienteAutoPorVehiculo = false; //cliente elegido manualmente
+
     this.clienteSeleccionado = c;
     this.clienteQuery = this.formatCliente(c);
     this.mostrarDropdownClientes = false;
 
     // ✅ REGLA 1:
-    // Al seleccionar cliente, vehículos deben ser solo de ese cliente
-    this.vehiculosFiltrados = this.vehiculos.filter(v => v.clienteId === c.id);
+    // al elegir cliente, muestro solo vehículos de ese cliente
+    this.vehiculosFiltrados = vehiculos.filter(v => v.propietario === c.id);
 
-    // Limpio vehículo actual para evitar inconsistencias
+    // limpio vehículo actual
     this.vehiculoSeleccionado = null;
     this.vehiculoQuery = '';
   }
@@ -171,17 +158,44 @@ export class TaNewOrder {
   }
 
   onVehiculoQueryChange() {
+    const texto = this.vehiculoQuery.trim();
+
+    // ✅ Si borra el vehículo escrito, interpretamos "quiero buscar de nuevo"
+    if (!texto) {
+      this.vehiculoSeleccionado = null;
+
+      // Si el cliente estaba auto-asignado por vehículo,
+      // lo limpiamos para volver a lista global
+      if (this.clienteAutoPorVehiculo) {
+        this.clienteSeleccionado = null;
+        this.clienteQuery = '';
+        this.clienteAutoPorVehiculo = false;
+
+        // reset full list
+        this.vehiculosFiltrados = [...this.vehiculosSig()];
+      } else {
+        // si el cliente fue elegido manualmente,
+        // mantenemos la restricción por cliente
+        this.vehiculosFiltrados = this.clienteSeleccionado
+          ? this.vehiculosSig().filter(v => v.propietario === this.clienteSeleccionado!.id)
+          : [...this.vehiculosSig()];
+      }
+
+      this.mostrarDropdownVehiculos = true;
+      return;
+    }
+
     this.mostrarDropdownVehiculos = true;
     this.filtrarVehiculos();
   }
 
   filtrarVehiculos() {
+    const vehiculos = this.vehiculosSig();
     const t = this.vehiculoQuery.trim().toLowerCase();
 
-    // Base depende de si hay cliente seleccionado
     const base = this.clienteSeleccionado
-      ? this.vehiculos.filter(v => v.clienteId === this.clienteSeleccionado!.id)
-      : this.vehiculos;
+      ? vehiculos.filter(v => v.propietario === this.clienteSeleccionado!.id)
+      : vehiculos;
 
     if (!t) {
       this.vehiculosFiltrados = [...base];
@@ -189,42 +203,48 @@ export class TaNewOrder {
     }
 
     this.vehiculosFiltrados = base.filter((v) => {
-      const marca = (v.marca ?? '').toLowerCase();
-      const modelo = (v.modelo ?? '').toLowerCase();
+      const marca = (v.marca?.nombre ?? '').toLowerCase();
+      const modelo = (v.modelo?.nombre ?? '').toLowerCase();
       const dom = (v.dominio ?? '').toLowerCase();
       return marca.includes(t) || modelo.includes(t) || dom.includes(t);
     });
   }
 
-  seleccionarVehiculo(v: VehiculoLite) {
+  seleccionarVehiculo(v: Vehiculo) {
+    const clientes = this.clientesSig();
+    const vehiculos = this.vehiculosSig();
+
     this.vehiculoSeleccionado = v;
     this.vehiculoQuery = this.formatVehiculo(v);
     this.mostrarDropdownVehiculos = false;
 
     // ✅ REGLA 2:
-    // Si selecciono vehículo primero, autoselecciono propietario
-    const dueño = this.clientes.find(c => c.id === v.clienteId) ?? null;
+    // si elijo vehículo primero => autoselecciono dueño
+    const dueño = clientes.find(c => c.id === v.propietario) ?? null;
 
     if (dueño) {
+      this.clienteAutoPorVehiculo = true;
       this.clienteSeleccionado = dueño;
       this.clienteQuery = this.formatCliente(dueño);
 
-      // Y además actualizo el listado de vehículos a los del dueño
-      this.vehiculosFiltrados = this.vehiculos.filter(x => x.clienteId === dueño.id);
+      // actualizo lista de vehículos del dueño
+      this.vehiculosFiltrados = vehiculos.filter(x => x.propietario === dueño.id);
     }
   }
 
   // =========================
   // FORMATTERS
   // =========================
-  formatCliente(c: ClienteLite): string {
-    const nombre = `${c.first_name ?? ''} ${c.last_name ?? ''}`.trim();
-    const extras = [c.telefono, c.email].filter(Boolean).join(' - ');
+  formatCliente(c: ClienteModel): string {
+    const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
+    const extras = [c.usuario?.telefono, c.usuario?.email].filter(Boolean).join(' - ');
     return [nombre, extras].filter(Boolean).join(' - ') || `Cliente ${c.id}`;
   }
 
-  formatVehiculo(v: VehiculoLite): string {
-    const mm = [v.marca, v.modelo].filter(Boolean).join(' ');
+  formatVehiculo(v: Vehiculo): string {
+    const marca = v.marca?.nombre ?? '';
+    const modelo = v.modelo?.nombre ?? '';
+    const mm = `${marca} ${modelo}`.trim();
     const dom = v.dominio ? ` - ${v.dominio}` : '';
     return `${mm}${dom}`.trim() || `Vehículo ${v.id}`;
   }

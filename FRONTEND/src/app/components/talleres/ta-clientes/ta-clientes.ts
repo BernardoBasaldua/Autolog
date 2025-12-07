@@ -66,7 +66,7 @@ export class TaClientes implements OnInit {
     
     // - Navegar a un formulario de alta de cliente
       this.router.navigate(['/taller/clientes/seleccionUsuario'],{
-       queryParams: { modo: 'alta-desde-taller' },
+       queryParams: { modo: 'alta-desde-taller-CLI' },
       });
   }
 

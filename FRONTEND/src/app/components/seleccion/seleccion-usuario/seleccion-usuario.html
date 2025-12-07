@@ -16,11 +16,11 @@
       Usuarios existentes
     </button>
 
-      @if (tipo != "permisos"){ 
+    @if (tipo != "permisos"){ 
     <button
         type="button"
         class="tab-button"
-        [ngClass]="{ 'active': modo === 'nuevo-desde-taller' }"
+        [ngClass]="{ 'active': modo === 'nuevo-desde-taller-CLI' }"
         (click)="crearUsuarioNuevo()"
       >
         Crear usuario nuevo
@@ -95,9 +95,13 @@
     }
   </section>
 
-} @else if (modo === 'nuevo-desde-taller') {
+} @else if (modo === 'nuevo-desde-taller-CLI') {
   <!-- Formulario para crear cliente/usuario nuevo -->
-  <app-form-clientes [modo]="'alta-desde-taller'"></app-form-clientes>
+  <app-form-clientes 
+  [modo]="'alta-desde-taller-CLI'"
+  (perfilCreado)="mostrarUsuariosExistentes()"></app-form-clientes>
+
+  <!-- DE ACA PARA ABAJO ME PARECE QUE SE REPITE CODIGO Y SE SOLUCION CON UN OR EN EL IF ANTERIOR -->
 } @else if (modo === 'permisos') {
 <!-- Lista de usuarios existentes -->
   <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
