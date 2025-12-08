@@ -81,15 +81,26 @@ class OrdenDeTrabajo(models.Model):
             self.kilometraje_siguiente_servicio = (
                 self.kilometraje + self.vehiculo.intervalo_servicio_km
             )
+        
 
     def save(self, *args, **kwargs):
         self.calcular_fecha_siguiente_servicio()
         self.calcular_kilometraje_siguiente_servicio()
 
-        self.vehiculo.kilometraje_prox_servicio = self.kilometraje_siguiente_servicio
-        self.vehiculo.fecha_prox_servicio = self.fecha_siguiente_servicio
-        self.vehiculo.save()
+        # Si es correctivo y no calculo nada, copio lo vigente del vehículo
+        if self.mantenimiento == self.CORRECTIVO:
+            if not self.fecha_siguiente_servicio:
+                self.fecha_siguiente_servicio = self.vehiculo.fecha_prox_servicio
+            if not self.kilometraje_siguiente_servicio:
+                self.kilometraje_siguiente_servicio = self.vehiculo.kilometraje_prox_servicio
+
         super().save(*args, **kwargs)
+
+        # Solo actualizo el vehículo si es preventivo
+        if self.mantenimiento == self.PREVENTIVO:
+            self.vehiculo.kilometraje_prox_servicio = self.kilometraje_siguiente_servicio
+            self.vehiculo.fecha_prox_servicio = self.fecha_siguiente_servicio
+            self.vehiculo.save(update_fields=['kilometraje_prox_servicio', 'fecha_prox_servicio'])
 
     def __str__(self):
         return f"Orden #{self.id} - {self.vehiculo} - {self.fecha_entrega}"
