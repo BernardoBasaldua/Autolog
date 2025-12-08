@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaNewOrder } from './ta-new-order';
+import { FormOrdenes} from './form-ordenes';
 
-describe('TaNewOrder', () => {
-  let component: TaNewOrder;
-  let fixture: ComponentFixture<TaNewOrder>;
+describe('FormOrdenes', () => {
+  let component: FormOrdenes;
+  let fixture: ComponentFixture<FormOrdenes>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaNewOrder]
+      imports: [FormOrdenes]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(TaNewOrder);
+    fixture = TestBed.createComponent(FormOrdenes);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

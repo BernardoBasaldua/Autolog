@@ -21,14 +21,14 @@ export class TalleresService {
   constructor(private http: HttpClient) {}
 
   //CREA DESDE LA API ADMINTEC UN TECNICO Y UN TALLER  Y LOS ASOCIA
-    crearEstablecimiento(usuario:UsuarioModel, taller:Taller): Observable<AdministradorTecnicoModel> {
-  
-      const establecimiento: RegistroTecnicoTaller = {
-        usuario : usuario,
-        taller : taller
-      };
-      return this.http.post<AdministradorTecnicoModel>(this.apiTecnicos, establecimiento);
-    }
+  crearEstablecimiento(usuario:UsuarioModel, taller:Taller): Observable<AdministradorTecnicoModel> {
+
+    const establecimiento: RegistroTecnicoTaller = {
+      usuario : usuario,
+      taller : taller
+    };
+    return this.http.post<AdministradorTecnicoModel>(this.apiTecnicos, establecimiento);
+  }
 
   // Trae los talleres del backend y los guarda en el signal
   getTalleres(): Observable<Taller[]> {

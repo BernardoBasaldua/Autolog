@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { ClienteService } from '../../../../services/usuarios/clientes/cliente.service';
-import { ClienteModel } from '../../../../models/usuarios/usuario.model';
+import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
+import { ClienteModel } from '../../../models/usuarios/usuario.model';
 
-import { Vehiculo } from '../../../../models/vehiculo/vehiculo.model';
-import { VehiculoService } from '../../../../services/vehiculo/vehiculo.service';
-import { OrdenDeTrabajoCreatePayload } from '../../../../models/orden/orden.models';
-import { OrdenService } from '../../../../services/ordenes/orden.service';
-import { TalleresService } from '../../../../services/talleres/talleres.service';
+import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
+import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
+import { OrdenDeTrabajoCreatePayload } from '../../../models/orden/orden.models';
+import { OrdenService } from '../../../services/ordenes/orden.service';
+import { TalleresService } from '../../../services/talleres/talleres.service';
 
 // Si ya creaste el modelo:
 // import { TipoMantenimiento, OrdenDeTrabajoCreatePayload } from '../../../../models/ordenes/orden-de-trabajo.model';
@@ -18,13 +18,13 @@ import { TalleresService } from '../../../../services/talleres/talleres.service'
 // import { OrdenDeTrabajoService } from '../../../../services/ordenes/orden-de-trabajo.service';
 
 @Component({
-  selector: 'app-ta-new-order',
+  selector: 'app-form-ornden',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './ta-new-order.html',
-  styleUrl: './ta-new-order.css',
+  templateUrl: './form-ordenes.html',
+  styleUrl: './form-ordenes.css',
 })
-export class TaNewOrder {
+export class FormOrdenes {
   private router = inject(Router);
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
@@ -69,7 +69,7 @@ export class TaNewOrder {
   horaTurno = '';   // hh:mm
   fechaEntrega: string | null = null;
 
-  kilometraje = 0;
+  kilometraje : number | null = null;
 
   observacionesTecnicas: string | null = null;
 
@@ -112,7 +112,7 @@ export class TaNewOrder {
   }
 
   crearNuevaOrden() {
-    this.router.navigate(['/taller', 'ordenes', 'nueva']);
+    this.router.navigate(['/taller', 'form-orden']);
   }
 
   // =========================
@@ -373,7 +373,7 @@ export class TaNewOrder {
     this.horaTurno = '10:00';
 
     this.fechaEntrega = null;
-    this.kilometraje = 0;
+    this.kilometraje = null;
     this.observacionesTecnicas = null;
     this.mantenimiento = 'preventivo';
 

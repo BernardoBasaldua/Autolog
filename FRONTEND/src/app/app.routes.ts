@@ -10,7 +10,7 @@ import { CliPm } from './components/clientes/cli-pm/cli-pm';
 import { CliConfig } from './components/clientes/cli-config/cli-config';
 
 import { TaOrdenes } from './components/talleres/ta-ordenes/ta-ordenes';
-import { TaNewOrder } from './components/talleres/ta-ordenes/ta-new-order/ta-new-order';
+import { FormOrdenes } from './components/registro/form-ordenes/form-ordenes';
 import { TaClientes } from './components/talleres/ta-clientes/ta-clientes';
 import { TaVehiculos } from './components/talleres/ta-vehiculos/ta-vehiculos';
 import { TaTurnos } from './components/talleres/ta-turnos/ta-turnos';
@@ -49,7 +49,7 @@ export const routes: Routes = [
       { path: 'cliente/vehiculos/seleccion-vehiculo', component: SeleccionVehiculo },
 
       { path: 'taller/ordenes', component: TaOrdenes },
-      { path: 'taller/ordenes/nueva', component: TaNewOrder },
+      { path: 'taller/form-orden', component: FormOrdenes },
       { path: 'taller/clientes', component: TaClientes },
       { path: 'taller/clientes/seleccionUsuario', component: SeleccionUsuario },
       { path: 'taller/form-cliente', component: FormClientes },
