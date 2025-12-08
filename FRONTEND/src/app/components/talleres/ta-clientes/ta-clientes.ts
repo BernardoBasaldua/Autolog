@@ -5,89 +5,119 @@ import { ClienteModel } from '../../../models/usuarios/usuario.model';
 import { Router } from '@angular/router';
 import { TalleresService } from '../../../services/talleres/talleres.service';
 
-
-
 @Component({
   selector: 'app-ta-clientes',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './ta-clientes.html',
-  styleUrl: './ta-clientes.css',
+  styleUrl: './ta-clientes.css', // si no te toma estilos: usar styleUrls
 })
 export class TaClientes implements OnInit {
+  private tallerService = inject(TalleresService);
+  private router = inject(Router);
 
-  tallerService = inject(TalleresService);
-
-  // lista completa de clientes del taller
+  // =========================
+  // DATA
+  // =========================
   clientesSig = this.tallerService.clientesTaller;
-  clientes: ClienteModel[] = [];
 
-  // lista filtrada para mostrar en pantalla
+  clientes: ClienteModel[] = [];
   clientesFiltrados: ClienteModel[] = [];
 
-  // texto del buscador (nombre, DNI, etc.)
-  terminoBusqueda: string = '';
-  router = inject(Router);
+  // =========================
+  // UI
+  // =========================
+  terminoBusqueda = '';
+  clienteSeleccionado: ClienteModel | null = null;
 
-  
-
+  // =========================
+  // INIT
+  // =========================
   ngOnInit(): void {
-    // TODO: acá deberías llamar a un servicio que traiga
-    // los clientes del taller (por ejemplo GET /api/clientes-del-taller)
-    // y cuando llegue la respuesta, asignar:
     this.tallerService.getClientesDeTaller().subscribe({
-      next: clientes => { this.clientesSig.set(clientes);
-        this.clientes = this.clientesSig();
-        this.cargarClientes();
-        console.log('clientes del taller cargados', clientes)
-      }
-    })
-    // this.clientes = respuesta;
-    // this.clientesFiltrados = respuesta;
-    //
-    // this.cargarClientes();
+      next: (clientes) => {
+        // guardo en signal
+        this.clientesSig.set(clientes);
+
+        // copias locales
+        this.clientes = [...clientes];
+        this.clientesFiltrados = [...clientes];
+
+        // ✅ detalle abierto por default
+        if (this.clientesFiltrados.length > 0) {
+          this.clienteSeleccionado ??= this.clientesFiltrados[0];
+        }
+      },
+      error: (e) => console.error('Error cargando clientes del taller', e),
+    });
   }
 
-  volver(): void{}
-  cargarClientes(): void {
-      this.clientes = this.clientesSig();
-      this.clientesFiltrados = this.clientes;
+  // =========================
+  // SELECCIÓN
+  // =========================
+  seleccionarCliente(cliente: ClienteModel): void {
+    this.clienteSeleccionado = null;
+    this.clienteSeleccionado = cliente;
   }
 
+  // =========================
+  // FILTRADO
+  // =========================
   filtrar(): void {
-    // TODO:
-    // - Tomar this.terminoBusqueda
-    // - Pasarlo a lowerCase + trim
-    // - Si está vacío, this.clientesFiltrados = this.clientes
-    // - Si no, filtrar por:
-    //   - nombre completo: cliente.usuario.first_name + cliente.usuario.last_name
-    //   - dni: cliente.usuario.dni
-    //   - email: cliente.usuario.email
-  }
+    const t = this.terminoBusqueda.trim().toLowerCase();
 
-  nuevoCliente(): void {
-    
-    // - Navegar a un formulario de alta de cliente
-      this.router.navigate(['/taller/clientes/seleccionUsuario'],{
-       queryParams: { modo: 'alta-desde-taller-CLI' },
+    if (!t) {
+      this.clientesFiltrados = [...this.clientes];
+    } else {
+      this.clientesFiltrados = this.clientes.filter((c) => {
+        const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`
+          .trim()
+          .toLowerCase();
+
+        const dni = String(c.usuario?.dni ?? '').toLowerCase();
+        const email = String(c.usuario?.email ?? '').toLowerCase();
+        const tel = String(c.usuario?.telefono ?? '').toLowerCase();
+
+        return (
+          nombre.includes(t) ||
+          dni.includes(t) ||
+          email.includes(t) ||
+          tel.includes(t)
+        );
       });
+    }
+
+    // ✅ comportamiento tipo Órdenes:
+    // si la seleccionada no queda en el filtro, seleccionar la primera
+    if (
+      this.clienteSeleccionado &&
+      !this.clientesFiltrados.some((x) => x.id === this.clienteSeleccionado!.id)
+    ) {
+      this.clienteSeleccionado = this.clientesFiltrados[0] ?? null;
+    }
+
+    // si no había seleccionada y hay resultados
+    if (!this.clienteSeleccionado && this.clientesFiltrados.length > 0) {
+      this.clienteSeleccionado = this.clientesFiltrados[0];
+    }
   }
 
-  verCliente(cliente: ClienteModel): void {
-    // TODO:
-    // - Navegar a una vista de detalle de cliente
-    //   this.router.navigate(['/taller/clientes', cliente.id]);
+  // =========================
+  // NAV
+  // =========================
+  nuevoCliente(): void {
+    this.router.navigate(['/taller/clientes/seleccionUsuario'], {
+      queryParams: { modo: 'alta-desde-taller-CLI' },
+    });
   }
 
   editarCliente(cliente: ClienteModel): void {
-    // TODO:
-    // - Navegar a un formulario de edición
-    //   this.router.navigate(['/taller/clientes', cliente.id, 'editar']);
+    this.router.navigate(['/taller/clientes', cliente.id, 'editar']);
   }
 
-  eliminarCliente(cliente: ClienteModel): void {
-    // TODO:
-    // - Confirmar con window.confirm(...)
-    // - Llamar al servicio DELETE /api/clientes/<id>/
-    // - Si sale bien, quitarlo de this.clientes y this.clientesFiltrados
+  crearOrdenParaCliente(cliente: ClienteModel): void {
+    this.router.navigate(['/taller', 'form-orden'], {
+      queryParams: { clienteId: cliente.id },
+    });
   }
 }

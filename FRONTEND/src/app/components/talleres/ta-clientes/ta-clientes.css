@@ -1,19 +1,178 @@
-/* Contenedor principal de la sección de configuración */
-section {
-  max-width: 720px;
-  margin: 0 auto;
-}
+/* =========================
+   IMPORTANTE
+   Tu regla anterior:
+   section { max-width: 720px; margin: 0 auto; }
+   te rompe el layout lateral.
+   La quitamos por completo.
+========================= */
 
-/* Card reutilizable (muy parecido a lo que ya usás en otras vistas) */
+/* Card base (mantenemos tu estilo) */
 .card {
   background-color: #ffffff;
   border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.08); /* sombra suave */
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.08);
+  border: 1px solid #eef2f7;
 }
 
-/* Botón primario (azul) */
+/* =========================
+   HEADER
+========================= */
+.clientes-header {
+  align-items: center;
+}
+
+/* =========================
+   LAYOUT LIST + DETAIL
+========================= */
+.clientes-layout{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px; 
+  gap: 18px;
+  align-items: start;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .clientes-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .clientes-detail {
+    position: static;
+  }
+}
+
+/* =========================
+   LIST WRAP
+========================= */
+.clientes-list {
+  min-width: 0;
+}
+
+/* =========================
+   CLIENT CARD CLICKABLE
+========================= */
+.cliente-card {
+  cursor: pointer;
+  transition: background-color 120ms ease, box-shadow 120ms ease,
+    transform 120ms ease, border-color 120ms ease;
+}
+
+.cliente-card:hover {
+  background: #f9fafb;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
+  transform: translateY(-1px);
+}
+
+/* ✅ Seleccionado tipo Órdenes */
+.cliente-selected {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  box-shadow: inset 3px 0 0 #2563eb, 0 6px 14px rgba(15, 23, 42, 0.08);
+}
+
+/* =========================
+   DETAIL ASIDE (estilo panel)
+========================= */
+.clientes-detail{
+  position: sticky;
+  top: 12px;
+  height: fit-content;
+}
+
+/* Panel con identidad propia */
+.detail-card{
+  background: #e3e4f5;
+  border: 1px solid #c4bef1;                 /* azul muy suave */
+  border-left: 4px solid #0b0c0c;           /* 👈 marca visual tipo panel */
+  border-radius: 14px;
+  padding: 18px 18px 20px 18px;
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+/* Header más “sección de detalle” */
+.detail-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+/* Título más protagonista */
+.detail-title{
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Subtitulo más suave */
+.detail-subtitle{
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+/* Grilla */
+.detail-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+/* Labels más finitos */
+.label{
+  font-size: 0.68rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* Values algo más “de panel” */
+.value{
+  display: block;
+  font-size: 0.95rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Lista de vehículos en modo panel */
+.mini-vehiculo{
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.mini-vehiculo:last-child{
+  border-bottom: none;
+}
+
+.mini-muted{
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-left: 6px;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+.detail-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* =========================
+   BOTONES (tus estilos)
+========================= */
 .button-primary {
-  background-color: #2b6cb0;  /* azul */
+  background-color: #2b6cb0;
   color: #ffffff;
   padding: 0.6rem 1.4rem;
   border-radius: 0.75rem;
@@ -37,29 +196,38 @@ section {
   cursor: not-allowed;
 }
 
-/* Botón “peligroso” (eliminar cuenta) */
-.button-danger {
-  background-color: #e53e3e;  /* rojo */
-  color: #ffffff;
-  padding: 0.6rem 1.4rem;
+/* Secundario simple consistente */
+.button-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 0.45rem 1rem;
   border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  border: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  border: 1px solid #d1d5db;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.05s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.05s ease;
 }
 
-.button-danger:hover {
-  background-color: #c53030;
+.button-secondary:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
 }
 
-.button-danger:active {
+.button-secondary:active {
   transform: scale(0.98);
 }
 
-/* Íconos dentro de los círculos de perfil/alerta */
-.card .fa-user-cog,
-.card .fa-user-slash {
-  font-size: 1.1rem;
+/* =========================
+   Titulo detalle
+========================= */
+.detail-kicker{
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #eb4925;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 0 0 4px 0;
 }
+

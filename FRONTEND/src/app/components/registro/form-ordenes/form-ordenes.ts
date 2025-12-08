@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -29,7 +29,12 @@ export class FormOrdenes {
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
   private ordenService = inject(OrdenService);
-  private tallerService = inject(TalleresService)
+  private tallerService = inject(TalleresService);
+  private route = inject(ActivatedRoute);
+
+  private prefillClienteId: number | null = null;
+  private prefillVehiculoId: number | null = null;
+
 
   esteTaller = this.tallerService.tallerActual;
   esteTallerId = this.esteTaller()?.id;
@@ -81,28 +86,38 @@ export class FormOrdenes {
   practicaTexto = '';
 
   ngOnInit(): void {
-    
-    
+
+    // 0) Leo params (query y opcional param)
+    this.initPrefillFromRoute();
+
+    // 1) Clientes
     this.clienteService.listarTodos().subscribe({
       next: (clientes) => {
         this.clienteService.clientes.set(clientes);
-        // refresco inicial seguro de filtrados
         this.clientesFiltrados = [...this.clientesSig()];
+
+        // intento precargar por si vino clienteId
+        this.tryApplyPrefill();
       },
     });
 
+    // 2) Vehículos
     this.vehiculoService.listarTodos().subscribe({
       next: (vehiculos) => {
         this.vehiculoService.vehiculos.set(vehiculos);
         this.vehiculosFiltrados = [...this.vehiculosSig()];
+
+        // intento precargar por si vino vehiculoId
+        this.tryApplyPrefill();
       },
     });
 
-    // Valores default amigables
+    // 3) Valores default amigables
     const hoy = new Date();
     this.fechaTurno = hoy.toISOString().slice(0, 10);
     this.horaTurno = '10:00';
   }
+
 
   // =========================
   // TABS
@@ -397,4 +412,67 @@ export class FormOrdenes {
     const dom = v.dominio ? ` - ${v.dominio}` : '';
     return `${mm}${dom}`.trim() || `Vehículo ${v.id}`;
   }
+  // =========================
+  // Parametro url
+  // =========================
+  private initPrefillFromRoute(): void {
+  // Query params
+  const qp = this.route.snapshot.queryParamMap;
+
+  const clienteQ = qp.get('clienteId');
+  const vehiculoQ = qp.get('vehiculoId');
+
+  // (Opcional) también soportar params de ruta si algún día usás /form-orden/:clienteId
+  const rp = this.route.snapshot.paramMap;
+  const clienteR = rp.get('clienteId');
+  const vehiculoR = rp.get('vehiculoId');
+
+  const clienteIdStr = clienteQ ?? clienteR;
+  const vehiculoIdStr = vehiculoQ ?? vehiculoR;
+
+  this.prefillClienteId = clienteIdStr ? Number(clienteIdStr) : null;
+  this.prefillVehiculoId = vehiculoIdStr ? Number(vehiculoIdStr) : null;
+
+  // Sanitización básica
+  if (this.prefillClienteId && Number.isNaN(this.prefillClienteId)) {
+    this.prefillClienteId = null;
+  }
+  if (this.prefillVehiculoId && Number.isNaN(this.prefillVehiculoId)) {
+    this.prefillVehiculoId = null;
+  }
+}
+
+private tryApplyPrefill(): void {
+  // Si no hay nada que precargar, salgo
+  if (!this.prefillClienteId && !this.prefillVehiculoId) return;
+
+  // Necesito tener cargadas las listas
+  const clientes = this.clientesSig();
+  const vehiculos = this.vehiculosSig();
+
+  if (!clientes.length || !vehiculos.length) return;
+
+  // ✅ Prioridad: vehículo (porque autoselecciona cliente)
+  if (this.prefillVehiculoId) {
+    const v = vehiculos.find(x => x.id === this.prefillVehiculoId);
+    if (v) {
+      this.seleccionarVehiculo(v);
+    }
+    // consumimos el prefill para que no re-ejecute
+    this.prefillVehiculoId = null;
+    this.prefillClienteId = null;
+    return;
+  }
+
+  // ✅ Si no vino vehículo, intento cliente
+  if (this.prefillClienteId) {
+    const c = clientes.find(x => x.id === this.prefillClienteId);
+    if (c) {
+      this.seleccionarCliente(c);
+    }
+    this.prefillClienteId = null;
+    return;
+  }
+}
+
 }
