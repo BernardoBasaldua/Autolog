@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RegistroTecnicoTaller, Taller } from '../../models/talleres/taller.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, pipe } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AdministradorTecnicoModel, ClienteModel, UsuarioModel } from '../../models/usuarios/usuario.model';
 import { Vehiculo } from '../../models/vehiculo/vehiculo.model';
@@ -15,8 +15,10 @@ export class TalleresService {
   
   readonly listaTalleres = signal<Taller[]>([]);
   readonly tallerActual = signal<Taller | null>(null);
-  taller = this.tallerActual()
-  tallerId = this.taller?.id
+  readonly clientesTaller = signal<ClienteModel[]>([]);
+  readonly vehiculosTaller = signal<Vehiculo[]>([]);
+  taller = this.tallerActual();
+  readonly tallerId = computed(() => this.tallerActual()?.id);
 
   constructor(private http: HttpClient) {}
 
@@ -73,10 +75,14 @@ export class TalleresService {
   }
   //DEVUELVE LOS CLIENTES QUE TIENEN ASOCIADA UNA ORDEN AL TALLER
   getClientesDeTaller() {
-    return this.http.get<ClienteModel[]>(`${this.apiTalleresUrl}${this.tallerId}/clientes/`);
+    return this.http.get<ClienteModel[]>(`${this.apiTalleresUrl}${this.tallerId()}/clientes/`).pipe(
+      tap(clientes => this.clientesTaller.set(clientes))
+    );
   }
   //DEVUELVE LOS VEHICULOS QUE TIENEN ASOCIADA UNA ORDEN AL TALLER
   getVehiculosDeTaller() {
-    return this.http.get<Vehiculo[]>(`${this.apiTalleresUrl}${this.tallerId}/vehiculos/`);
+    return this.http.get<Vehiculo[]>(`${this.apiTalleresUrl}${this.tallerId()}/vehiculos/`).pipe(
+      tap(vehiculos => this.vehiculosTaller.set(vehiculos))
+    );
   }
 }

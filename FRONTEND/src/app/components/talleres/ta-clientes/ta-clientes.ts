@@ -14,7 +14,11 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
   styleUrl: './ta-clientes.css',
 })
 export class TaClientes implements OnInit {
+
+  tallerService = inject(TalleresService);
+
   // lista completa de clientes del taller
+  clientesSig = this.tallerService.clientesTaller;
   clientes: ClienteModel[] = [];
 
   // lista filtrada para mostrar en pantalla
@@ -24,13 +28,19 @@ export class TaClientes implements OnInit {
   terminoBusqueda: string = '';
   router = inject(Router);
 
-  tallerService = inject(TalleresService);
+  
 
   ngOnInit(): void {
     // TODO: acá deberías llamar a un servicio que traiga
     // los clientes del taller (por ejemplo GET /api/clientes-del-taller)
     // y cuando llegue la respuesta, asignar:
-    //
+    this.tallerService.getClientesDeTaller().subscribe({
+      next: clientes => { this.clientesSig.set(clientes);
+        this.clientes = this.clientesSig();
+        this.cargarClientes();
+        console.log('clientes del taller cargados', clientes)
+      }
+    })
     // this.clientes = respuesta;
     // this.clientesFiltrados = respuesta;
     //
@@ -39,16 +49,8 @@ export class TaClientes implements OnInit {
 
   volver(): void{}
   cargarClientes(): void {
-    // TODO:
-    // - Llamar al servicio de clientes del taller
-    // - Suscribirte al observable
-    // - Asignar this.clientes y this.clientesFiltrados
-    this.tallerService.getClientesDeTaller().subscribe({
-  next: clientes => {
-    this.clientes = clientes;
-    this.clientesFiltrados = clientes;
-  }
-});
+      this.clientes = this.clientesSig();
+      this.clientesFiltrados = this.clientes;
   }
 
   filtrar(): void {
