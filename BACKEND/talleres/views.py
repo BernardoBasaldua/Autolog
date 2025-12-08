@@ -47,7 +47,7 @@ class TallerViewSet(viewsets.ModelViewSet):
         serializer = ClienteSerializer(clientes_qs, many=True, context={"request": request})
         return Response(serializer.data)
     
-    @action(detail=True, methods=["get"], url_path="clientes")
+    @action(detail=True, methods=["get"], url_path="vehiculos")
     def vehiculos(self, request, pk=None):
         """
         GET /api/talleres/<id>/vehiculos/

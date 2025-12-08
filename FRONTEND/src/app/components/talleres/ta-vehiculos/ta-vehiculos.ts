@@ -25,7 +25,8 @@ export class TaVehiculos implements OnInit {
   private router = inject(Router);
 
   // Lista completa de vehículos del taller
-  vehiculos: Vehiculo[] = [];
+  vehiculosSig = this.talleresService.vehiculosTaller;
+  vehiculos = this.vehiculosSig();
 
   // Lista filtrada para mostrar en pantalla
   vehiculosFiltrados: Vehiculo[] = [];
