@@ -1,21 +1,29 @@
-.tabs{
+.tabs {
   display: flex;
-  gap: 12px;
-  border-bottom: 1px solid #e5e7eb; /* gris suave */
+  gap: 8px;
+  border-bottom: 1px solid #e5e7eb;
   margin-bottom: 12px;
 }
 
-.tab-button{
+.tab-button {
   padding: 10px 14px;
   font-weight: 600;
   color: #374151;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent; /* clave */
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-bottom: 2px solid transparent;
+  border-radius: 10px 10px 0 0;
   cursor: pointer;
+  transition: all 150ms ease;
 }
 
-.tab-button.active{
+.tab-button:hover {
+  background: #f3f4f6;
+}
+
+.tab-button.active {
   color: #2563eb;
-  border-bottom-color: #2563eb; /* subrayado solo bajo el tab */
+  background: #ffffff;
+  border-color: #e5e7eb;
+  border-bottom-color: #2563eb;
 }

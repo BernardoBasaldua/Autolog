@@ -6,7 +6,7 @@ import { ClienteService } from '../../../services/usuarios/clientes/cliente.serv
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 
-type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller-CLI' | 'alta-desde-taller-VEHI';
+type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller-CLI' | 'alta-desde-taller-VEHI' | 'alta-desde-taller-ORD';
 
 
 @Component({
@@ -26,7 +26,16 @@ export class FormClientes {
   perfilActualizado = output<void>();
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  
+  camposPassword = true;
+
+  private esAltaDesdeTaller(m: Modo): boolean {
+    return (
+      m === 'alta-desde-taller-CLI' ||
+      m === 'alta-desde-taller-VEHI' ||
+      m === 'alta-desde-taller-ORD'
+    );
+  }
+
   constructor(
     private fb: FormBuilder, 
     private clienteService: ClienteService,
@@ -69,6 +78,8 @@ export class FormClientes {
       this.modoInterno.set(modoParam);   // esto pisa al valor del padre si venís por URL
     }
 
+    this.camposPassword = !this.esAltaDesdeTaller(this.modoInterno());
+
     //2)CONFIGURAR SEGUN EL MODOINTERNO
     //MODO EDICION DE CLIENTE
     if (this.modoInterno() === 'editar') {
@@ -103,7 +114,9 @@ export class FormClientes {
     }
 
     // MODO ALTA CLIENTE DESDE TALLER
-    if (this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI' ) {
+    if (this.modoInterno() === 'alta-desde-taller-CLI' ||
+      this.modoInterno() === 'alta-desde-taller-VEHI' ||
+      this.modoInterno() === 'alta-desde-taller-ORD') {
       // En este modo NO quiero pedir password al técnico
       // (el HTML ya oculta los campos con @if, pero el form
       //  SACO Validators.required)
@@ -158,7 +171,7 @@ export class FormClientes {
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
 
-    if (this.modoInterno() === 'crear'|| this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI') {    
+    if (this.modoInterno() === 'crear'|| this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI' || this.modoInterno() === 'alta-desde-taller-ORD') {    
       console.log('Datos de registro usuario:', datosUsuario);
       this.clienteService.crearCliente(datosUsuario).subscribe(
         {next: (cliente) => {
@@ -175,7 +188,12 @@ export class FormClientes {
               {queryParams: { modo: 'alta-desde-taller-VEHI'}}
             );
           
-          } else {
+          }else if (this.modoInterno()=== 'alta-desde-taller-ORD'){
+            this.router.navigate(
+              ['/taller/ordenes/nueva']
+            );
+            
+          }else {
             this.router.navigate(['/login']);
           }
           this.clienteForm.reset();

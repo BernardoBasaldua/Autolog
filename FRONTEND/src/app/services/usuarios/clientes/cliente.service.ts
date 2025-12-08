@@ -1,7 +1,7 @@
 // cliente.service.ts
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
+import { ClienteCreatePayload, ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.model';
 import { PermisoDeAcceso } from '../../../models/permisos/permiso-acceso.model';
 
 import { Observable, map, tap, switchMap, of } from 'rxjs';
@@ -27,7 +27,7 @@ export class ClienteService {
     // PARA REGISTRAR NUEVO CLIENTE
   crearCliente(usuario:UsuarioModel): Observable<ClienteModel> {
     //this.usuario = usuario;
-    const cliente: ClienteModel = {usuario};
+    const cliente: ClienteCreatePayload = {usuario};
     const url = this.apiClientesUrl;
     return this.http.post<ClienteModel>(url, cliente);
   }

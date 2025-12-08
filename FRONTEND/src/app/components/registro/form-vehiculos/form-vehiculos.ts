@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Marca, MarcaCreatePayload, Modelo, ModeloCreatePayload, Vehiculo, VehiculoCreatePayload } from '../../../models/vehiculo/vehiculo.model';
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
@@ -33,15 +33,22 @@ export class FormVehiculos {
   private vehiculoService = inject(VehiculoService);
   private clienteService = inject(ClienteService)
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   vehiculoCreado = output<any>();
-  // Modo de uso del formulario
-  modo = input<ModoVehiculo>('alta-desde-taller');
 
+  // Modo de uso del formulario
+    //INPUT COMO HIJO
+  modo = input<ModoVehiculo>('alta-desde-taller');
   //propietario preseleccionado desde el lado del cliente
   propietarioId = input<number | null>(null);
-
   esDesdeCliente = input<boolean>(false);
+
+    // ✅ Internos (uso real)
+  modoInterno = signal<ModoVehiculo>('alta-desde-taller');
+  propietarioIdInterno = signal<number | null>(null);
+  lockPropietario = signal<boolean>(false);
+  returnTo = signal<string | null>(null);
 
   vehiculoForm: FormGroup;
 
@@ -76,35 +83,54 @@ export class FormVehiculos {
   }
 
   ngOnInit(): void {
-    // Siempre cargamos marcas y modelos
     this.cargarMarcasYModelos();
 
-    // Al inicio, sin marca => deshabilito modelo
     const modeloCtrl = this.vehiculoForm.get('modeloId');
     modeloCtrl?.disable();
 
-    // 🔹 Si el form se está usando desde el CLIENTE
+    // 1) base desde inputs
+    this.modoInterno.set(this.modo());
+    this.propietarioIdInterno.set(this.propietarioId());
+
+    // 2) override por query params
+    const qp = this.route.snapshot.queryParamMap;
+
+    const modoQP = qp.get('modo') as ModoVehiculo | null;
+    if (modoQP) this.modoInterno.set(modoQP);
+
+    const propQP = qp.get('propietarioId');
+    if (propQP) this.propietarioIdInterno.set(Number(propQP));
+
+    const lockQP = qp.get('lockPropietario');
+    if (lockQP === '1' || lockQP === 'true') this.lockPropietario.set(true);
+
+    const returnToQP = qp.get('returnTo');
+    if (returnToQP) this.returnTo.set(returnToQP);
+
+    //  Comportamiento propietario
     if (this.esDesdeCliente()) {
-      // NO cargamos todos los propietarios, solo usamos el cliente logueado
       this.clienteService.getMiCliente().subscribe({
         next: (cli) => {
-          // seteamos el propietario con el cliente actual
-          this.vehiculoForm.get('propietarioId')?.setValue(cli.id);
-          // y lo bloqueamos para que no se pueda cambiar
-          this.vehiculoForm.get('propietarioId')?.disable();
+          const ctrl = this.vehiculoForm.get('propietarioId');
+          ctrl?.setValue(cli.id);
+          ctrl?.disable();
         },
         error: (e) => console.error('Error obteniendo cliente actual', e),
       });
+      return;
     }
-    
-    // 🔹 Si el form se está usando desde el TALLER → queda como antes
-    else {
-      this.cargarPropietarios();
 
-      // Si viene un propietarioId desde afuera, lo precargamos (comportamiento original)
-      const pre = this.propietarioId();
-      if (pre) {
-        this.vehiculoForm.get('propietarioId')?.setValue(pre);
+    // Taller
+    this.cargarPropietarios();
+
+    const pre = this.propietarioIdInterno();
+    if (pre) {
+      const ctrl = this.vehiculoForm.get('propietarioId');
+      ctrl?.setValue(pre);
+
+      // si vino por URL y lock = true
+      if (this.lockPropietario()) {
+        ctrl?.disable();
       }
     }
 
@@ -378,6 +404,11 @@ export class FormVehiculos {
         alert('Vehículo creado correctamente');
         this.vehiculoForm.reset();
         this.vehiculoCreado.emit(vehiculoCreado);
+        const rt = this.returnTo();
+        if (rt) {
+          this.router.navigateByUrl(rt);
+          return;
+      }
       },
       error: (e) => {
         console.error('Error creando vehículo DESDE TALLER:', e);

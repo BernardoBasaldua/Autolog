@@ -1,9 +1,20 @@
 <!-- Tabs for Orders -->
 <div class="flex mb-0">
-  <button class="tab-button" id="ordenesTrabajoTab" (click)="verOrdenesTrabajo()">
+  <button
+    class="tab-button"
+    id="ordenesTrabajoTab"
+    type="button"
+    (click)="verOrdenesTrabajo()"
+  >
     Órdenes de trabajo
   </button>
-  <button class="tab-button active" id="nuevaOrdenTab" (click)="crearNuevaOrden()">
+
+  <button
+    class="tab-button active"
+    id="nuevaOrdenTab"
+    type="button"
+    (click)="crearNuevaOrden()"
+  >
     Nueva orden
   </button>
 </div>
@@ -12,16 +23,15 @@
 <section id="nuevaOrdenContent" class="card p-6">
   <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-
     <!-- ================= CLIENTE (Autocomplete) ================= -->
     <div class="relative">
-    <label class="block text-gray-700 text-sm font-semibold mb-2">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
         Cliente
-    </label>
+      </label>
 
-    <div class="flex gap-2 items-center">
+      <div class="flex gap-2 items-center">
         <div class="relative flex-1">
-        <input
+          <input
             type="text"
             class="w-full"
             placeholder="Buscar cliente por nombre, teléfono o mail..."
@@ -31,68 +41,66 @@
             (focus)="abrirDropdownClientes()"
             (blur)="cerrarDropdownClientesConDelay()"
             autocomplete="off"
-        />
+          />
 
-        <!-- Dropdown -->
-        @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
+          <!-- Dropdown -->
+          @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
             <div
-            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
+              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
             >
-            @for (c of clientesFiltrados; track c.id) {
+              @for (c of clientesFiltrados; track c.id) {
                 <button
-                type="button"
-                class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                (mousedown)="seleccionarCliente(c)"
+                  type="button"
+                  class="w-full text-left px-3 py-2 hover:bg-gray-50"
+                  (mousedown)="seleccionarCliente(c)"
                 >
-                <div class="text-sm font-medium text-gray-900">
+                  <div class="text-sm font-medium text-gray-900">
                     {{ formatCliente(c) }}
-                </div>
+                  </div>
                 </button>
-            }
+              }
             </div>
-        }
+          }
 
-        @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
+          @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
             <div
-            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
             >
-            <div class="px-3 py-2 text-sm text-gray-500">
+              <div class="px-3 py-2 text-sm text-gray-500">
                 No hay coincidencias.
+              </div>
             </div>
-            </div>
-        }
+          }
         </div>
 
         <!-- Botón crear nuevo cliente -->
         <button
-        type="button"
-        class="inline-add-button whitespace-nowrap"
-        (click)="nuevoCliente()"
-        title="Crear nuevo cliente"
+          type="button"
+          class="inline-add-button whitespace-nowrap"
+          (click)="nuevoCliente()"
+          title="Crear nuevo cliente"
         >
-        <i class="fas fa-plus mr-1 text-xs"></i>
-        Nuevo
+          <i class="fas fa-plus mr-1 text-xs"></i>
+          Nuevo
         </button>
-    </div>
+      </div>
 
-    <!-- Hint del seleccionado -->
-    @if (clienteSeleccionado) {
+      @if (clienteSeleccionado) {
         <p class="mt-1 text-xs text-gray-500">
-        Seleccionado: <strong>{{ formatCliente(clienteSeleccionado) }}</strong>
+          Seleccionado: <strong>{{ formatCliente(clienteSeleccionado) }}</strong>
         </p>
-    }
+      }
     </div>
-
 
     <!-- ================= VEHICULO (Autocomplete) ================= -->
     <div class="relative">
-    <label class="block text-gray-700 text-sm font-semibold mb-2">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
         Vehículo
-    </label>
+      </label>
 
-    <div class="flex gap-2 items-center">
+      <div class="flex gap-2 items-center">
         <div class="relative flex-1">
-        <input
+          <input
             type="text"
             class="w-full"
             placeholder="Buscar por marca, modelo o patente..."
@@ -103,154 +111,202 @@
             (blur)="cerrarDropdownVehiculosConDelay()"
             [disabled]="bloquearVehiculoPorCliente && !clienteSeleccionado"
             autocomplete="off"
-        />
+          />
 
-        <!-- Dropdown -->
-        @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
+          <!-- Dropdown -->
+          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
             <div
-            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
+              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
             >
-            @for (v of vehiculosFiltrados; track v.id) {
+              @for (v of vehiculosFiltrados; track v.id) {
                 <button
-                type="button"
-                class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                (mousedown)="seleccionarVehiculo(v)"
+                  type="button"
+                  class="w-full text-left px-3 py-2 hover:bg-gray-50"
+                  (mousedown)="seleccionarVehiculo(v)"
                 >
-                <div class="text-sm font-medium text-gray-900">
+                  <div class="text-sm font-medium text-gray-900">
                     {{ formatVehiculo(v) }}
-                </div>
+                  </div>
                 </button>
-            }
+              }
             </div>
-        }
+          }
 
-        @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
+          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
             <div
-            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
             >
-            <div class="px-3 py-2 text-sm text-gray-500">
+              <div class="px-3 py-2 text-sm text-gray-500">
                 No hay coincidencias.
+              </div>
             </div>
-            </div>
-        }
+          }
         </div>
 
         <!-- Botón crear nuevo vehículo -->
         <button
-        type="button"
-        class="inline-add-button whitespace-nowrap"
-        (click)="nuevoVehiculo()"
-        title="Crear nuevo vehículo"
+          type="button"
+          class="inline-add-button whitespace-nowrap"
+          (click)="nuevoVehiculo()"
+          title="Crear nuevo vehículo"
         >
-        <i class="fas fa-plus mr-1 text-xs"></i>
-        Nuevo
+          <i class="fas fa-plus mr-1 text-xs"></i>
+          Nuevo
         </button>
-    </div>
+      </div>
 
-    @if (vehiculoSeleccionado) {
+      @if (vehiculoSeleccionado) {
         <p class="mt-1 text-xs text-gray-500">
-        Seleccionado: <strong>{{ formatVehiculo(vehiculoSeleccionado) }}</strong>
+          Seleccionado: <strong>{{ formatVehiculo(vehiculoSeleccionado) }}</strong>
         </p>
-    }
+      }
     </div>
 
-    <!-- ================= resto de tu formulario igual ================= -->
-
-    <!-- Fecha y hora turno -->
+    <!-- ================= FECHA / HORA TURNO ================= -->
     <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
       <div>
-        <label for="fechaTurno" class="block text-gray-700 text-sm font-semibold mb-2">
+        <label class="block text-gray-700 text-sm font-semibold mb-2">
           Fecha y hora turno
         </label>
-        <input type="date" id="fechaTurno" value="2025-08-28">
+        <input
+          type="date"
+          [(ngModel)]="fechaTurno"
+          name="fechaTurno"
+        />
       </div>
+
       <div>
-        <label for="horaTurno" class="block text-gray-700 text-sm font-semibold mb-2"></label>
-        <input type="time" id="horaTurno" value="10:00">
+        <label class="block text-gray-700 text-sm font-semibold mb-2"></label>
+        <input
+          type="time"
+          [(ngModel)]="horaTurno"
+          name="horaTurno"
+        />
       </div>
-      <button class="button-secondary w-full md:w-auto self-end">Ver agenda</button>
+
+      <button
+        type="button"
+        class="button-secondary w-full md:w-auto self-end"
+        (click)="verAgenda()"
+      >
+        Ver agenda
+      </button>
     </div>
 
-    <!-- Práctica de mantenimiento -->
+    <!-- ================= MANTENIMIENTO (esto sí existe en tu modelo) ================= -->
     <div>
-      <label for="practicaMantenimiento" class="block text-gray-700 text-sm font-semibold mb-2">
-        Práctica de mantenimiento
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
+        Tipo de mantenimiento
+      </label>
+      <select
+        [(ngModel)]="mantenimiento"
+        name="mantenimiento"
+      >
+        <option [ngValue]="'preventivo'">Preventivo</option>
+        <option [ngValue]="'correctivo'">Correctivo</option>
+      </select>
+    </div>
+
+    <!-- ================= RESPONSABLE TÉCNICO (placeholder UI) ================= -->
+    <div>
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
+        Responsable Técnico
+      </label>
+      <input
+        type="text"
+        placeholder="(pendiente selector de técnico)"
+        [(ngModel)]="responsableTecnicoTexto"
+        name="responsableTecnicoTexto"
+      />
+    </div>
+
+    <!-- ================= ODÓMETRO ================= -->
+    <div class="flex items-center">
+      <div class="w-2/3 pr-2">
+        <label class="block text-gray-700 text-sm font-semibold mb-2">
+          Odómetro
+        </label>
+        <input
+          type="number"
+          min="0"
+          [(ngModel)]="kilometraje"
+          name="kilometraje"
+        />
+      </div>
+
+      <div class="w-1/3 pl-2">
+        <label class="block text-gray-700 text-sm font-semibold mb-2"></label>
+        <input
+          type="text"
+          value="Kilómetros"
+          disabled
+          class="bg-gray-100 cursor-not-allowed"
+        />
+      </div>
+    </div>
+
+    <!-- ================= FECHA ENTREGA ================= -->
+    <div>
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
+        Fecha de entrega
+      </label>
+      <input
+        type="date"
+        [(ngModel)]="fechaEntrega"
+        name="fechaEntrega"
+      />
+    </div>
+
+    <!-- ================= OBSERVACIONES TÉCNICAS ================= -->
+    <div class="md:col-span-2">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
+        Observaciones técnicas
+      </label>
+      <textarea
+        rows="3"
+        placeholder="Escribe aquí"
+        [(ngModel)]="observacionesTecnicas"
+        name="observacionesTecnicas"
+      ></textarea>
+    </div>
+
+    <!-- ================= CAMPOS FUTUROS (no en modelo aún) ================= -->
+    <div class="md:col-span-2 opacity-70">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">
+        Práctica de mantenimiento (pendiente de implementar en el modelo)
       </label>
       <div class="flex">
-        <input type="text" id="practicaMantenimiento" placeholder="cambio de aceite y filtros..." class="flex-1">
-        <select class="ml-2 w-auto">
-          <option></option>
+        <input
+          type="text"
+          placeholder="cambio de aceite y filtros..."
+          class="flex-1"
+          [(ngModel)]="practicaTexto"
+          name="practicaTexto"
+        />
+        <select class="ml-2 w-auto" disabled>
+          <option>---</option>
         </select>
       </div>
     </div>
 
-    <!-- Responsable Técnico -->
-    <div>
-      <label for="responsableTecnico" class="block text-gray-700 text-sm font-semibold mb-2">
-        Responsable Técnico
-      </label>
-      <input type="text" id="responsableTecnico" placeholder="Roberto Ramirez...">
-    </div>
-
-    <!-- Odómetro -->
-    <div class="flex items-center">
-      <div class="w-2/3 pr-2">
-        <label for="odometro" class="block text-gray-700 text-sm font-semibold mb-2">
-          Odómetro
-        </label>
-        <input type="text" id="odometro" value="15200">
-      </div>
-      <div class="w-1/3 pl-2">
-        <label for="kilometros" class="block text-gray-700 text-sm font-semibold mb-2"></label>
-        <input type="text" id="kilometros" value="Kilometros" disabled class="bg-gray-100 cursor-not-allowed">
-      </div>
-    </div>
-
-    <!-- Fecha de entrega -->
-    <div>
-      <label for="fechaEntrega" class="block text-gray-700 text-sm font-semibold mb-2">
-        Fecha de entrega
-      </label>
-      <input type="date" id="fechaEntrega" value="2025-09-28">
-    </div>
-
-    <!-- Comentario Entrada -->
-    <div class="md:col-span-2">
-      <label for="comentarioEntrada" class="block text-gray-700 text-sm font-semibold mb-2">
-        Comentario Entrada
-      </label>
-      <textarea id="comentarioEntrada" rows="3" placeholder="Escribe aquí"></textarea>
-    </div>
-
-    <!-- Comentario Salida -->
-    <div class="md:col-span-2">
-      <label for="comentarioSalida" class="block text-gray-700 text-sm font-semibold mb-2">
-        Comentario Salida
-      </label>
-      <textarea id="comentarioSalida" rows="3" placeholder="Escribe aquí"></textarea>
-    </div>
-
-    <!-- Tipo de mantenimiento -->
-    <div>
-      <label for="tipoMantenimiento" class="block text-gray-700 text-sm font-semibold mb-2">
-        Tipo de mantenimiento
-      </label>
-      <select id="tipoMantenimiento">
-        <option>Preventivo</option>
-        <option>Correctivo</option>
-      </select>
-    </div>
-
-    <!-- Presupuesto Button -->
-    <div class="md:col-span-2 flex justify-center">
-      <button class="button-primary w-full md:w-auto px-10 py-3 mt-4">
-        Presupuesto
-      </button>
-    </div>
   </form>
 
+  <!-- ================= ACTIONS ================= -->
   <div class="mt-8 flex justify-end space-x-4">
-    <button class="button-secondary">Cancelar orden</button>
-    <button class="button-primary">Confirmar orden</button>
+    <button
+      type="button"
+      class="button-secondary"
+      (click)="cancelarOrden()"
+    >
+      Cancelar orden
+    </button>
+
+    <button
+      type="button"
+      class="button-primary"
+      (click)="confirmarOrden()"
+    >
+      Confirmar orden
+    </button>
   </div>
 </section>

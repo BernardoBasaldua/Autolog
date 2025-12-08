@@ -15,7 +15,14 @@ export interface UsuarioModel {
 }
 
 export interface ClienteModel {
-  id?: number;
+  id: number;
+  usuario: UsuarioModel;
+  permisos_que_otorgo?: PermisoDeAcceso[];  
+  mis_vehiculos?: Vehiculo[];               // propios
+  vehiculos_externos?: Vehiculo[];          // externos (nuevos en el serializer)
+}
+
+export interface ClienteCreatePayload {
   usuario: UsuarioModel;
   permisos_que_otorgo?: PermisoDeAcceso[];  
   mis_vehiculos?: Vehiculo[];               // propios
