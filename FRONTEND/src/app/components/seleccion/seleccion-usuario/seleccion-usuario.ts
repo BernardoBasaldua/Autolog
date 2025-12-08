@@ -59,7 +59,13 @@ export class SeleccionUsuario {
     this.usuarioService.listarTodos().subscribe({
       next: (usuarios) => {
         this.usuarios = usuarios;
-        this.usuariosFiltrados = usuarios;
+        if (this.tipo === 'permisos' && this.clienteActual) {
+          this.usuarios = this.usuarios.filter(
+            (u) => u.pk !== this.clienteActual?.usuario.pk
+          );
+        }
+
+        this.usuariosFiltrados = this.usuarios;
       },
       error: (e) => console.error('Error cargando usuarios', e),
     });
