@@ -11,6 +11,7 @@ from ordenes.serializers import OrdenDeTrabajoSerializer
 from vehiculos.models import Vehiculo
 from vehiculos.serializers import VehiculoSerializer
 from usuarios.models import PermisoDeAcceso
+from .serializers import ClientePublicoSerializer
 
 from .models import AdministradorTecnico, Cliente, Usuario
 from .serializers import (
@@ -88,6 +89,11 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated], url_path="publicos")
+    def publicos(self, request):
+        qs = Cliente.objects.select_related("usuario").all().order_by("usuario__first_name", "usuario__last_name")
+        ser = ClientePublicoSerializer(qs, many=True)
+        return Response(ser.data)
 
     # crear permiso de acceso
     @action(detail=True, methods=["post", "get"])

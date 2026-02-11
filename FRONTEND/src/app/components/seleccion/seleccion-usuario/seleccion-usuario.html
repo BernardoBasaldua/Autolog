@@ -56,39 +56,21 @@
 @if (modo === 'default') {
   <!-- Lista de usuarios existentes -->
   <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (usuario of usuariosFiltrados; track usuario.pk) {
-      <div
-        class="card card-usuario p-4 flex flex-col"
-        (click)="verUsuario(usuario)"
-      >
+    @for (c of clientesFiltrados; track c.id) {
+      <div class="card card-usuario p-4 flex flex-col">
         <h2 class="font-bold text-lg">
-          {{ usuario.first_name }} {{ usuario.last_name }}
+          {{ c.first_name }} {{ c.last_name }}
         </h2>
-        <p class="text-sm text-gray-600">DNI: {{ usuario.dni }}</p>
-        <p class="text-sm text-gray-600">Email: {{ usuario.email }}</p>
-        <p class="text-sm text-gray-600">Telefono: {{ usuario.telefono }}</p>
-        <p class="text-sm text-gray-600">Direccion: {{ usuario.direccion }}</p>
+        <p class="text-sm text-gray-600">Email: {{ c.email }}</p>
+
 
         <div class="mt-4 flex justify-end">
-          @if (tipo != "permisos"){ 
-            <button
-              class="button-secondary"
-              (click)="crearOrden(usuario); $event.stopPropagation()"
-            >
-              Crear orden de trabajo
-            </button>
-          }
-          @else {
-            <button
-              class="button-secondary"
-              (click)="otorgarPermisoUsuario(usuario); $event.stopPropagation()"
-            >
-              Otorgar permiso
-            </button>
-          } 
+          <button class="button-secondary" (click)="otorgarPermisoCliente(c); $event.stopPropagation()">
+            Otorgar permiso
+          </button>
         </div>
       </div>
-    } @empty {
+    }@empty {
       <div class="col-span-full text-center text-gray-500">
         No se encontraron usuarios.
       </div>
@@ -103,44 +85,26 @@
 
   <!-- DE ACA PARA ABAJO ME PARECE QUE SE REPITE CODIGO Y SE SOLUCION CON UN OR EN EL IF ANTERIOR -->
 } @else if (modo === 'permisos') {
-<!-- Lista de usuarios existentes -->
-  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (usuario of usuariosFiltrados; track usuario.pk) {
-      <div
-        class="card card-usuario p-4 flex flex-col"
-        (click)="verUsuario(usuario)"
-      >
-        <h2 class="font-bold text-lg">
-          {{ usuario.first_name }} {{ usuario.last_name }}
-        </h2>
-        <p class="text-sm text-gray-600">DNI: {{ usuario.dni }}</p>
-        <p class="text-sm text-gray-600">Email: {{ usuario.email }}</p>
-        <p class="text-sm text-gray-600">Telefono: {{ usuario.telefono }}</p>
-        <p class="text-sm text-gray-600">Direccion: {{ usuario.direccion }}</p>
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (t of talleresFiltrados; track t.id) {
+        <div class="card card-usuario p-4 flex flex-col">
+          <h2 class="font-bold text-lg">{{ t.nombre }}</h2>
+          <p class="text-sm text-gray-600">CUIT: {{ t.cuit }}</p>
+          <p class="text-sm text-gray-600">Tel: {{ t.telefono }}</p>
+          <p class="text-sm text-gray-600">Dirección: {{ t.direccion }}</p>
 
-        <div class="mt-4 flex justify-end">
-          @if (tipo != "permisos"){ 
-            <button
-              class="button-secondary"
-              (click)="crearOrden(usuario); $event.stopPropagation()"
-            >
-              Crear orden de trabajo
-            </button>
-          }
-          @else {
-            <button
-              class="button-secondary"
-              (click)="otorgarPermisoUsuario(usuario); $event.stopPropagation()"
-            >
+          <div class="mt-4 flex justify-end">
+            <button class="button-secondary" (click)="otorgarPermisoTaller(t); $event.stopPropagation()">
               Otorgar permiso
             </button>
-          } 
+          </div>
         </div>
-      </div>
-    } @empty {
-      <div class="col-span-full text-center text-gray-500">
-        No se encontraron usuarios.
-      </div>
-    }
-  </section>
-}
+      } @empty {
+        <div class="col-span-full text-center text-gray-500">
+          No se encontraron talleres.
+        </div>
+      }
+    </section>
+  }
+
+

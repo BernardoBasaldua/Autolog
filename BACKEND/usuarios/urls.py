@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register(r"usuarios", UsuarioViewSet)
 router.register(r"tecnicos", AdministradorTecnicoViewSet, basename="tecnicos")
 router.register(r"clientes", ClienteViewSet)
+router.register(r'clientes', ClienteViewSet, basename='clientes')
 
 # router.register(r'ordenes', OrdenDeTrabajoViewSet)
 # router.register(r'vehiculos', VehiculoViewSet)

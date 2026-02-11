@@ -10,6 +10,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormClientes } from '../../registro/form-clientes/form-clientes';
+import { TalleresService } from '../../../services/talleres/talleres.service';
+import { ClientePublicoModel } from '../../../models/usuarios/usuario.model';
+
+
+
+
 
 // 🔹 Enum declarado FUERA de la clase
 export enum ModoSeleccion {
@@ -30,6 +36,18 @@ export class SeleccionUsuario {
   private route = inject(ActivatedRoute);
   private clienteService = inject(ClienteService);
 
+  private talleresService = inject(TalleresService);
+
+  // clientes: ClienteModel[] = [];
+  // clientesFiltrados: ClienteModel[] = [];
+
+  clientes: ClientePublicoModel[] = [];
+  clientesFiltrados: ClientePublicoModel[] = [];
+
+  talleres: Taller[] = [];
+  talleresFiltrados: Taller[] = [];
+
+
   // 🔹 Exponer el enum al template
   modo: string = 'default';
   tipo: string = "";
@@ -39,59 +57,98 @@ export class SeleccionUsuario {
 
   vehiculoId!: number;
 
-  usuarios: UsuarioModel[] = [];
-  usuariosFiltrados: UsuarioModel[] = [];
+  
   terminoBusqueda = '';
 
   ngOnInit(): void {
-    this.cargarUsuarios();
-    this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
-    this.clienteActual = this.clienteService.clienteActual(); 
+  this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
+  this.clienteActual = this.clienteService.clienteActual();
 
-   this.route.data.subscribe((data: any) => {
-      const modoParam = data['modo'];
-      this.tipo = modoParam;
-    });
-    this.modo = "default";
-  }
+  this.tipo = this.route.snapshot.data?.['modo'] ?? '';
+  this.modo = 'default';
 
-  cargarUsuarios(): void {
-    this.usuarioService.listarTodos().subscribe({
-      next: (usuarios) => {
-        this.usuarios = usuarios;
-        if (this.tipo === 'permisos' && this.clienteActual) {
-          this.usuarios = this.usuarios.filter(
-            (u) => u.pk !== this.clienteActual?.usuario.pk
-          );
-        }
+  this.cargarClientes(); // carga tab default
+}
 
-        this.usuariosFiltrados = this.usuarios;
-      },
-      error: (e) => console.error('Error cargando usuarios', e),
-    });
-  }
+
+
+//   cargarUsuarios(): void {
+//   this.usuarioService.getClientes().subscribe({
+//     next: (clientes) => {
+//       const miPk = this.clienteActual?.usuario?.pk;
+
+//       // clientes vienen con { id, usuario: {...} }
+//       // Excluirme a mí (comparando por pk del usuario)
+//       const filtrados = miPk
+//         ? clientes.filter(c => c.usuario?.pk !== miPk)
+//         : clientes;
+
+//       // Acá guardamos como "usuarios" pero realmente son clientes
+//       // Si querés, renombramos después a "clientes"
+//       // this.usuarios = filtrados as any;
+//       // this.usuariosFiltrados = filtrados as any;
+
+//       console.log('clientes total', clientes.length);
+//       console.log('miPk', miPk);
+//       console.log('clientes sin mi', filtrados.length);
+//       console.log('primer cliente', filtrados[0]);
+//     },
+//     error: (e) => console.error('Error cargando clientes', e),
+//   });
+// }
+cargarClientes(): void {
+  this.clienteService.getClientesPublicos().subscribe({
+    next: (clientes) => {
+      const miPk = this.clienteActual?.usuario?.pk;
+
+      this.clientes = miPk
+        ? clientes.filter(c => c.usuario_pk !== miPk)
+        : clientes;
+
+      this.clientesFiltrados = this.clientes;
+    },
+    error: (e) => console.error('Error cargando clientes', e),
+  });
+}
+
+
+cargarTalleres(): void {
+  this.talleresService.getTalleres().subscribe({
+    next: (talleres) => {
+      this.talleres = talleres;
+      this.talleresFiltrados = talleres;
+    },
+    error: (e) => console.error('Error cargando talleres', e),
+  });
+}
+
+
+
 
   volver(): void {
-    this.router.navigate(['taller/clientes/']);
+    this.router.navigate(['/cliente/permisos/1']);
   }
 
   filtrar(): void {
-    const termino = this.terminoBusqueda.toLowerCase().trim();
+  const termino = this.terminoBusqueda.toLowerCase().trim();
 
-    if (!termino) {
-      this.usuariosFiltrados = this.usuarios;
-      return;
+    if (this.modo === 'default') {
+      if (!termino) {
+        this.clientesFiltrados = this.clientes;
+        return;
+      }
+
+      this.clientesFiltrados = this.clientes.filter(c => {
+        const nombre = `${c.first_name} ${c.last_name}`.toLowerCase();
+        const email = c.email.toLowerCase();
+
+        return nombre.includes(termino) || email.includes(termino);
+      });
     }
+}
 
-    this.usuariosFiltrados = this.usuarios.filter((u) => {
-      const nombreCompleto = `${u.first_name} ${u.last_name}`.toLowerCase();
-      return (
-        nombreCompleto.includes(termino) ||
-        u.dni?.toString().includes(termino) ||
-        u.email?.toLowerCase().includes(termino)
-      );
-    });
-  }
+
+
 
   crearOrden(usuario: UsuarioModel): void {
     // Ejemplo de navegación si querés crear orden
@@ -101,12 +158,19 @@ export class SeleccionUsuario {
   }
 
   mostrarUsuariosExistentes(): void {
-    this.modo = "default";
+    this.modo = 'default';
+    this.terminoBusqueda = '';
+    if (this.clientes.length === 0) this.cargarClientes();
+    else this.clientesFiltrados = this.clientes;
   }
 
   mostrarTalleresExistentes(): void {
-    this.modo = "permisos";
+    this.modo = 'permisos';
+    this.terminoBusqueda = '';
+    if (this.talleres.length === 0) this.cargarTalleres();
+    else this.talleresFiltrados = this.talleres;
   }
+
 
 
   crearUsuarioNuevo(): void {
@@ -117,25 +181,42 @@ export class SeleccionUsuario {
     console.log('click en ver usuario', usuario);
   }
 
- otorgarPermisoUsuario(usuario: UsuarioModel): void {
-  if (!this.vehiculoId || !this.clienteActual?.id || !usuario.pk) {
-    console.error('Faltan datos para crear permiso', {
-      vehiculoId: this.vehiculoId,
-      autoriza: this.clienteActual?.id,
-      cliente: usuario.pk
-    });
-    return;
+//  otorgarPermisoUsuario(usuario: UsuarioModel): void {
+//   if (!this.vehiculoId || !this.clienteActual?.id || !usuario.pk) {
+//     console.error('Faltan datos para crear permiso', {
+//       vehiculoId: this.vehiculoId,
+//       autoriza: this.clienteActual?.id,
+//       cliente: usuario.pk
+//     });
+//     return;
+//   }
+
+  
+
+//   const nuevoPermiso: PermisoDeAcceso = {
+//     vehiculo_autorizado: this.vehiculoId,
+//     autoriza: this.clienteActual.id,        // ← bien
+//     cliente_autorizado: usuario.pk,         // ← bien
+//     taller_autorizado: null                 // ← dejalo null si no aplica
+//   };
+
+//   this.crearPermiso(nuevoPermiso, this.vehiculoId);
+// }
+
+  otorgarPermisoCliente(cliente: ClientePublicoModel): void {
+    if (!this.vehiculoId || !this.clienteActual?.id) return;
+
+    const nuevoPermiso: PermisoDeAcceso = {
+      vehiculo_autorizado: this.vehiculoId,
+      autoriza: this.clienteActual.id,
+      // 👇 si tu backend espera ID de Cliente (lo normal)
+      cliente_autorizado: cliente.id,
+      taller_autorizado: null
+    };
+
+    this.crearPermiso(nuevoPermiso, this.vehiculoId);
   }
 
-  const nuevoPermiso: PermisoDeAcceso = {
-    vehiculo_autorizado: this.vehiculoId,
-    autoriza: this.clienteActual.id,        // ← bien
-    cliente_autorizado: usuario.pk,         // ← bien
-    taller_autorizado: null                 // ← dejalo null si no aplica
-  };
-
-  this.crearPermiso(nuevoPermiso, this.vehiculoId);
-}
 
 
 

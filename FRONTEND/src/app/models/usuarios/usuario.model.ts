@@ -35,3 +35,11 @@ export interface AdministradorTecnicoModel  {
   usuario: UsuarioModel;
   taller: number;
 }
+
+export interface ClientePublicoModel {
+  id: number;
+  usuario_pk: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}

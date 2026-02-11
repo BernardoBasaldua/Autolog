@@ -7,7 +7,7 @@ import { PermisoDeAcceso } from '../../../models/permisos/permiso-acceso.model';
 import { Observable, map, tap, switchMap, of } from 'rxjs';
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { AuthService } from '../../auth/auth.service';
-
+import { ClientePublicoModel } from '../../../models/usuarios/usuario.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -31,6 +31,11 @@ export class ClienteService {
     const url = this.apiClientesUrl;
     return this.http.post<ClienteModel>(url, cliente);
   }
+
+
+  getClientesPublicos(): Observable<ClientePublicoModel[]> {
+  return this.http.get<ClientePublicoModel[]>(`http://127.0.0.1:8000/api/clientes/publicos/`);
+}
 
   /** Devuelve el cliente asociado al usuario logueado */
   getMiCliente(): Observable<ClienteModel> {

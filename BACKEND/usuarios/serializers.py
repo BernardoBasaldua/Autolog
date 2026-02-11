@@ -7,6 +7,15 @@ from vehiculos.serializers import VehiculoSerializer
 
 from .models import AdministradorTecnico, Cliente, PermisoDeAcceso, Usuario
 
+class ClientePublicoSerializer(serializers.ModelSerializer):
+    usuario_pk = serializers.IntegerField(source="usuario.pk", read_only=True)
+    first_name = serializers.CharField(source="usuario.first_name", read_only=True)
+    last_name = serializers.CharField(source="usuario.last_name", read_only=True)
+    email = serializers.EmailField(source="usuario.email", read_only=True)
+
+    class Meta:
+        model = Cliente
+        fields = ["id", "usuario_pk", "first_name", "last_name", "email"]
 
 class UsuarioSerializer(serializers.ModelSerializer):
 #El serializer hereda de la clase serializaers.ModelSerializer la cual crea automaticamente campos basados en tu modelo, es decir, los atributos que el serializare va a leer y escribir. Basicamente esto quiere decir que cuando se hace un get, el json va a contener esos campos y ademas cuando se hace un post el serializer espera recibiir esos campos. 
