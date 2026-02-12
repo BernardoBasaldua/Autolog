@@ -47,8 +47,21 @@ export class Historial implements OnInit {
   //   //   }
   //   // });
   // }
+  // ngOnInit(): void {
+  //   this.vehiculo = this.vehiculos.find(v => v.id === this.vehiculoId) ?? null;
+  //   this.historial = this.vehiculo?.historial ?? [];
+  // }
   ngOnInit(): void {
-    this.vehiculo = this.vehiculos.find(v => v.id === this.vehiculoId) ?? null;
+    const cliente = this.clienteService.clienteActual();
+
+    const propios = cliente?.mis_vehiculos ?? [];
+    const externos = cliente?.vehiculos_externos ?? [];
+
+    const todos = [...propios, ...externos];
+
+    this.vehiculo = todos.find(v => v.id === this.vehiculoId) ?? null;
     this.historial = this.vehiculo?.historial ?? [];
-  }
+}
+
+
 }
