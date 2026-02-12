@@ -28,15 +28,16 @@ export class Header {
     if (path.startsWith('/cliente/turnos')) return 'Turnos';
     if (path.startsWith('/cliente/talleres')) return 'Talleres';
     if (path.startsWith('/cliente/config')) return 'Configuración';
-    if (path.startsWith('/cliente/permisos')) return 'Administración de permisos';
+    if (path.startsWith('/cliente/permisos')) return 'Administración de Permisos';
     if (path.startsWith('/cliente')) return 'Inicio';
     
     //Rutas a título de talleres
-    if (path.startsWith('/taller/ordenes')) return 'Órdenes de trabajo';
+    if (path.startsWith('/taller/ordenes')) return 'Órdenes de Trabajo';
+    if (path.startsWith('/taller/form-orden')) return 'Órdenes de Trabajo - Nueva';
     if (path.startsWith('/taller/clientes')) return 'Clientes';
     if (path.startsWith('/taller/vehiculos')) return 'Vehículos';
-    if (path.startsWith('/taller/turnos')) return 'Agenda de turnos';
-    if (path.startsWith('/taller/turnos/detalle')) return 'Detalle del turno';
+    if (path.startsWith('/taller/turnos')) return 'Agenda de Turnos';
+    if (path.startsWith('/taller/turnos/detalle')) return 'Detalle del Turno';
     if (path.startsWith('/taller/config')) return 'Configuración';
 
     return 'Inicio'; // Título por defecto

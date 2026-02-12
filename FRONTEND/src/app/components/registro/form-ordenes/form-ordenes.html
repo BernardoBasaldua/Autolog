@@ -6,7 +6,7 @@
     type="button"
     (click)="verOrdenesTrabajo()"
   >
-    Órdenes de trabajo
+    Órdenes de Trabajo
   </button>
 
   <button
@@ -15,7 +15,7 @@
     type="button"
     (click)="crearNuevaOrden()"
   >
-    Nueva orden
+    Nueva Orden
   </button>
 </div>
 
@@ -201,6 +201,7 @@
       <select
         [(ngModel)]="mantenimiento"
         name="mantenimiento"
+        class="mantenimiento-select"
       >
         <option [ngValue]="'preventivo'">Preventivo</option>
         <option [ngValue]="'correctivo'">Correctivo</option>
@@ -214,7 +215,7 @@
       </label>
       <input
         type="text"
-        placeholder="(pendiente selector de técnico)"
+        placeholder=" ** (pendiente selector de técnico) ** "
         [(ngModel)]="responsableTecnicoTexto"
         name="responsableTecnicoTexto"
       />
@@ -222,13 +223,13 @@
 
     <!-- ================= ODÓMETRO ================= -->
     <div class="field">
-      <label class="label">Odómetro</label>
+      <label class="block text-gray-700 text-sm font-semibold mb-2">Odómetro</label>
 
       <div class="odometro-control">
         <input
           type="number"
           class="odometro-input"
-          placeholder="ejemplo: 34340"
+          placeholder="Ejemplo: 34340"
           [(ngModel)]="kilometraje"
           name="kilometraje"
           min="0"

@@ -1,3 +1,7 @@
+#nuevaOrdenContent {
+  border-radius: 0 10px 10px 10px;
+}
+
 .tabs {
   display: flex;
   gap: 8px;
@@ -27,6 +31,26 @@
   border-color: #e5e7eb;
   border-bottom-color: #2563eb;
 }
+
+.inline-add-button {
+  color: #2563eb;
+}
+
+.inline-add-button:hover {
+  color: #1d4ed8;
+}
+
+.mantenimiento-select {
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
 /* Wrapper con borde único */
 .odometro-control{
   display: flex;
@@ -35,7 +59,7 @@
 
   border: 1px solid #cbd5e1;
   border-radius: 10px;
-  background: #fff;
+  background: #f9fafb;
 
   padding: 0 12px;
   height: 44px;
@@ -51,12 +75,13 @@
   background: transparent;
 
   height: 100%;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 450;
 }
 
 /* Unidad */
 .odometro-unit{
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #6b7280;
   white-space: nowrap;
@@ -74,3 +99,14 @@
   -moz-appearance: textfield; /* Firefox */
 }
 
+textarea {
+  min-height: 80px;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+input, select {
+  background: #f9fafb;
+}
