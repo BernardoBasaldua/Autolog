@@ -126,7 +126,7 @@ cargarTalleres(): void {
 
 
   volver(): void {
-    this.router.navigate(['/cliente/permisos/1']);
+    this.router.navigate(['/taller/clientes']);
   }
 
   filtrar(): void {
