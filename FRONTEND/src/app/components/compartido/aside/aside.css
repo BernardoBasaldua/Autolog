@@ -1,0 +1,4 @@
+#parte-superior {
+    /* Para que el menú lateral tenga scroll si el contenido supera la altura de la pantalla */
+    margin-top: 35px;
+}
