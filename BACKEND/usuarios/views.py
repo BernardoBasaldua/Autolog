@@ -102,11 +102,18 @@ class ClienteViewSet(viewsets.ModelViewSet):
             serializer = PermisoSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
-            data_request = serializer.validated_data
-            # print(data_request)
             cliente = self.get_object()
-            permiso = cliente.crear_permiso(**data_request)
+
+            try:
+                permiso = cliente.crear_permiso(**serializer.validated_data)
+            except ValueError as e:
+                return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            except IntegrityError as e:
+                # IMPORTANTÍSIMO: esto te muestra el constraint que se rompe
+                return Response({"detail": f"IntegrityError: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response(PermisoSerializer(permiso).data, status=status.HTTP_201_CREATED)
+
         
         elif request.method == "GET":
             cliente = self.get_object()

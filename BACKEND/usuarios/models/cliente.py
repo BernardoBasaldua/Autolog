@@ -58,28 +58,33 @@ class Cliente(models.Model):
 
     # FALTA ACTUALIZAR VEHICULO, EN ETAPA POSTERIOR.
 
+
     # CREAR PERMISO
-    def crear_permiso(
-        self,
-        vehiculo_autorizado,
-        cliente_autorizado=None,
-        taller_autorizado=None,
-        **kwargs,
-    ):
+    def crear_permiso(self, vehiculo_autorizado, cliente_autorizado=None, taller_autorizado=None, **kwargs):
 
         if vehiculo_autorizado.propietario_id != self.id:
-            print(f"{self} vs {vehiculo_autorizado.propietario}")
             raise ValueError("No se puede otorgar permiso para un vehículo que no te pertenece.")
 
-        if not cliente_autorizado and not taller_autorizado:
-            raise ValueError("Debe autorizar a un taller o a un usuario.")
+        # exigir exactamente uno
+        if (cliente_autorizado is None and taller_autorizado is None) or (cliente_autorizado is not None and taller_autorizado is not None):
+            raise ValueError("Debe autorizar a un taller o a un usuario (solo uno).")
 
-        if PermisoDeAcceso.objects.filter(
-            vehiculo_autorizado=vehiculo_autorizado,
-            cliente_autorizado=cliente_autorizado,
-            taller_autorizado=taller_autorizado,
-        ).exists():
-            raise ValueError("Ya existe un permiso igual.")
+        # evitar duplicados por tipo
+        if cliente_autorizado is not None:
+            if PermisoDeAcceso.objects.filter(
+                vehiculo_autorizado=vehiculo_autorizado,
+                autoriza=self,
+                cliente_autorizado=cliente_autorizado,
+            ).exists():
+                raise ValueError("Ese cliente ya tiene permiso para este vehículo.")
+
+        if taller_autorizado is not None:
+            if PermisoDeAcceso.objects.filter(
+                vehiculo_autorizado=vehiculo_autorizado,
+                autoriza=self,
+                taller_autorizado=taller_autorizado,
+            ).exists():
+                raise ValueError("Ese taller ya tiene permiso para este vehículo.")
 
         permiso = PermisoDeAcceso.objects.create(
             vehiculo_autorizado=vehiculo_autorizado,
@@ -89,6 +94,40 @@ class Cliente(models.Model):
             fecha_autorizacion=date.today(),
         )
         return permiso
+
+    # # CREAR PERMISO
+    # def crear_permiso(
+    #     self,
+    #     vehiculo_autorizado,
+    #     cliente_autorizado=None,
+    #     taller_autorizado=None,
+    #     **kwargs,
+    # ):
+
+    #     if vehiculo_autorizado.propietario_id != self.id:
+    #         print(f"{self} vs {vehiculo_autorizado.propietario}")
+    #         raise ValueError("No se puede otorgar permiso para un vehículo que no te pertenece.")
+
+    #     if not cliente_autorizado and not taller_autorizado:
+    #         raise ValueError("Debe autorizar a un taller o a un usuario.")
+
+    #     if PermisoDeAcceso.objects.filter(
+    #         vehiculo_autorizado=vehiculo_autorizado,
+    #         cliente_autorizado=cliente_autorizado,
+    #         taller_autorizado=taller_autorizado,
+    #     ).exists():
+    #         raise ValueError("Ya existe un permiso igual.")
+
+    #     permiso = PermisoDeAcceso.objects.create(
+    #         vehiculo_autorizado=vehiculo_autorizado,
+    #         autoriza=self,
+    #         cliente_autorizado=cliente_autorizado,
+    #         taller_autorizado=taller_autorizado,
+    #         fecha_autorizacion=date.today(),
+    #     )
+    #     return permiso
+
+    
 
     def __str__(self):
         return f"id:{self.pk} - username:{self.usuario.username}"

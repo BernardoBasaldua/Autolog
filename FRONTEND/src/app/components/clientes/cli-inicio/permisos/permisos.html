@@ -1,11 +1,38 @@
 <main class="flex-1 p-8">
+
+  <!-- Botón volver -->
+  <section>
+    <button type="button"
+            class="button-secondary mb-6"
+            (click)="volver()">
+      ← Volver
+    </button>
+  </section>
+
+  <!-- Create New Permission Section -->
+  <section class="card p-6 mb-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+      Crear Nuevo Permiso
+    </h2>
+
+    <button
+      class="button-primary"
+      [routerLink]="['/cliente/seleccion-usuario', vehiculoId]">
+      + Nuevo permiso
+    </button>
+  </section>
+
   <!-- Granted Permissions Section -->
   <section class="card p-6">
-    <h2 class="text-2xl font-bold text-gray-900 mb-4">Permisos Otorgados</h2>
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+      Permisos Otorgados
+    </h2>
 
-    <div class="space-y-4" *ngIf="permisosOtorgados.length > 0; else noOtorgados">
+    <div class="space-y-4"
+         *ngIf="permisosOtorgados.length > 0; else noOtorgados">
 
-      <div *ngFor="let p of permisosOtorgados" class="p-4 border-b border-gray-200 last:border-b-0">
+      <div *ngFor="let p of permisosOtorgados"
+           class="p-4 border-b border-gray-200 last:border-b-0">
 
         <div class="flex flex-col md:flex-row md:items-center justify-between">
 
@@ -14,15 +41,20 @@
               {{ getNombreTaller(p.taller_autorizado) || getNombreCliente(p.cliente_autorizado) }}
             </p>
 
-            <p class="text-sm text-gray-600">Tiene acceso al historial desde:</p>
+            <p class="text-sm text-gray-600">
+              Tiene acceso al historial desde:
+            </p>
 
             <p class="font-medium text-blue-800 mt-1">
-              {{ p.fecha_autorizacion }} 
+              {{ p.fecha_autorizacion }}
             </p>
           </div>
 
           <div class="flex space-x-4 mt-4 md:mt-0">
-            <button class="button-secondary text-sm" (click)="revocarPermiso(p)">Revocar</button>
+            <button class="button-secondary text-sm"
+                    (click)="revocarPermiso(p)">
+              Revocar
+            </button>
           </div>
 
         </div>
@@ -34,18 +66,5 @@
       <p class="text-gray-500">No hay permisos otorgados.</p>
     </ng-template>
   </section>
-
-  <!-- Create New Permission Section -->
-<section class="card p-6 mt-8">
-  <h2 class="text-2xl font-bold text-gray-900 mb-4">Crear Nuevo Permiso</h2>
-
-  <button
-    class="button-primary mb-4"
-    [routerLink]="['/cliente/seleccion-usuario', vehiculoId]">
-    + Nuevo permiso
-  </button>
-
-</section>
-
 
 </main>

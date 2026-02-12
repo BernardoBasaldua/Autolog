@@ -1,6 +1,8 @@
 # users/serializers.py
 from vehiculos.models.vehiculo import Vehiculo
+from datetime import date
 from rest_framework import serializers
+
 
 from talleres.models.taller import Taller
 from vehiculos.serializers import VehiculoSerializer
@@ -91,6 +93,9 @@ class PermisoSerializer(serializers.ModelSerializer):
         queryset=Cliente.objects.all()
     )
     fecha_autorizacion = serializers.DateField(read_only=True)
+    def create(self, validated_data):
+        validated_data["fecha_autorizacion"] = date.today()
+        return super().create(validated_data)
 
     class Meta:
         model = PermisoDeAcceso

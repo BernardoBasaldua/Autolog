@@ -31,20 +31,24 @@ export class Historial implements OnInit {
     this.vehiculos = this.mis_vehiculos();
   }
 
-  ngOnInit(): void {
+  // ngOnInit(): void {
 
-    this.vehiculo = this.vehiculos[this.vehiculoId];
-    this.historial = this.vehiculo.historial;
+  //   this.vehiculo = this.vehiculos[this.vehiculoId];
+  //   this.historial = this.vehiculo.historial;
     
-    // window.scrollTo(0, 0);
-    // this.vehiculoService.getVehiculoById(this.vehiculoId).subscribe({
-    //   next: (vehiculo) => {
-    //     console.log('Vehículo recibido:', vehiculo);
-    //     this.vehiculo = vehiculo;
-    //   },
-    //   error: (err) => {
-    //     console.error('Error al obtener vehículo', err);
-    //   }
-    // });
+  //   // window.scrollTo(0, 0);
+  //   // this.vehiculoService.getVehiculoById(this.vehiculoId).subscribe({
+  //   //   next: (vehiculo) => {
+  //   //     console.log('Vehículo recibido:', vehiculo);
+  //   //     this.vehiculo = vehiculo;
+  //   //   },
+  //   //   error: (err) => {
+  //   //     console.error('Error al obtener vehículo', err);
+  //   //   }
+  //   // });
+  // }
+  ngOnInit(): void {
+    this.vehiculo = this.vehiculos.find(v => v.id === this.vehiculoId) ?? null;
+    this.historial = this.vehiculo?.historial ?? [];
   }
 }

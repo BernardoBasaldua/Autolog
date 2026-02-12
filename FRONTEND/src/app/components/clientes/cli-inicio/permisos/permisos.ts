@@ -11,8 +11,10 @@ import { Taller } from  '../../../../models/talleres/taller.model'
 import { ClienteModel, UsuarioModel } from  '../../../../models/usuarios/usuario.model'
 import { ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
-
+import { ClientePublicoModel } from  '../../../../models/usuarios/usuario.model'
+import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -32,6 +34,9 @@ export class Permisos implements OnInit {
   vehiculoService = inject(VehiculoService); 
   tallerService = inject(TalleresService); 
   route = inject(ActivatedRoute);
+  location = inject(Location);
+  router = inject(Router);
+
 
   clienteActual!: ClienteModel;
 
@@ -43,10 +48,14 @@ export class Permisos implements OnInit {
 
   
   // hacer que pueda obtener todos los clientes existentes
-  clientesExistentes : UsuarioModel[] = [];
+  //clientesExistentes : UsuarioModel[] = [];
   talleresExistentes : Taller[] = [];
-  clientesConAcceso : UsuarioModel[] = [];
+  //clientesConAcceso : UsuarioModel[] = [];
   talleresConAcceso: Taller[] = [];
+
+  clientesExistentes: ClientePublicoModel[] = [];
+  clientesConAcceso: ClientePublicoModel[] = [];
+
   // hacer que pueda obtener todos los talleres existentes
   talleres : Taller[] = [];
   vehiculoActual?: Vehiculo;
@@ -55,14 +64,15 @@ export class Permisos implements OnInit {
 
   ngOnInit(): void {
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
-    this.usuarioService.listarTodos().subscribe({
-      next: (usuarios: UsuarioModel[]) => {
-        this.clientesExistentes = usuarios; // directamente
-        console.log('clientes existentes', this.clientesExistentes);
+    this.usuarioService.getClientesPublicos().subscribe({
+      next: (clientes: ClientePublicoModel[]) => {
+        this.clientesExistentes = clientes;
+        console.log('clientes existentes (publicos)', this.clientesExistentes);
         this.cargarPermisosYProcesar();
       },
       error: (err) => console.error(err)
     });
+
     // cargar listas de clientes y talleres si las necesitás en el select
 
     // this.clienteService.getClientes().subscribe((data: ClienteModel[]) => this.clientes = data);
@@ -74,6 +84,7 @@ export class Permisos implements OnInit {
     });
 
   }
+
 
 
 revocarPermiso(permiso: PermisoDeAcceso): void {
@@ -127,9 +138,10 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
       console.log("TALLER IDS:", this.cliente_ids);
 
       // filtrar objetos clientes que tienen ids dentro de la lista cliente_ids
-      this.clientesConAcceso = this.clientesExistentes?.filter(
-        (c: UsuarioModel) => c.pk !== undefined && this.cliente_ids.includes(c.pk)
-      ) || [];
+      this.clientesConAcceso = this.clientesExistentes.filter(
+        (c) => this.cliente_ids.includes(c.id)
+      );
+
 
       console.log("CLIENTES CON PERMISOS:", this.clientesConAcceso);
 
@@ -143,12 +155,16 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
 
   }
 
+  volver(): void {
+    this.router.navigate(['/cliente']);
+  }
+
 
   getNombreCliente(id: number | null | undefined): string {
     if (!id) return '';
-    const cliente = this.clientesConAcceso.find(c => c.pk === id);
+    const cliente = this.clientesConAcceso.find(c => c.id === id);
     if (!cliente) return '';
-    return cliente.first_name + ' ' + cliente.last_name;
+    return `${cliente.first_name} ${cliente.last_name}`.trim();
   }
 
   getNombreTaller(id: number | null | undefined): string {
@@ -168,11 +184,11 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
   const destinatarioId = Number(this.formNuevoPermiso.destinatario_id);
 
   if (this.formNuevoPermiso.tipo_destinatario === 'cliente') {
-    const clienteSeleccionado = this.clientesExistentes.find((c: UsuarioModel) => c.pk === destinatarioId);
+    const clienteSeleccionado = this.clientesExistentes.find(c => c.id === destinatarioId);
     if (!clienteSeleccionado) {
       return alert('Cliente no encontrado');
     } else {
-      nuevoPermiso.cliente_autorizado = destinatarioId;
+      nuevoPermiso.cliente_autorizado = clienteSeleccionado.id;
     }
       
   } else if (this.formNuevoPermiso.tipo_destinatario === 'taller') {
