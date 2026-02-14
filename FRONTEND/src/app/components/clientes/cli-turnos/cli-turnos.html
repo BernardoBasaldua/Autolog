@@ -344,9 +344,17 @@
                     <i class="fas fa-calendar-alt mr-2"></i>
                     {{ turno.fecha_turno | date:'dd \'de\' MMMM \'de\' yyyy, HH:mm\'hs\'' }}
                 </p>
-                <button class="button-secondary">
+                <!-- <button class="button-secondary">
+                    Cancelar
+                </button> -->
+                <button
+                    *ngIf="esOrdenFutura(turno)"
+                    (click)="cancelarOrden(turno)"
+                    class="button-secondary"
+                    >
                     Cancelar
                 </button>
+
             </div>
         </div>
 

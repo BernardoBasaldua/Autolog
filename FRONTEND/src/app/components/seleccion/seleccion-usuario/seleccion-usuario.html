@@ -64,11 +64,26 @@
         <p class="text-sm text-gray-600">Email: {{ c.email }}</p>
 
 
-        <div class="mt-4 flex justify-end">
-          <button class="button-secondary" (click)="otorgarPermisoCliente(c); $event.stopPropagation()">
+        <div class="mt-4 flex justify-end gap-3">
+          <button
+            class="button-secondary whitespace-nowrap px-4 py-2"
+            (click)="otorgarPermisoCliente(c); $event.stopPropagation()"
+          >
             Otorgar permiso
           </button>
+
+          <button
+            class="button-secondary whitespace-nowrap px-4 py-2"
+            (click)="confirmarCederTitularidad(c); $event.stopPropagation()"
+          >
+            Ceder titularidad
+          </button>
         </div>
+
+        
+        
+        
+
       </div>
     }@empty {
       <div class="col-span-full text-center text-gray-500">

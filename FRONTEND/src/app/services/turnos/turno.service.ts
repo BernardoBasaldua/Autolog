@@ -17,11 +17,16 @@ export class TurnoService {
 
   private url = 'http://localhost:8000/api/clientes/historial_todos/';
 
+
   constructor(private http: HttpClient) {}
 
   getHistorialTodos(): Observable<Turno[]> {
     return this.http.get<Turno[]>(this.url);
   }
+  deleteTurno(id: number) {
+    return this.http.delete(`http://localhost:8000/api/ordenes/${id}/`);
+  }
+
 }
 
 

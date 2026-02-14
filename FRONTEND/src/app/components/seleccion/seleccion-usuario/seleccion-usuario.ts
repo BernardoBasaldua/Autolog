@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormClientes } from '../../registro/form-clientes/form-clientes';
 import { TalleresService } from '../../../services/talleres/talleres.service';
+import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
+
 import { ClientePublicoModel } from '../../../models/usuarios/usuario.model';
 
 
@@ -37,6 +39,8 @@ export class SeleccionUsuario {
   private clienteService = inject(ClienteService);
 
   private talleresService = inject(TalleresService);
+  private vehiculoService = inject(VehiculoService);
+
 
   // clientes: ClienteModel[] = [];
   // clientesFiltrados: ClienteModel[] = [];
@@ -123,10 +127,37 @@ cargarTalleres(): void {
 }
 
 
+  confirmarCederTitularidad(c: any) {
+    const nombre = `${c.first_name ?? ''} ${c.last_name ?? ''}`.trim() || c.email || 'este cliente';
+
+    const ok = confirm(
+      `¿Estás segura que querés ceder la titularidad a ${nombre}?\n\n` +
+      `Vas a perder acceso a este vehículo y a todo su historial/órdenes.`
+    );
+
+    if (!ok) return;
+
+    this.cederTitularidad(c);
+  }
+
+  cederTitularidad(c: any) {
+    // Ajustá "this.vehiculoId" al nombre real que uses en este componente
+    this.vehiculoService.transferirTitularidad(this.vehiculoId, c.id).subscribe({
+      next: () => {
+        alert('Titularidad transferida correctamente');
+        // Ajustá la ruta a donde quieras volver
+        this.router.navigate(['/cliente/vehiculos']);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al transferir titularidad');
+      }
+    });
+  }
 
 
   volver(): void {
-    this.router.navigate(['/taller/clientes']);
+    this.router.navigate(['/cliente/permisos', this.vehiculoId]);
   }
 
   filtrar(): void {

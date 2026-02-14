@@ -83,4 +83,18 @@ export class VehiculoService {
     );
   }
 
+  transferirTitularidad(vehiculoId: number, nuevoPropietarioId: number): Observable<any> {
+    const url = `${this.apiVehiculosUrl}${vehiculoId}/transferir-titularidad/`;
+
+    return this.http.post<any>(url, {
+      nuevo_propietario_id: nuevoPropietarioId
+    }).pipe(
+      tap(() => {
+        // refresca el signal para que el vehículo desaparezca del dueño anterior
+        this.listarTodos().subscribe();
+      })
+    );
+  }
+
+
 }

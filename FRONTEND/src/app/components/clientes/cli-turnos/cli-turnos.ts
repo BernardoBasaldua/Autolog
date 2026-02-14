@@ -167,6 +167,46 @@ export class CliTurnos implements OnInit {
   //     }
   //   });
   // }
+  esOrdenFutura(turno: Turno): boolean {
+    // IMPORTANTE: usá la fecha que define si es “futura”.
+    // Para turnos, lo más lógico es fecha_turno.
+    const fecha = new Date(turno.fecha_turno as any);
+    return fecha.getTime() >= Date.now();
+  }
+
+  cancelarOrden(turno: Turno): void {
+    // Seguridad extra: si no es futura, no hace nada
+    if (!this.esOrdenFutura(turno)) return;
+
+    const ok = confirm(`¿Cancelar la orden #ORD-${turno.id}?`);
+    if (!ok) return;
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.turnoService.deleteTurno(turno.id).subscribe({
+      next: () => {
+        // Sacarla de la lista en el front
+        this.turnos.set(this.turnos().filter(t => t.id !== turno.id));
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.log('DELETE error completo:', err);
+        const msg =
+          err?.error?.mensaje ||
+          err?.error?.detail ||
+          `Error ${err?.status}: ${err?.statusText || 'DELETE falló'}`;
+        this.error.set(msg);
+        this.loading.set(false);
+      }
+
+    });
+    console.log('Turno a eliminar:', turno);
+    console.log('ID que mando:', turno.id);
+
+  }
+
+
   private cargarTurnos(): void {
     this.loading.set(true);
     this.error.set(null);
