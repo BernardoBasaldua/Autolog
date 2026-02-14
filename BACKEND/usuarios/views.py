@@ -4,6 +4,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.utils import timezone
 
 from talleres.serializers import TallerSerializer
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
@@ -182,7 +183,42 @@ class ClienteViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    #cliente elimimna OT
+    @action(detail=False, methods=["delete"], permission_classes=[IsAuthenticated], url_path="orden/(?P<orden_id>[^/.]+)/eliminar")
+    def eliminar_orden(self, request, orden_id=None):
+        """
+        Elimina una OrdenDeTrabajo SI pertenece a un vehículo del cliente autenticado
+        y SI es futura.
+        """
+        user = request.user
 
+        try:
+            cliente = user.clientes
+        except Exception:
+            return Response(
+                {"mensaje": "El usuario autenticado no tiene un cliente asociado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        vehiculos = cliente.mis_vehiculos.all()
+
+        try:
+            orden = OrdenDeTrabajo.objects.get(pk=orden_id, vehiculo__in=vehiculos)
+        except OrdenDeTrabajo.DoesNotExist:
+            return Response(
+                {"mensaje": "Orden no encontrada o no pertenece a tus vehículos."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Solo futuras
+        if orden.fecha_turno and orden.fecha_turno < timezone.now():
+            return Response(
+                {"mensaje": "No se pueden eliminar órdenes pasadas."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        orden.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     
     # ver historial

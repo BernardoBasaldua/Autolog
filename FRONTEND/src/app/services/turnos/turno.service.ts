@@ -24,8 +24,9 @@ export class TurnoService {
     return this.http.get<Turno[]>(this.url);
   }
   deleteTurno(id: number) {
-    return this.http.delete(`http://localhost:8000/api/ordenes/${id}/`);
+    return this.http.delete(`http://localhost:8000/api/clientes/orden/${id}/eliminar/`);
   }
+
 
 }
 

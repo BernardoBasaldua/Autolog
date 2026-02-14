@@ -96,5 +96,10 @@ export class VehiculoService {
     );
   }
 
+  listarMisVehiculos() {
+    return this.http.get<Vehiculo[]>('http://127.0.0.1:8000/api/clientes/vehiculos/');
+  }
+
+
 
 }

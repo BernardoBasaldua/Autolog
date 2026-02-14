@@ -54,17 +54,21 @@ export class SeleccionVehiculo {
     this.modo = 'default';
   }
 
+  // 
   cargarVehiculos(): void {
-    
-      this.vehiculosService.listarTodos().subscribe({
-        next: (vehiculos) => {
-          this.vehiculos = vehiculos;
-          this.vehiculosFiltrados = vehiculos;
-        },
-        error: (e) => console.error('Error cargando vehículos', e),
-      });
-  
+    const req$ = this.esDesdeCliente
+      ? this.vehiculosService.listarMisVehiculos()
+      : this.vehiculosService.listarTodos();
+
+    req$.subscribe({
+      next: (vehiculos) => {
+        this.vehiculos = vehiculos;
+        this.vehiculosFiltrados = vehiculos;
+      },
+      error: (e) => console.error('Error cargando vehículos', e),
+    });
   }
+
 
   volver(): void {
   if (this.esDesdeCliente) {
