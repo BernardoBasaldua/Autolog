@@ -25,6 +25,7 @@ import { FormClientes } from './components/registro/form-clientes/form-clientes'
 import { SeleccionUsuario } from './components/seleccion/seleccion-usuario/seleccion-usuario';
 import { SeleccionVehiculo } from './components/seleccion/seleccion-vehiculos/seleccion-vehiculos';
 import { FormVehiculos } from './components/registro/form-vehiculos/form-vehiculos';
+import { TaCliSeleccion } from './components/talleres/ta-clientes/ta-cli-seleccion/ta-cli-seleccion';
 
 export const routes: Routes = [
   {
@@ -51,7 +52,7 @@ export const routes: Routes = [
       { path: 'taller/ordenes', component: TaOrdenes },
       { path: 'taller/form-orden', component: FormOrdenes },
       { path: 'taller/clientes', component: TaClientes },
-      { path: 'taller/clientes/seleccionUsuario', component: SeleccionUsuario },
+      { path: 'taller/clientes/seleccion-usuario', component: TaCliSeleccion },
       { path: 'taller/form-cliente', component: FormClientes },
       { path: 'taller/form-vehiculo', component: FormVehiculos },
 

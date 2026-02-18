@@ -106,7 +106,7 @@ export class TaClientes implements OnInit {
   // NAV
   // =========================
   nuevoCliente(): void {
-    this.router.navigate(['/taller/clientes/seleccionUsuario'], {
+    this.router.navigate(['/taller/clientes/seleccion-usuario'], {
       queryParams: { modo: 'alta-desde-taller-CLI' },
     });
   }
