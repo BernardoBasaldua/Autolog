@@ -202,7 +202,7 @@
             >
                 <option value="todos">Todos los Vehículos</option>
                 <option *ngFor="let vehiculoId of vehiculosUnicos()" [value]="vehiculoId">
-                    Vehículo #{{ vehiculoId }}
+                    {{ vehiculoDisplay2(vehiculoId) }}
                 </option>
             </select>
         </div>
