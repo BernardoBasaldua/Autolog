@@ -1,8 +1,13 @@
 <section class="mb-6 card p-4 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
             <div class="flex-1">
-                <input type="text" placeholder="Buscar taller por nombre o servicio..." class="w-full">
+                <input 
+                    type="text" 
+                    placeholder="Buscar taller por nombre o servicio..." 
+                    class="w-full"
+                    [(ngModel)]="terminoBusqueda">
+
             </div>
-            <div class="w-full md:w-auto">
+            <!-- <div class="w-full md:w-auto">
                 <select class="w-full">
                     <option>Ubicación</option>
                     <option>Buenos Aires</option>
@@ -17,14 +22,15 @@
                     <option>Esta semana</option>
                     <option>Fin de semana</option>
                 </select>
-            </div>
+            </div> -->
             <button class="button-primary w-full md:w-auto" >Buscar</button>
         </section>
 
         <!-- Workshop List Section -->
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Workshop Card Example 1 -->
-            <div *ngFor="let taller of talleres" class="card p-6">
+            <div *ngFor="let taller of talleresFiltrados" class="card p-6">
+
                 <div class="flex items-center mb-4">
                     <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
                          <i class="fas fa-tools text-gray-600 text-3xl"></i>
@@ -37,11 +43,11 @@
                 <div class="text-gray-700 mb-4">
                     <p class="mb-2"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>{{taller.direccion}}</p>
                     <p class="mb-2"><i class="fas fa-phone mr-2 text-green-500"></i>{{taller.telefono}}</p>
-                    <!-- <p class="mb-2"><i class="fas fa-clock mr-2 text-blue-500"></i>{{taller.horarioAtencion[0]}}: {{taller.horarioAtencion[1]}}-{{taller.horarioAtencion[2]}}hs</p> -->
+                    <p class="mb-2"><i class="fas fa-clock mr-2 text-blue-500"></i>{{taller.horarioAtencion[0]}}: {{taller.horarioAtencion[1]}}-{{taller.horarioAtencion[2]}}hs</p>
                 </div>
                 <div class="flex justify-end space-x-2">
                     <!-- <button class="button-secondary text-sm">Ver detalles</button> -->
-                    <button class="button-primary text-sm" (click)="pedirTurno(taller)">Pedir turno</button>
+                    <!-- <button class="button-primary text-sm" (click)="pedirTurno(taller)">Pedir turno</button> -->
                 </div>
             </div>
         </section>

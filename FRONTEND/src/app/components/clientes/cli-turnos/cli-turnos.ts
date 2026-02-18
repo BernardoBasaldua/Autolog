@@ -267,6 +267,23 @@ export class CliTurnos implements OnInit {
     return `${marca} (${dominio})`.trim();
   }
 
+  vehiculoDisplay2(id: number): string {
+    const v = this.vehiculosById().get(Number(id));
+    if (!v) return `Vehículo #${id}`;
+
+    const marca =
+      v?.marca?.nombre ?? v?.marca?.nombre_marca ?? v?.marca ?? '';
+
+    const modelo =
+      v?.modelo?.nombre ?? v?.modelo?.nombre_modelo ?? v?.modelo ?? '';
+
+    const patente =
+      v?.patente ?? v?.dominio ?? '-';
+
+    const nombre = `${marca} ${modelo}`.trim();
+    return nombre ? `${nombre} - ${patente}` : `Vehículo #${id} - ${patente}`;
+  }
+
   // ===== CLIENTE =====
   clienteNombreApellido(id: number): string {
     const c = this.clientesById().get(Number(id));
