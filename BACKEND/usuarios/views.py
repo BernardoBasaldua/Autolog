@@ -6,12 +6,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
 
+from usuarios.models.pemisoAcceso import PermisoDeAcceso
+
 from talleres.serializers import TallerSerializer
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 from ordenes.serializers import OrdenDeTrabajoSerializer
 from vehiculos.models import Vehiculo
 from vehiculos.serializers import VehiculoSerializer
-from usuarios.models import PermisoDeAcceso
+
 from .serializers import ClientePublicoSerializer
 
 from .models import AdministradorTecnico, Cliente, Usuario
@@ -320,6 +322,44 @@ class ClienteViewSet(viewsets.ModelViewSet):
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=["get"], url_path=r"vehiculo/(?P<vehiculo_id>\d+)/ordenes")
+    def mis_ordenes_por_vehiculo(self, request, pk=None, vehiculo_id=None):
+        tecnico = self.get_object()
+
+        if not tecnico.taller_id:
+            return Response({"detail": "Usuario no es técnico o no tiene taller."}, status=403)
+
+        # Autorizado si existe un permiso para ESTE taller y ESTE vehículo
+        autorizado = PermisoDeAcceso.objects.filter(
+            taller_autorizado=tecnico.taller,
+            vehiculo_autorizado_id=vehiculo_id,
+            vehiculo_autorizado__isnull=False,
+        ).exists()
+
+        if autorizado:
+            # autorizado -> TODAS las órdenes de ese vehículo (incluye otros talleres)
+            qs = OrdenDeTrabajo.objects.filter(vehiculo_id=vehiculo_id)
+        else:
+            # no autorizado -> solo órdenes de MI taller para ese vehículo
+            qs = OrdenDeTrabajo.objects.filter(vehiculo_id=vehiculo_id, taller=tecnico.taller)
+
+        qs = qs.order_by("-fecha_turno", "-id")
+        return Response(OrdenDeTrabajoSerializer(qs, many=True).data, status=200)
+
+    
+    @action(detail=False, methods=["get"], url_path="vehiculos-autorizados")
+    def vehiculos_autorizados(self, request):
+        tecnico = getattr(request.user, "tecnico", None)
+        if not tecnico or not tecnico.taller:
+            return Response(
+                {"detail": "El usuario no es técnico o no tiene taller asociado."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        vehiculos = tecnico.get_vehiculos_autorizados()
+        return Response(VehiculoSerializer(vehiculos, many=True).data, status=status.HTTP_200_OK)
     
     def get_permissions(self):
         if self.action == "registrar_establecimiento":

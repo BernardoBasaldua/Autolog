@@ -66,6 +66,7 @@
 
         <div class="mt-4 flex justify-end gap-3">
           <button
+            *ngIf="!tienePermisoCliente(c.id)"
             class="button-secondary whitespace-nowrap px-4 py-2"
             (click)="otorgarPermisoCliente(c); $event.stopPropagation()"
           >
@@ -109,7 +110,7 @@
           <p class="text-sm text-gray-600">Dirección: {{ t.direccion }}</p>
 
           <div class="mt-4 flex justify-end">
-            <button class="button-secondary" (click)="otorgarPermisoTaller(t); $event.stopPropagation()">
+            <button *ngIf="!tienePermisoTaller(t.id!)" class="button-secondary" (click)="otorgarPermisoTaller(t); $event.stopPropagation()">
               Otorgar permiso
             </button>
           </div>

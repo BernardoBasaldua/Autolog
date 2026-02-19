@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { TalleresService } from '../../../services/talleres/talleres.service';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+
 
 type TipoServicio = {
   id: number;
@@ -66,18 +68,47 @@ export class TaVehiculos implements OnInit {
     // this.cargarMarcasYModelosDisponibles();
   }
 
-  cargarVehiculos(): void {
-    this.talleresService.getVehiculosDeTaller().subscribe({
-      next: (vehiculos) => {
-        this.vehiculos = vehiculos;
-        this.vehiculosFiltrados = vehiculos;
+  // cargarVehiculos(): void {
+  //   this.talleresService.getVehiculosDeTaller().subscribe({
+  //     next: (vehiculos) => {
+  //       this.vehiculos = vehiculos;
+  //       this.vehiculosFiltrados = vehiculos;
 
-        // ✅ útil para filtros de marca/modelo
+  //       // ✅ útil para filtros de marca/modelo
+  //       this.cargarMarcasYModelosDisponibles();
+  //     },
+  //     error: () => console.log('Vehículos no encontrados'),
+  //   });
+  // }
+  cargarVehiculos(): void {
+    forkJoin({
+      propios: this.talleresService.getVehiculosDeTaller(),
+      autorizados: this.talleresService.getVehiculosAutorizadosTec(),
+    }).subscribe({
+      next: ({ propios, autorizados }) => {
+        // merge + dedupe por id (prioriza "propios" si hay repetidos)
+        const map = new Map<number, Vehiculo>();
+
+        for (const v of propios ?? []) {
+          if (v?.id != null) map.set(v.id, v);
+        }
+        for (const v of autorizados ?? []) {
+          if (v?.id != null && !map.has(v.id)) map.set(v.id, v);
+        }
+
+        const merged = Array.from(map.values());
+
+        this.vehiculos = merged;
+        this.vehiculosFiltrados = merged;
+
         this.cargarMarcasYModelosDisponibles();
       },
-      error: () => console.log('Vehículos no encontrados'),
+      error: (err) => {
+        console.error('Error cargando vehículos (propios + autorizados)', err);
+      },
     });
   }
+
 
   cargarTiposServicio(): void {
     // TODO
@@ -180,8 +211,7 @@ export class TaVehiculos implements OnInit {
   // NAVEGACIÓN
   // =========================
   verVehiculo(vehiculo: Vehiculo): void {
-    // TODO:
-    // this.router.navigate(['/taller/vehiculos', vehiculo.id]);
+    this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes']);
   }
 
   crearOrdenParaVehiculo(vehiculo: Vehiculo): void {

@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import OrdenDeTrabajo
 from .serializers import OrdenDeTrabajoSerializer
@@ -20,6 +22,21 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
 
         if tecnico and tecnico.taller:
             return OrdenDeTrabajo.objects.filter(taller=tecnico.taller)
+        # if tecnico and tecnico.taller:
+        #     # vehículos a los que este taller tiene permiso
+        #     vehiculos_ids = PermisoDeAcceso.objects.filter(
+        #         taller_autorizado_id=tecnico.taller_id
+        #     ).values_list("vehiculo_autorizado_id", flat=True)
+
+        #     # devuelve: órdenes del taller + órdenes de vehículos autorizados
+        #     return (
+        #         OrdenDeTrabajo.objects.filter(
+        #             Q(taller_id=tecnico.taller_id) |
+        #             Q(vehiculo_id__in=vehiculos_ids)
+        #         )
+        #         .distinct()
+        #         .order_by("-fecha_turno", "-id")
+        #     )
 
         # Si no es técnico (admin global, superuser, etc.)
         # Podés devolver todo o nada
@@ -27,7 +44,30 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
             return OrdenDeTrabajo.objects.all()
 
         return OrdenDeTrabajo.objects.none()
+    
+    @action(detail=False, methods=["get"], url_path=r"vehiculo/(?P<vehiculo_id>\d+)/historial")
+    def historial_por_vehiculo(self, request, vehiculo_id=None):
+        tecnico = getattr(request.user, "tecnico", None)
+        if not tecnico or not tecnico.taller_id:
+            return Response({"detail": "Usuario no es técnico."}, status=403)
 
+        taller_id = tecnico.taller_id
+
+        tiene_permiso = PermisoDeAcceso.objects.filter(
+            taller_autorizado_id=taller_id,
+            vehiculo_autorizado_id=vehiculo_id
+        ).exists()
+
+        qs = OrdenDeTrabajo.objects.filter(vehiculo_id=vehiculo_id)
+
+        if not tiene_permiso:
+            qs = qs.filter(taller_id=taller_id)   # 👈 solo propias si no hay permiso
+
+        qs = qs.order_by("-fecha_turno", "-id")
+        return Response(OrdenDeTrabajoSerializer(qs, many=True).data)
+
+
+    
 # class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
 #     serializer_class = OrdenDeTrabajoSerializer
 #     permission_classes = [IsAuthenticated]

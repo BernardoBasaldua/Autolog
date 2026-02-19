@@ -1,0 +1,84 @@
+@if (cargando) {
+  <section class="card p-6">
+    <p class="text-gray-500">Cargando...</p>
+  </section>
+} @else if (errorMsg) {
+  <section class="card p-6">
+    <p class="text-red-600">{{ errorMsg }}</p>
+  </section>
+} @else {
+
+  <!-- Header (similar al tuyo) -->
+  <section class="mb-8">
+    <div class="card p-6 flex flex-col md:flex-row justify-between items-center">
+      <div class="flex items-center">
+        <i
+          class="fas fa-arrow-left text-gray-600 text-2xl mr-4 cursor-pointer hover:text-gray-900 transition"
+          [routerLink]="['/taller/vehiculos']"
+        ></i>
+
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 mb-1">
+            Órdenes del vehículo #{{ vehiculoId }}
+          </h2>
+          <p class="text-gray-700">Historial de servicios</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Historial de servicios -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+      Órdenes de Servicios Anteriores
+    </h2>
+
+    @if (historial.length > 0) {
+
+      @for (orden of historial; track orden.id) {
+        <div class="card p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-gray-900">Orden #{{ orden.id }}</h3>
+            <p class="text-gray-600">
+              {{ orden.fecha_turno | date:'dd MMM yyyy, HH:mm' }}
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 mb-4">
+            <p>
+              <i class="fas fa-tools mr-2 text-green-600"></i>Mantenimiento:
+              <span class="font-semibold">{{ orden.mantenimiento }}</span>
+            </p>
+            <p>
+              <i class="fas fa-road mr-2 text-red-600"></i>Kilometraje actual:
+              <span class="font-semibold">{{ orden.kilometraje | number }} km</span>
+            </p>
+            <p>
+              <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega:
+              <span class="font-semibold">
+                {{ orden.fecha_entrega ? (orden.fecha_entrega | date:'dd MMM yyyy') : 'Pendiente' }}
+              </span>
+            </p>
+            <p>
+              <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Próx. servicio:
+              <span class="font-semibold">
+                {{ orden.fecha_siguiente_servicio | date:'dd MMM yyyy' }}
+                / {{ orden.kilometraje_siguiente_servicio | number }} km
+              </span>
+            </p>
+          </div>
+
+          @if (orden.observaciones_tecnicas) {
+            <div class="bg-gray-100 p-4 rounded-lg">
+              <p class="font-semibold text-gray-800 mb-2">Observaciones técnicas:</p>
+              <p class="text-gray-700">{{ orden.observaciones_tecnicas }}</p>
+            </div>
+          }
+        </div>
+      }
+
+    } @else {
+      <p class="text-gray-600">Este vehículo no tiene historial de órdenes.</p>
+    }
+  </section>
+}

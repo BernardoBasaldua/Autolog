@@ -26,6 +26,8 @@ import { SeleccionUsuario } from './components/seleccion/seleccion-usuario/selec
 import { SeleccionVehiculo } from './components/seleccion/seleccion-vehiculos/seleccion-vehiculos';
 import { FormVehiculos } from './components/registro/form-vehiculos/form-vehiculos';
 import { TaCliSeleccion } from './components/talleres/ta-clientes/ta-cli-seleccion/ta-cli-seleccion';
+import { OrdenesVehiculoComponent } from './components/talleres/ta-vehiculos/ordenes-vehiculo/ordenes-vehiculo';
+
 
 export const routes: Routes = [
   {
@@ -48,7 +50,7 @@ export const routes: Routes = [
       { path: 'cliente/pm', component: CliPm },
       { path: 'cliente/config', component: CliConfig },
       { path: 'cliente/vehiculos/seleccion-vehiculo', component: SeleccionVehiculo },
-
+      { path: 'taller/vehiculos/:vehiculoId/ordenes', component: OrdenesVehiculoComponent },
       { path: 'taller/ordenes', component: TaOrdenes },
       { path: 'taller/form-orden', component: FormOrdenes },
       { path: 'taller/clientes', component: TaClientes },
