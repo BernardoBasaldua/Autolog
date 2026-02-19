@@ -31,7 +31,8 @@ export interface OrdenDeTrabajo {
   cliente: number;   // FK id
   vehiculo: number;  // FK id
   taller: number | null;
-  tecnico: number | null;
+  //tecnico: number | null;
+  responsable_tecnico: string | null;
 }
 
 // Para el combo actual del buscador

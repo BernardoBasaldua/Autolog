@@ -9,11 +9,11 @@ import { Observable, tap } from 'rxjs';
 export class OrdenService {
   private apiOrdenesUrl = 'http://127.0.0.1:8000/api/ordenes/';
   ordenes = signal<OrdenDeTrabajo[]>([]);
-  
-  constructor(private http: HttpClient) {}
-  
-  crearOrden(orden:OrdenDeTrabajoCreatePayload): Observable<OrdenDeTrabajo> {
-    
+
+  constructor(private http: HttpClient) { }
+
+  crearOrden(orden: OrdenDeTrabajoCreatePayload): Observable<OrdenDeTrabajo> {
+
     const url = this.apiOrdenesUrl;
     return this.http.post<OrdenDeTrabajo>(url, orden);
   }
@@ -22,7 +22,12 @@ export class OrdenService {
     return this.http.get<OrdenDeTrabajo[]>(this.apiOrdenesUrl).pipe(
       tap(data => this.ordenes.set(data))
     );
-}
+  }
 
-  
+  // Método para obtener una orden por su ID (se puede sacar si molesta)
+  obtenerOrden(id: number): Observable<OrdenDeTrabajo> {
+    const url = `${this.apiOrdenesUrl}${id}/`;
+    return this.http.get<OrdenDeTrabajo>(url);
+  }
+
 }

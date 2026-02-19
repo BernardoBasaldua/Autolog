@@ -27,7 +27,8 @@ export interface OrdenDeTrabajo {
   cliente: number;               // FK usuarios.Cliente
   vehiculo: number;              // FK vehiculos.Vehiculo
   taller: number | null;         // FK talleres.Taller
-  tecnico: number | null;        // FK usuarios.AdministradorTecnico
+  //tecnico: number | null;        // FK usuarios.AdministradorTecnico
+  responsable_tecnico: string | null; // Nombre del técnico responsable (calculado en backend)
 }
 
 // =========================
@@ -55,7 +56,8 @@ export interface OrdenDeTrabajoCreatePayload {
 
   // opcionales
   taller?: number | null;
-  tecnico?: number | null;
+  //tecnico?: number | null;
+  responsable_tecnico?: string | null;
 
   // NO incluir:
   // - id

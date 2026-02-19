@@ -240,7 +240,7 @@
           <div>
             <span class="label">Técnico</span>
             <span class="value">
-              {{ ordenSeleccionada.tecnico ?? '-' }}
+              {{ ordenSeleccionada.responsable_tecnico ?? '-' }}
             </span>
           </div>
 
@@ -254,12 +254,12 @@
 
         <!-- Acciones del detalle -->
         <div class="detail-actions">
-          <button
+          <!-- <button
             class="button-secondary"
             (click)="verPresupuestoDeOrden(ordenSeleccionada)"
           >
             Ver presupuesto
-          </button>
+          </button> -->
 
           <button
             class="button-primary"

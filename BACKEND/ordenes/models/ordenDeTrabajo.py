@@ -45,11 +45,20 @@ class OrdenDeTrabajo(models.Model):
         null=True,
         blank=True,
     )
+    """ El técnico es opcional porque puede ser que se asigne después o que no se asigne (en caso de ser correctivo) """
+    """
     tecnico = models.ForeignKey(
         "usuarios.AdministradorTecnico",
         on_delete=models.PROTECT,
         null=True,
         related_name="ordenes",
+    )
+    """
+    # Para simplificar, en vez de una FK a un técnico, guardamos el nombre del técnico responsable (que se asignará al crear la orden)
+    responsable_tecnico = models.CharField(
+        max_length=100, 
+        null=True, 
+        blank=True
     )
 
     """

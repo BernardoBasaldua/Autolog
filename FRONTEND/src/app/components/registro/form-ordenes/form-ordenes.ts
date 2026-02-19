@@ -82,7 +82,7 @@ export class FormOrdenes {
   mantenimiento: 'preventivo' | 'correctivo' = 'preventivo';
 
   // UI placeholders (aún no mapeados a FK reales)
-  responsableTecnicoTexto = '';
+  responsableTecnicoTexto: string = '';
   practicaTexto = '';
 
   ngOnInit(): void {
@@ -314,6 +314,7 @@ export class FormOrdenes {
   cancelarOrden(): void {
     // UX simple: limpiar todo
     this.resetFormularioOrden();
+    this.router.navigate(['/taller', 'ordenes']);
   }
 
   confirmarOrden(): void {
@@ -339,6 +340,7 @@ export class FormOrdenes {
       mantenimiento: this.mantenimiento,
       cliente: this.clienteSeleccionado.id,
       vehiculo: this.vehiculoSeleccionado.id,
+      responsable_tecnico: this.responsableTecnicoTexto?.trim() || null,
       // agenda, tecnico, taller cuando los tengas implementados
     };
 
