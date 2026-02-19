@@ -89,5 +89,11 @@ export class TalleresService {
   getVehiculosAutorizadosTec(): Observable<Vehiculo[]> {
     return this.http.get<Vehiculo[]>('http://127.0.0.1:8000/api/tecnicos/vehiculos-autorizados/');
   }
+  getClienteById(id: number) {
+    return this.http.get<any>(`http://127.0.0.1:8000/api/clientes/${id}`);
+  }
+    getVehiculoById(id: number): Observable<Vehiculo> {
+    return this.http.get<Vehiculo>(`http://127.0.0.1:8000/vehiculo/${id}/`);
+  }
 
 }

@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { TalleresService } from '../../../services/talleres/talleres.service';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 
 type TipoServicio = {
@@ -101,6 +102,8 @@ export class TaVehiculos implements OnInit {
         this.vehiculos = merged;
         this.vehiculosFiltrados = merged;
 
+        this.asegurarOwners(merged);
+
         this.cargarMarcasYModelosDisponibles();
       },
       error: (err) => {
@@ -185,10 +188,31 @@ export class TaVehiculos implements OnInit {
   // =========================
   // FORMATTERS PROPIETARIO
   // =========================
+  // formatPropietarioNombre(propietarioId: number | null | undefined): string {
+  //   if (!propietarioId) return '-';
+
+  //   const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+  //   if (!c) return `Cliente #${propietarioId}`;
+
+  //   const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
+  //   return nombre || `Cliente #${propietarioId}`;
+  // }
+
+  // formatPropietarioExtras(propietarioId: number | null | undefined): string {
+  //   if (!propietarioId) return '';
+
+  //   const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+  //   if (!c) return '';
+
+  //   const tel = c.usuario?.telefono ?? '';
+  //   const mail = c.usuario?.email ?? '';
+
+  //   return [tel, mail].filter(Boolean).join(' • ');
+  // }
   formatPropietarioNombre(propietarioId: number | null | undefined): string {
     if (!propietarioId) return '-';
 
-    const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+    const c = this.getOwnerFromAnywhere(propietarioId);
     if (!c) return `Cliente #${propietarioId}`;
 
     const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
@@ -198,21 +222,26 @@ export class TaVehiculos implements OnInit {
   formatPropietarioExtras(propietarioId: number | null | undefined): string {
     if (!propietarioId) return '';
 
-    const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+    const c = this.getOwnerFromAnywhere(propietarioId);
     if (!c) return '';
 
     const tel = c.usuario?.telefono ?? '';
     const mail = c.usuario?.email ?? '';
-
     return [tel, mail].filter(Boolean).join(' • ');
   }
 
   // =========================
   // NAVEGACIÓN
   // =========================
+  // verVehiculo(vehiculo: Vehiculo): void {
+  //   this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes']);
+  // }
   verVehiculo(vehiculo: Vehiculo): void {
-    this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes']);
+    this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes'], {
+      state: { vehiculo },
+    });
   }
+
 
   crearOrdenParaVehiculo(vehiculo: Vehiculo): void {
     // TODO:
@@ -224,4 +253,51 @@ export class TaVehiculos implements OnInit {
   irASelectorVehiculo(): void {
     this.router.navigate(['/taller/vehiculos/seleccion-vehiculo']);
   }
+
+  ownersCache = new Map<number, any>(); // idealmente ClienteModel
+
+private getOwnerFromAnywhere(id: number) {
+  return (
+    this.clientesTallerSig().find(c => c.id === id) ??
+    this.ownersCache.get(id) ??
+    null
+  );
+}
+
+private asegurarOwners(vehiculos: Vehiculo[]): void {
+  const ids = Array.from(
+    new Set(
+      (vehiculos ?? [])
+        .map(v => v.propietario)
+        .filter((x): x is number => typeof x === 'number' && !!x)
+    )
+  );
+
+  const faltan = ids.filter(id =>
+    !this.ownersCache.has(id) &&
+    !this.clientesTallerSig().some(c => c.id === id)
+  );
+
+  if (faltan.length === 0) return;
+
+  forkJoin(
+    faltan.map(id =>
+      this.talleresService.getClienteById(id).pipe(
+        catchError(err => {
+          console.warn('No pude traer cliente id', id, err);
+          return of(null);
+        })
+      )
+    )
+  ).subscribe({
+    next: (clientes) => {
+      for (const c of clientes) {
+        if (c?.id != null) this.ownersCache.set(c.id, c);
+      }
+      // si querés, re-aplicás filtros para que refresque UI
+      this.aplicarFiltros();
+    },
+  });
+}
+
 }
