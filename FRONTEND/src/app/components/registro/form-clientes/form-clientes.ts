@@ -181,6 +181,7 @@ export class FormClientes {
           //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
           if (this.modoInterno() === 'alta-desde-taller-CLI') {
             this.perfilCreado.emit();
+            this.router.navigate(['/taller/clientes'])
           
           }else if (this.modoInterno()=== 'alta-desde-taller-VEHI'){
             this.router.navigate(

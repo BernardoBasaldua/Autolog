@@ -15,6 +15,8 @@ import { ClienteModel, UsuarioModel } from '../../../models/usuarios/usuario.mod
 import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.service';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 
+import { Location } from '@angular/common';
+
 // Si tenés un modelo Cliente/Usuario tipado, usalo acá.
 // import { ClienteModel } from '../../../models/clientes/cliente.model';
 // import { ClienteService } from '../../../services/clientes/cliente.service';
@@ -68,7 +70,7 @@ export class FormVehiculos {
   nuevaMarcaNombre = '';
   nuevoModeloNombre = '';
 
-  constructor() {
+  constructor(private location: Location) {
     this.vehiculoForm = this.fb.group({
       // NUEVO: propietario obligatorio
       propietarioId: [null, Validators.required],
@@ -384,6 +386,7 @@ export class FormVehiculos {
         alert('Vehículo creado correctamente');
         this.vehiculoForm.reset();
         this.vehiculoCreado.emit(vehiculoCreado);
+        this.location.back();
       },
       error: (e) => {
         console.error('Error creando vehículo DESDE CLIENTE:', e);
@@ -408,7 +411,7 @@ export class FormVehiculos {
         if (rt) {
           this.router.navigateByUrl(rt);
           return;
-      }
+        }
       },
       error: (e) => {
         console.error('Error creando vehículo DESDE TALLER:', e);
