@@ -14,6 +14,8 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
 
 import { ClientePublicoModel } from '../../../models/usuarios/usuario.model';
+import { NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 
 
@@ -64,6 +66,44 @@ export class SeleccionUsuario {
   
   terminoBusqueda = '';
 
+  permisosVehiculo: PermisoDeAcceso[] = [];
+
+  private get clienteIdAutoriza(): number {
+    return this.clienteActual?.id ?? 0;
+  }
+
+  cargarPermisosVehiculo(): void {
+    const clienteId = this.clienteIdAutoriza;
+    if (!clienteId || !this.vehiculoId) return;
+
+    this.clienteService.getPermisosOtorgados(clienteId).subscribe({
+      next: (permisos) => {
+        // me quedo solo con permisos del vehículo actual
+        this.permisosVehiculo = (permisos ?? []).filter(p => p.vehiculo_autorizado === this.vehiculoId);
+      },
+      error: (e) => console.error('Error cargando permisos', e),
+    });
+  }
+
+  tienePermisoCliente(clienteId: number): boolean {
+    return this.permisosVehiculo.some(p => p.cliente_autorizado === clienteId);
+  }
+
+  tienePermisoTaller(tallerId: number): boolean {
+    return this.permisosVehiculo.some(p => p.taller_autorizado === tallerId);
+  }
+
+  permisoIdCliente(clienteId: number): number | null {
+    return this.permisosVehiculo.find(p => p.cliente_autorizado === clienteId)?.id ?? null;
+  }
+
+  permisoIdTaller(tallerId: number): number | null {
+    return this.permisosVehiculo.find(p => p.taller_autorizado === tallerId)?.id ?? null;
+  }
+
+  
+
+
   ngOnInit(): void {
   this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
   this.clienteActual = this.clienteService.clienteActual();
@@ -72,6 +112,15 @@ export class SeleccionUsuario {
   this.modo = 'default';
 
   this.cargarClientes(); // carga tab default
+  this.cargarPermisosVehiculo();
+  this.router.events
+    .pipe(filter(e => e instanceof NavigationEnd))
+    .subscribe(() => {
+      this.clienteActual = this.clienteService.clienteActual();
+      this.cargarPermisosVehiculo();
+    });
+
+
 }
 
 
@@ -100,6 +149,10 @@ export class SeleccionUsuario {
 //     error: (e) => console.error('Error cargando clientes', e),
 //   });
 // }
+
+
+
+
 cargarClientes(): void {
   this.clienteService.getClientesPublicos().subscribe({
     next: (clientes) => {
@@ -245,7 +298,8 @@ cargarTalleres(): void {
       taller_autorizado: null
     };
 
-    this.crearPermiso(nuevoPermiso, this.vehiculoId);
+    this.crearPermiso(nuevoPermiso);
+
   }
 
 
@@ -259,23 +313,28 @@ cargarTalleres(): void {
         taller_autorizado: taller.id
       };
 
-      this.crearPermiso(nuevoPermiso, this.vehiculoId);
+      this.crearPermiso(nuevoPermiso);
+
     } else {
       console.error('Faltan datos para crear permiso');
     }
 
   }
 
-  crearPermiso(nuevoPermiso : PermisoDeAcceso, vehiculoId : number): void {
-    this.clienteService.crearPermiso(nuevoPermiso as PermisoDeAcceso, this.vehiculoId).subscribe({
+  crearPermiso(nuevoPermiso: PermisoDeAcceso): void {
+    const autorizaId = this.clienteIdAutoriza;
+    if (!autorizaId) return;
+
+    this.clienteService.crearPermiso(nuevoPermiso, autorizaId).subscribe({
       next: () => {
         alert('Permiso creado con éxito');
-        this.router.navigate(['/cliente/permisos', this.vehiculoId]);
+        this.cargarPermisosVehiculo(); // ✅ oculta "Otorgar"
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error(err);
         alert('Error al crear el permiso');
       }
     });
   }
+
 }

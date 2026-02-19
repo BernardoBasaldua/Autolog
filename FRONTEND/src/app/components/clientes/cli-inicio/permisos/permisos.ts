@@ -93,7 +93,7 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
     return;
   }
 
-  this.clienteService.eliminarPermiso(this.vehiculoId, permiso.id).subscribe({
+  this.clienteService.eliminarPermiso(this.clienteActual.id, permiso.id).subscribe({
     next: () => {
       alert("Permiso revocado con éxito");
       this.cargarPermisosYProcesar(); // refrescás la lista
@@ -119,7 +119,8 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
       //guardo el cliente
       this.clienteActual = cliente;
       // Luego de obtener a mi cliente obtenemos los permisos que otorgo como un atributo suyo
-      this.permisosOtorgados = cliente.permisos_que_otorgo || [];
+      this.permisosOtorgados =(cliente.permisos_que_otorgo || []).filter(p => p.vehiculo_autorizado === this.vehiculoId);
+
       console.log("PERMISOS:", this.permisosOtorgados);
 
       // Hallo de los vehiculos que le pertenecen al cliente, cual corresponde al id de la url

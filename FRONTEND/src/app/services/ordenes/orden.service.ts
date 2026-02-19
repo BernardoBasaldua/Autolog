@@ -8,6 +8,8 @@ import { Observable, tap } from 'rxjs';
 })
 export class OrdenService {
   private apiOrdenesUrl = 'http://127.0.0.1:8000/api/ordenes/';
+  apiUrl = 'http://127.0.0.1:8000/api/';
+
   ordenes = signal<OrdenDeTrabajo[]>([]);
 
   constructor(private http: HttpClient) { }
@@ -29,5 +31,11 @@ export class OrdenService {
     const url = `${this.apiOrdenesUrl}${id}/`;
     return this.http.get<OrdenDeTrabajo>(url);
   }
+  
+  getOrdenesPorVehiculo(tecnicoId: number, vehiculoId: number) {
+    const url = `${this.apiUrl}tecnicos/${tecnicoId}/vehiculo/${vehiculoId}/ordenes/`;
+    return this.http.get<OrdenDeTrabajo[]>(url);
+  }
+
 
 }

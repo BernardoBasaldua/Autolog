@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { TalleresService } from '../../../services/talleres/talleres.service';
 import { Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 
 type TipoServicio = {
   id: number;
@@ -66,18 +69,49 @@ export class TaVehiculos implements OnInit {
     // this.cargarMarcasYModelosDisponibles();
   }
 
-  cargarVehiculos(): void {
-    this.talleresService.getVehiculosDeTaller().subscribe({
-      next: (vehiculos) => {
-        this.vehiculos = vehiculos;
-        this.vehiculosFiltrados = vehiculos;
+  // cargarVehiculos(): void {
+  //   this.talleresService.getVehiculosDeTaller().subscribe({
+  //     next: (vehiculos) => {
+  //       this.vehiculos = vehiculos;
+  //       this.vehiculosFiltrados = vehiculos;
 
-        // ✅ útil para filtros de marca/modelo
+  //       // ✅ útil para filtros de marca/modelo
+  //       this.cargarMarcasYModelosDisponibles();
+  //     },
+  //     error: () => console.log('Vehículos no encontrados'),
+  //   });
+  // }
+  cargarVehiculos(): void {
+    forkJoin({
+      propios: this.talleresService.getVehiculosDeTaller(),
+      autorizados: this.talleresService.getVehiculosAutorizadosTec(),
+    }).subscribe({
+      next: ({ propios, autorizados }) => {
+        // merge + dedupe por id (prioriza "propios" si hay repetidos)
+        const map = new Map<number, Vehiculo>();
+
+        for (const v of propios ?? []) {
+          if (v?.id != null) map.set(v.id, v);
+        }
+        for (const v of autorizados ?? []) {
+          if (v?.id != null && !map.has(v.id)) map.set(v.id, v);
+        }
+
+        const merged = Array.from(map.values());
+
+        this.vehiculos = merged;
+        this.vehiculosFiltrados = merged;
+
+        this.asegurarOwners(merged);
+
         this.cargarMarcasYModelosDisponibles();
       },
-      error: () => console.log('Vehículos no encontrados'),
+      error: (err) => {
+        console.error('Error cargando vehículos (propios + autorizados)', err);
+      },
     });
   }
+
 
   cargarTiposServicio(): void {
     // TODO
@@ -154,10 +188,31 @@ export class TaVehiculos implements OnInit {
   // =========================
   // FORMATTERS PROPIETARIO
   // =========================
+  // formatPropietarioNombre(propietarioId: number | null | undefined): string {
+  //   if (!propietarioId) return '-';
+
+  //   const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+  //   if (!c) return `Cliente #${propietarioId}`;
+
+  //   const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
+  //   return nombre || `Cliente #${propietarioId}`;
+  // }
+
+  // formatPropietarioExtras(propietarioId: number | null | undefined): string {
+  //   if (!propietarioId) return '';
+
+  //   const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+  //   if (!c) return '';
+
+  //   const tel = c.usuario?.telefono ?? '';
+  //   const mail = c.usuario?.email ?? '';
+
+  //   return [tel, mail].filter(Boolean).join(' • ');
+  // }
   formatPropietarioNombre(propietarioId: number | null | undefined): string {
     if (!propietarioId) return '-';
 
-    const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+    const c = this.getOwnerFromAnywhere(propietarioId);
     if (!c) return `Cliente #${propietarioId}`;
 
     const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
@@ -167,22 +222,26 @@ export class TaVehiculos implements OnInit {
   formatPropietarioExtras(propietarioId: number | null | undefined): string {
     if (!propietarioId) return '';
 
-    const c = this.clientesTallerSig().find(x => x.id === propietarioId);
+    const c = this.getOwnerFromAnywhere(propietarioId);
     if (!c) return '';
 
     const tel = c.usuario?.telefono ?? '';
     const mail = c.usuario?.email ?? '';
-
     return [tel, mail].filter(Boolean).join(' • ');
   }
 
   // =========================
   // NAVEGACIÓN
   // =========================
+  // verVehiculo(vehiculo: Vehiculo): void {
+  //   this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes']);
+  // }
   verVehiculo(vehiculo: Vehiculo): void {
-    // TODO:
-    // this.router.navigate(['/taller/vehiculos', vehiculo.id]);
+    this.router.navigate(['/taller/vehiculos', vehiculo.id, 'ordenes'], {
+      state: { vehiculo },
+    });
   }
+
 
   crearOrdenParaVehiculo(vehiculo: Vehiculo): void {
     // TODO:
@@ -194,4 +253,51 @@ export class TaVehiculos implements OnInit {
   irASelectorVehiculo(): void {
     this.router.navigate(['/taller/vehiculos/seleccion-vehiculo']);
   }
+
+  ownersCache = new Map<number, any>(); // idealmente ClienteModel
+
+private getOwnerFromAnywhere(id: number) {
+  return (
+    this.clientesTallerSig().find(c => c.id === id) ??
+    this.ownersCache.get(id) ??
+    null
+  );
+}
+
+private asegurarOwners(vehiculos: Vehiculo[]): void {
+  const ids = Array.from(
+    new Set(
+      (vehiculos ?? [])
+        .map(v => v.propietario)
+        .filter((x): x is number => typeof x === 'number' && !!x)
+    )
+  );
+
+  const faltan = ids.filter(id =>
+    !this.ownersCache.has(id) &&
+    !this.clientesTallerSig().some(c => c.id === id)
+  );
+
+  if (faltan.length === 0) return;
+
+  forkJoin(
+    faltan.map(id =>
+      this.talleresService.getClienteById(id).pipe(
+        catchError(err => {
+          console.warn('No pude traer cliente id', id, err);
+          return of(null);
+        })
+      )
+    )
+  ).subscribe({
+    next: (clientes) => {
+      for (const c of clientes) {
+        if (c?.id != null) this.ownersCache.set(c.id, c);
+      }
+      // si querés, re-aplicás filtros para que refresque UI
+      this.aplicarFiltros();
+    },
+  });
+}
+
 }

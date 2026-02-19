@@ -5,7 +5,7 @@ from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 from talleres.models.taller import Taller
 from usuarios.models.pemisoAcceso import PermisoDeAcceso
 from vehiculos.models.vehiculo import Vehiculo
-
+from django.db.models import Q
 from .usuario import Usuario
 
 
@@ -158,6 +158,29 @@ class AdministradorTecnico(models.Model):
         ordenes_directas = OrdenDeTrabajo.objects.filter(taller=self.taller)
         ordenes = ordenes_directas.union(ordenes_autorizadas)
         return ordenes
+        #  Vehículos que autorizaron a MI taller
+        # vehiculo_ids_autorizados = (
+        #     PermisoDeAcceso.objects
+        #     .filter(
+        #         taller_autorizado=self.taller,
+        #         vehiculo_autorizado__isnull=False
+        #     )
+        #     .values_list("vehiculo_autorizado_id", flat=True)
+        #     .distinct()
+        # )
+
+        # # A) Órdenes que YA ve tu taller (taller = mi taller)
+        # # B) Órdenes de esos vehículos autorizados (sin importar el taller)
+        # # distinct() elimina duplicados cuando una orden cumple A y B a la vez
+        # return (
+        #     OrdenDeTrabajo.objects
+        #     .filter(
+        #         Q(taller=self.taller) |
+        #         Q(vehiculo_id__in=vehiculo_ids_autorizados)
+        #     )
+        #     .distinct()
+        #     .order_by("-fecha_turno", "-id")
+        # )
 
     def obtener_orden(self, orden_id):
         try:
@@ -165,3 +188,16 @@ class AdministradorTecnico(models.Model):
             return OrdenDeTrabajo.objects.get(id=orden_id, taller=self.taller)
         except OrdenDeTrabajo.DoesNotExist:
             return None
+
+    def get_vehiculos_autorizados(self):
+        vehiculos_ids = (
+            PermisoDeAcceso.objects
+            .filter(
+                taller_autorizado=self.taller,
+                vehiculo_autorizado__isnull=False
+            )
+            .values_list("vehiculo_autorizado_id", flat=True)
+            .distinct()
+        )
+
+        return Vehiculo.objects.filter(id__in=vehiculos_ids).distinct()
