@@ -38,7 +38,7 @@ export class FormOrdenes {
 
   esteTaller = this.tallerService.tallerActual;
   esteTallerId = this.esteTaller()?.id;
-  
+
   // ✅ Guardamos la referencia al SIGNAL
   clientesSig = this.clienteService.clientes;
   vehiculosSig = this.vehiculoService.vehiculos;
@@ -71,10 +71,11 @@ export class FormOrdenes {
   // RESTO DEL FORM (ALINEADO AL MODELO DJANGO)
   // =========================
   fechaTurno = '';  // yyyy-mm-dd
-  horaTurno = '';   // hh:mm
+  horaTurno: string = '';
+  horariosDisponibles: string[] = [];
   fechaEntrega: string | null = null;
 
-  kilometraje : number | null = null;
+  kilometraje: number | null = null;
 
   observacionesTecnicas: string | null = null;
 
@@ -84,6 +85,14 @@ export class FormOrdenes {
   // UI placeholders (aún no mapeados a FK reales)
   responsableTecnicoTexto: string = '';
   practicaTexto = '';
+
+  private hoyLocalYYYYMMDD(): string {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
   ngOnInit(): void {
 
@@ -113,11 +122,19 @@ export class FormOrdenes {
     });
 
     // 3) Valores default amigables
-    const hoy = new Date();
-    this.fechaTurno = hoy.toISOString().slice(0, 10);
-    this.horaTurno = '10:00';
+    // const hoy = new Date();
+    // this.fechaTurno = hoy.toISOString().slice(0, 10);
+    this.fechaTurno = this.hoyLocalYYYYMMDD();
+
+    this.generarHorarios();
   }
 
+  generarHorarios() {
+    for (let h = 8; h <= 18; h++) {
+      const horaFormateada = (h < 10 ? '0' + h : h) + ':00';
+      this.horariosDisponibles.push(horaFormateada);
+    }
+  }
 
   // =========================
   // TABS
@@ -317,6 +334,18 @@ export class FormOrdenes {
     this.router.navigate(['/taller', 'ordenes']);
   }
 
+  // errorHora = false;
+
+  // validarHora() {
+  //   if (!this.horaTurno) return;
+
+  //   if (this.horaTurno < '08:00' || this.horaTurno > '18:00') {
+  //     this.errorHora = true;
+  //   } else {
+  //     this.errorHora = false;
+  //   }
+  // }
+
   confirmarOrden(): void {
     // 1) Validaciones mínimas de front
     if (!this.clienteSeleccionado || !this.vehiculoSeleccionado) {
@@ -330,9 +359,14 @@ export class FormOrdenes {
       return;
     }
 
+    // if (this.errorHora) {
+    //   alert('La hora del turno debe ser entre 08:00 y 18:00.');
+    //   return;
+    // }
+
     // 2) Payload alineado a tu modelo Django
     const payload: OrdenDeTrabajoCreatePayload = {
-      taller : this.esteTallerId,
+      taller: this.esteTallerId,
       fecha_turno: fechaTurnoISO,
       fecha_entrega: this.fechaEntrega,
       kilometraje: this.kilometraje ?? 0,
@@ -366,9 +400,8 @@ export class FormOrdenes {
 
     if (!f || !h) return null;
 
-    // Forma simple ISO local
-    // Si querés exactitud de zona horaria, lo ajustamos después.
-    return `${f}T${h}:00`;
+    // Turno como hora local Argentina (sin convertir a UTC)
+    return `${f}T${h}:00-03:00`;
   }
 
   private resetFormularioOrden(): void {
@@ -385,8 +418,9 @@ export class FormOrdenes {
     this.vehiculosFiltrados = [...this.vehiculosSig()];
 
     // Campos del resto del form
-    const hoy = new Date();
-    this.fechaTurno = hoy.toISOString().slice(0, 10);
+    //const hoy = new Date();
+    //this.fechaTurno = hoy.toISOString().slice(0, 10);
+    this.fechaTurno = this.hoyLocalYYYYMMDD();
     this.horaTurno = '10:00';
 
     this.fechaEntrega = null;
@@ -418,63 +452,62 @@ export class FormOrdenes {
   // Parametro url
   // =========================
   private initPrefillFromRoute(): void {
-  // Query params
-  const qp = this.route.snapshot.queryParamMap;
+    // Query params
+    const qp = this.route.snapshot.queryParamMap;
 
-  const clienteQ = qp.get('clienteId');
-  const vehiculoQ = qp.get('vehiculoId');
+    const clienteQ = qp.get('clienteId');
+    const vehiculoQ = qp.get('vehiculoId');
 
-  // (Opcional) también soportar params de ruta si algún día usás /form-orden/:clienteId
-  const rp = this.route.snapshot.paramMap;
-  const clienteR = rp.get('clienteId');
-  const vehiculoR = rp.get('vehiculoId');
+    // (Opcional) también soportar params de ruta si algún día usás /form-orden/:clienteId
+    const rp = this.route.snapshot.paramMap;
+    const clienteR = rp.get('clienteId');
+    const vehiculoR = rp.get('vehiculoId');
 
-  const clienteIdStr = clienteQ ?? clienteR;
-  const vehiculoIdStr = vehiculoQ ?? vehiculoR;
+    const clienteIdStr = clienteQ ?? clienteR;
+    const vehiculoIdStr = vehiculoQ ?? vehiculoR;
 
-  this.prefillClienteId = clienteIdStr ? Number(clienteIdStr) : null;
-  this.prefillVehiculoId = vehiculoIdStr ? Number(vehiculoIdStr) : null;
+    this.prefillClienteId = clienteIdStr ? Number(clienteIdStr) : null;
+    this.prefillVehiculoId = vehiculoIdStr ? Number(vehiculoIdStr) : null;
 
-  // Sanitización básica
-  if (this.prefillClienteId && Number.isNaN(this.prefillClienteId)) {
-    this.prefillClienteId = null;
-  }
-  if (this.prefillVehiculoId && Number.isNaN(this.prefillVehiculoId)) {
-    this.prefillVehiculoId = null;
-  }
-}
-
-private tryApplyPrefill(): void {
-  // Si no hay nada que precargar, salgo
-  if (!this.prefillClienteId && !this.prefillVehiculoId) return;
-
-  // Necesito tener cargadas las listas
-  const clientes = this.clientesSig();
-  const vehiculos = this.vehiculosSig();
-
-  if (!clientes.length || !vehiculos.length) return;
-
-  // ✅ Prioridad: vehículo (porque autoselecciona cliente)
-  if (this.prefillVehiculoId) {
-    const v = vehiculos.find(x => x.id === this.prefillVehiculoId);
-    if (v) {
-      this.seleccionarVehiculo(v);
+    // Sanitización básica
+    if (this.prefillClienteId && Number.isNaN(this.prefillClienteId)) {
+      this.prefillClienteId = null;
     }
-    // consumimos el prefill para que no re-ejecute
-    this.prefillVehiculoId = null;
-    this.prefillClienteId = null;
-    return;
-  }
-
-  // ✅ Si no vino vehículo, intento cliente
-  if (this.prefillClienteId) {
-    const c = clientes.find(x => x.id === this.prefillClienteId);
-    if (c) {
-      this.seleccionarCliente(c);
+    if (this.prefillVehiculoId && Number.isNaN(this.prefillVehiculoId)) {
+      this.prefillVehiculoId = null;
     }
-    this.prefillClienteId = null;
-    return;
   }
-}
 
+  private tryApplyPrefill(): void {
+    // Si no hay nada que precargar, salgo
+    if (!this.prefillClienteId && !this.prefillVehiculoId) return;
+
+    // Necesito tener cargadas las listas
+    const clientes = this.clientesSig();
+    const vehiculos = this.vehiculosSig();
+
+    if (!clientes.length || !vehiculos.length) return;
+
+    // ✅ Prioridad: vehículo (porque autoselecciona cliente)
+    if (this.prefillVehiculoId) {
+      const v = vehiculos.find(x => x.id === this.prefillVehiculoId);
+      if (v) {
+        this.seleccionarVehiculo(v);
+      }
+      // consumimos el prefill para que no re-ejecute
+      this.prefillVehiculoId = null;
+      this.prefillClienteId = null;
+      return;
+    }
+
+    // ✅ Si no vino vehículo, intento cliente
+    if (this.prefillClienteId) {
+      const c = clientes.find(x => x.id === this.prefillClienteId);
+      if (c) {
+        this.seleccionarCliente(c);
+      }
+      this.prefillClienteId = null;
+      return;
+    }
+  }
 }

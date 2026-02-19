@@ -40,7 +40,7 @@
   color: #1d4ed8;
 }
 
-.mantenimiento-select {
+.mantenimiento-select, .horario-select {
   padding: 10px 14px;
   font-weight: 600;
   color: #374151;
@@ -109,4 +109,16 @@ textarea {
 
 input, select {
   background: #f9fafb;
+}
+
+input:hover {
+  background: #f3f4f6;
+}
+
+select:hover {
+  background: #f3f4f6;
+} 
+
+textarea:hover {
+  background: #f3f4f6;
 }

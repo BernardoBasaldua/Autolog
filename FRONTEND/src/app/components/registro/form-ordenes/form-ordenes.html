@@ -177,11 +177,21 @@
 
       <div>
         <label class="block text-gray-700 text-sm font-semibold mb-2"></label>
-        <input
-          type="time"
+        <select
           [(ngModel)]="horaTurno"
           name="horaTurno"
-        />
+          required
+          class="horario-select"
+        >
+          <option value="" disabled selected>Seleccionar horario</option>
+          <option *ngFor="let hora of horariosDisponibles" [value]="hora">
+            {{ hora }}
+          </option>
+        </select>
+
+        <!-- <p *ngIf="errorHora" class="text-red-600 text-sm mt-1">
+          El horario debe estar entre 08:00 y 18:00
+        </p> -->
       </div>
 
       <button

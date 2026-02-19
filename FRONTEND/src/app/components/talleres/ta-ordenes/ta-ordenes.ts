@@ -77,7 +77,7 @@ export class TaOrdenes {
       next: (ordenes) => {
         this.ordenService.ordenes.set(ordenes);
         this.ordenesFiltradas = [...ordenes];
-        
+
         //Detalle abierto por default
         if (ordenes.length > 0) {
           // Si no hay ninguna seleccionada aún, selecciono la primera
@@ -100,11 +100,11 @@ export class TaOrdenes {
       error: (e) => console.error('Error cargando vehículos', e),
     });
 
-      this.tallerService.getTalleres().subscribe({
+    this.tallerService.getTalleres().subscribe({
       next: (talleres) => this.tallerService.listaTalleres.set(talleres),
       error: (e) => console.error('Error cargando talleres', e),
     });
-}
+  }
 
   // =========================
   // TABS
@@ -176,10 +176,10 @@ export class TaOrdenes {
   // SELECCIÓN / DETALLE
   // =========================
   seleccionarOrden(o: OrdenDeTrabajo): void {
-      this.cerrarDetalle();
-      
-      this.ordenSeleccionada = o;
-      
+    this.cerrarDetalle();
+
+    this.ordenSeleccionada = o;
+
     console.log('Orden seleccionada:', this.ordenSeleccionada);
   }
 
@@ -260,27 +260,44 @@ export class TaOrdenes {
   // =========================
   // FECHAS
   // =========================
+  // formatFechaTurno(fechaISO: string): string {
+  //   if (!fechaISO) return '-';
+
+  //   try {
+  //     console.log('fecha_turno raw:', fechaISO);
+  //     const d = new Date(fechaISO);
+
+  //     const fecha = d.toLocaleDateString('es-AR', {
+  //       year: 'numeric',
+  //       month: '2-digit',
+  //       day: '2-digit',
+  //     });
+
+  //     const hora = d.toLocaleTimeString('es-AR', {
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //     });
+
+  //     return `${fecha} ${hora}`;
+  //   } catch {
+  //     return fechaISO;
+  //   }
+  // }
+
   formatFechaTurno(fechaISO: string): string {
     if (!fechaISO) return '-';
 
-    try {
-      const d = new Date(fechaISO);
+    const d = new Date(fechaISO);
 
-      const fecha = d.toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      });
-
-      const hora = d.toLocaleTimeString('es-AR', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      return `${fecha} ${hora}`;
-    } catch {
-      return fechaISO;
-    }
+    return new Intl.DateTimeFormat('es-AR', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(d);
   }
 
   formatFechaSimple(fechaISO: string | null | undefined): string {
@@ -298,22 +315,22 @@ export class TaOrdenes {
   // TALLERES
   // =========================
   formatTallerNombre(tallerId: number | null): string {
-  if (!tallerId) return '-';
+    if (!tallerId) return '-';
 
-  const t = this.talleresSig().find(x => x.id === tallerId);
-  if (!t) return `Taller #${tallerId}`;
+    const t = this.talleresSig().find(x => x.id === tallerId);
+    if (!t) return `Taller #${tallerId}`;
 
-  return t.nombre || `Taller #${tallerId}`;
-}
+    return t.nombre || `Taller #${tallerId}`;
+  }
 
-formatTallerFull(tallerId: number | null): string {
-  if (!tallerId) return '-';
+  formatTallerFull(tallerId: number | null): string {
+    if (!tallerId) return '-';
 
-  const t = this.talleresSig().find(x => x.id === tallerId);
-  if (!t) return `Taller #${tallerId}`;
+    const t = this.talleresSig().find(x => x.id === tallerId);
+    if (!t) return `Taller #${tallerId}`;
 
-  const dir = [t.direccion].filter(Boolean).join(', ');
-  return [t.nombre, dir].filter(Boolean).join(' - ') || `Taller #${tallerId}`;
-}
+    const dir = [t.direccion].filter(Boolean).join(', ');
+    return [t.nombre, dir].filter(Boolean).join(' - ') || `Taller #${tallerId}`;
+  }
 
 }
