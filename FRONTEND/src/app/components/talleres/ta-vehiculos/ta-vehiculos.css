@@ -63,3 +63,27 @@
 .card-vehiculo:hover::before {
   opacity: 1;
 }
+
+/* SELECT e INPUT unificados */
+.filters-field select,
+.filters-field input{
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+  transition: all .15s ease;
+}
+
+/* Hover */
+.filters-field select:hover,
+.filters-field input:hover{
+  border-color: #d1d5db;
+  background: #ffffff;
+}
+
+/* Focus elegante */
+.filters-field select:focus,
+.filters-field input:focus{
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+  background: #ffffff;
+}

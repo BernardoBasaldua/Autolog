@@ -231,3 +231,20 @@
   margin: 0 0 4px 0;
 }
 
+.filters-field input {
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
+  transition: all .15s ease;
+}
+
+.filters-field input:hover{
+  border-color: #d1d5db;
+  background: #ffffff;
+}
+
+.filters-field input:focus{
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+  background: #ffffff;
+}

@@ -17,7 +17,7 @@
 
   <!-- Línea 1: búsqueda + botones -->
   <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-end">
-    <div class="flex-1">
+    <div class="flex-1 filters-field">
       <label class="block text-sm font-medium text-gray-700 mb-1">
         Buscar vehículo
       </label>
@@ -51,7 +51,7 @@
   <!-- Línea 2: filtros (marca, modelo, año, tipo servicio) -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
     <!-- Marca -->
-    <div>
+    <div class="filters-field">
       <label class="filter-label">Marca</label>
       <select
         class="filter-input w-full"
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Modelo -->
-    <div>
+    <div class="filters-field">
       <label class="filter-label">Modelo</label>
       <select
         class="filter-input w-full"
@@ -79,7 +79,7 @@
     </div>
 
     <!-- Año -->
-    <div>
+    <div class="filters-field">
       <label class="filter-label">Año</label>
       <input
         type="number"
@@ -90,7 +90,7 @@
     </div>
 
     <!-- Tipo de servicio -->
-    <div>
+    <div class="filters-field">
       <label class="filter-label">Tipo de servicio</label>
       <select
         class="filter-input w-full"
