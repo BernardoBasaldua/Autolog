@@ -114,7 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+#TIME_ZONE = "UTC" # En producción, lo ideal es configurar la zona horaria del servidor a la local (ej: 'America/Argentina/Buenos_Aires') y usar USE_TZ=True para que Django maneje todo en UTC internamente y convierta a local al mostrar.
+TIME_ZONE = "America/Argentina/Buenos_Aires"
 
 USE_I18N = True
 

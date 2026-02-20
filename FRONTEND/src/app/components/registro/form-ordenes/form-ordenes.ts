@@ -8,7 +8,7 @@ import { ClienteModel } from '../../../models/usuarios/usuario.model';
 
 import { Vehiculo } from '../../../models/vehiculo/vehiculo.model';
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
-import { OrdenDeTrabajoCreatePayload } from '../../../models/orden/orden.models';
+import { OrdenDeTrabajo, OrdenDeTrabajoCreatePayload } from '../../../models/orden/orden.models';
 import { OrdenService } from '../../../services/ordenes/orden.service';
 import { TalleresService } from '../../../services/talleres/talleres.service';
 
@@ -72,8 +72,16 @@ export class FormOrdenes {
   // =========================
   fechaTurno = '';  // yyyy-mm-dd
   horaTurno: string = '';
+  horariosBase: string[] = [];
   horariosDisponibles: string[] = [];
   fechaEntrega: string | null = null;
+
+  // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
+  // // Agenda / Taller
+  // agendaId!: number; // <- IMPORTANT: necesitás este id (o lo buscás por taller)
+  
+  // // Si querés usar capacidad de agenda (opcional)
+  // turnosMaximosPorHora = 1;
 
   kilometraje: number | null = null;
 
@@ -125,6 +133,10 @@ export class FormOrdenes {
     // const hoy = new Date();
     // this.fechaTurno = hoy.toISOString().slice(0, 10);
     this.fechaTurno = this.hoyLocalYYYYMMDD();
+    this.horaTurno = '';
+    // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
+    // this.generarHorariosBase();
+    // this.refrescarHorariosDisponibles(); // carga ocupados y filtra
 
     this.generarHorarios();
   }
@@ -134,6 +146,114 @@ export class FormOrdenes {
       const horaFormateada = (h < 10 ? '0' + h : h) + ':00';
       this.horariosDisponibles.push(horaFormateada);
     }
+  }
+
+  // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
+  // private generarHorariosBase() {
+  //   this.horariosBase = [];
+  //   for (let h = 8; h <= 18; h++) {
+  //     this.horariosBase.push(`${String(h).padStart(2, '0')}:00`);
+  //   }
+  // }
+
+  // onFechaTurnoChange() {
+  //   this.horaTurno = '';
+  //   this.refrescarHorariosDisponibles();
+  // }
+
+  // private refrescarHorariosDisponibles(): void {
+  //   // fallback si todavía no tenés agendaId
+  //   if (!this.agendaId || !this.fechaTurno) {
+  //     this.horariosDisponibles = [...this.horariosBase];
+  //     return;
+  //   }
+
+  //   this.ordenService
+  //     .obtenerTurnosAsignadosPorAgendaYFecha(this.agendaId, this.fechaTurno)
+  //     .subscribe({
+  //       next: (ordenes: OrdenDeTrabajo[]) => {
+  //         // ✅ contar por "HH:mm" (en horario AR) SOLO para ese día
+  //         const conteoPorHora = new Map<string, number>();
+
+  //         for (const o of ordenes ?? []) {
+  //           const hhmm = this.extraerHoraAR(o.fecha_turno as any); // ajustá tipo si hace falta
+  //           if (!hhmm) continue;
+  //           conteoPorHora.set(hhmm, (conteoPorHora.get(hhmm) ?? 0) + 1);
+  //         }
+
+  //         // ✅ filtrar: NO mostrar la hora si ya alcanzó el cupo
+  //         this.horariosDisponibles = this.horariosBase.filter((h) => {
+  //           const ocupados = conteoPorHora.get(h) ?? 0;
+  //           return ocupados < this.turnosMaximosPorHora;
+  //         });
+
+  //         // si lo que estaba seleccionado ahora está ocupado, lo limpio
+  //         if (this.horaTurno) {
+  //           const ocupados = conteoPorHora.get(this.horaTurno) ?? 0;
+  //           if (ocupados >= this.turnosMaximosPorHora) {
+  //             this.horaTurno = '';
+  //           }
+  //         }
+  //       },
+  //       error: (e) => {
+  //         console.error('Error cargando turnos asignados', e);
+  //         // fallback (o podés bloquear el select)
+  //         this.horariosDisponibles = [...this.horariosBase];
+  //       },
+  //     });
+  // }
+
+  // private refrescarHorariosDisponibles() {
+  //   const tallerId = this.esteTallerId;
+  //   const fecha = this.fechaTurno;
+
+  //   if (!tallerId || !fecha) {
+  //     this.horariosDisponibles = [...this.horariosBase];
+  //     return;
+  //   }
+
+  //   this.ordenService.obtenerOrdenesPorTallerYFecha(tallerId, fecha).subscribe({
+  //     next: (ordenes) => {
+  //       // armo set de horas ocupadas en formato "HH:mm" en horario AR
+  //       const ocupadas = new Set<string>(
+  //         (ordenes ?? [])
+  //           .map((o: any) => this.extraerHoraAR(o.fecha_turno))
+  //           .filter((h: string | null): h is string => !!h)
+  //       );
+
+  //       this.horariosDisponibles = this.horariosBase.filter(h => !ocupadas.has(h));
+
+  //       // si la hora elegida quedó ocupada (por ejemplo, otro usuario reservó)
+  //       if (this.horaTurno && ocupadas.has(this.horaTurno)) {
+  //         this.horaTurno = '';
+  //       }
+  //     },
+  //     error: (e) => {
+  //       console.error('Error cargando horarios ocupados', e);
+  //       // fallback: muestro todos (o podrías bloquear)
+  //       this.horariosDisponibles = [...this.horariosBase];
+  //     }
+  //   });
+  // }
+
+  private extraerHoraAR(fechaISO: string): string | null {
+    if (!fechaISO) return null;
+
+    const d = new Date(fechaISO);
+
+    // Fuerzo AR y saco "HH:mm"
+    const parts = new Intl.DateTimeFormat('es-AR', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(d);
+
+    const hh = parts.find(p => p.type === 'hour')?.value;
+    const mm = parts.find(p => p.type === 'minute')?.value;
+
+    if (!hh || !mm) return null;
+    return `${hh}:${mm}`;
   }
 
   // =========================

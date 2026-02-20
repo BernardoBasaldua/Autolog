@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { OrdenDeTrabajo, OrdenDeTrabajoCreatePayload } from '../../models/orden/orden.models';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -31,11 +31,25 @@ export class OrdenService {
     const url = `${this.apiOrdenesUrl}${id}/`;
     return this.http.get<OrdenDeTrabajo>(url);
   }
-  
+
   getOrdenesPorVehiculo(tecnicoId: number, vehiculoId: number) {
     const url = `${this.apiUrl}tecnicos/${tecnicoId}/vehiculo/${vehiculoId}/ordenes/`;
     return this.http.get<OrdenDeTrabajo[]>(url);
   }
 
+  obtenerTurnosAsignadosPorAgendaYFecha(agendaId: number, fechaYYYYMMDD: string): Observable<OrdenDeTrabajo[]> {
+    const params = new HttpParams().set('fecha', fechaYYYYMMDD);
+    const url = `http://127.0.0.1:8000/api/agendas/${agendaId}/turnos-asignados/`;
+    return this.http.get<OrdenDeTrabajo[]>(url, { params });
+  }
+
+  // // ✅ NUEVO: órdenes por taller + fecha (para filtrar horarios ocupados)
+  // obtenerOrdenesPorTallerYFecha(tallerId: number, fechaYYYYMMDD: string): Observable<OrdenDeTrabajo[]> {
+  //   const params = new HttpParams()
+  //     .set('taller', String(tallerId))
+  //     .set('fecha', fechaYYYYMMDD);
+
+  //   return this.http.get<OrdenDeTrabajo[]>(this.apiOrdenesUrl, { params });
+  // }
 
 }

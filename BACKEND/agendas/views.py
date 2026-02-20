@@ -1,9 +1,10 @@
+import datetime
+from django.utils.dateparse import parse_date
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from ordenes.serializers import OrdenDeTrabajoSerializer
-
 from .models.agendas import Agenda
 from .serializers import AgendaSerializer
 
@@ -17,11 +18,30 @@ class AgendaViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"], url_path="turnos-asignados")
     def turnos_asignados(self, request, pk=None):
-        """Endpoint para ver los turnos (OTs) asignados a esta agenda."""
         agenda = self.get_object()
-        turnos = agenda.get_turnos_asignados()
-        serializer = OrdenDeTrabajoSerializer(turnos, many=True)
+
+        fecha_str = request.query_params.get("fecha")  # "YYYY-MM-DD"
+        turnos_qs = agenda.get_turnos_asignados()
+
+        if fecha_str:
+            fecha = parse_date(fecha_str)
+            if not fecha:
+                return Response({"detail": "Parámetro 'fecha' inválido. Usá YYYY-MM-DD."}, status=400)
+
+            # Filtra SOLO ese día (independiente de la hora)
+            turnos_qs = turnos_qs.filter(fecha_turno__date=fecha)
+
+        serializer = OrdenDeTrabajoSerializer(turnos_qs, many=True)
         return Response(serializer.data)
+
+    # Esto es lo último que estaba funcionando en el backend antes de la refactorización, lo dejo comentado para no perderlo.
+    # @action(detail=True, methods=["get"], url_path="turnos-asignados")
+    # def turnos_asignados(self, request, pk=None):
+    #     """Endpoint para ver los turnos (OTs) asignados a esta agenda."""
+    #     agenda = self.get_object()
+    #     turnos = agenda.get_turnos_asignados()
+    #     serializer = OrdenDeTrabajoSerializer(turnos, many=True)
+    #     return Response(serializer.data)
 
     # @action(detail=True, methods=['post'], url_path='reservar-turno')
     # def reservar_turno(self, request, pk=None):
