@@ -164,3 +164,5 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,  # Django tiene un campo last_login en el modelo User que guarda la última vez que ese usuario hizo login con éxito
     "LEEWAY": 30,  # tolerancia en segundos para exp/nbf si necesitás
 }
+
+GOOGLE_CLIENT_ID = "957331454319-4ik3a1gidhfhe28kbcv37ar03n5ahplu.apps.googleusercontent.com"

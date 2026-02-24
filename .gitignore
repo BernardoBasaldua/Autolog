@@ -100,3 +100,10 @@ connect.lock
 # ===============================
 .DS_Store
 Thumbs.db
+
+# zips
+*.zip
+
+# Google OAuth secrets
+client_secret*.json
+*.client_secret.json
