@@ -60,4 +60,22 @@ export class AuthService {
   getRole(){
     return this.role
   }
+
+  // LLAMADA AL BACK CON EL TOKEN DE GOOGLE
+  loginWithGoogle(idToken: string): Observable<TokenPair> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<TokenPair>(`${this.apiUrl}/auth/google/`, { id_token: idToken }, { headers }).pipe(
+      tap(tokens => {
+        this.accessToken = tokens.access;
+        localStorage.setItem('refresh', tokens.refresh);
+
+        const payload: AccessPayload = JSON.parse(atob(tokens.access.split('.')[1]));
+        this.role = payload.role;
+
+        this.redirectByRole(this.role);
+        console.log('ROL (Google):', payload.role);
+      })
+    );
+  }
 }

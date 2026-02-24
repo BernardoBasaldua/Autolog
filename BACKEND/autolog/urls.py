@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from auth.views import MyTokenObtainPairView
+from auth.views import MyTokenObtainPairView,GoogleLoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -33,4 +33,7 @@ urlpatterns = [
     # JWT
     path("api/token/", MyTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    
+    #AUTH GOOGLE
+    path("api/auth/google/", GoogleLoginView.as_view(), name="google_login"),
 ]
