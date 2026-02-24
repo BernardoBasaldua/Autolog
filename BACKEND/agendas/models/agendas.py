@@ -93,7 +93,7 @@ class Agenda(models.Model):
     domingo = models.BooleanField(default=False)
 
     # Configuración de horarios
-    horario_desde = models.TimeField(default="09:00")
+    horario_desde = models.TimeField(default="07:00")
     horario_hasta = models.TimeField(default="18:00")
 
     # Capacidad del taller
@@ -134,7 +134,7 @@ class Agenda(models.Model):
             raise ValueError("El día seleccionado no es un día laboral.")
 
         # 3. Validar si está dentro del horario laboral
-        if not (self.horario_desde <= fecha_hora_propuesta.time() < self.horario_hasta):
+        if not (self.horario_desde <= fecha_hora_propuesta.time() <= self.horario_hasta):
             raise ValueError("El horario seleccionado está fuera del horario laboral.")
 
         # 4. Validar si hay cupos disponibles en esa franja horaria

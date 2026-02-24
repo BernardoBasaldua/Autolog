@@ -161,16 +161,31 @@
 </section>
 
 <!-- VISTA DIARIA -->
-<section class="calendar-grid" *ngIf="vista === 'dia'" style="grid-template-columns: 90px 1fr;">
+<!-- VISTA DIARIA -->
+<section class="calendar-grid" *ngIf="vista === 'dia'" style="grid-template-columns: 140px 1fr;">
   <div class="cell header-cell"></div>
 
-  <div class="cell header-cell" [ngStyle]="{ 'border':'2px solid #2563eb', 'background':'rgba(37,99,235,.10)' }">
+  <div class="cell header-cell"
+       [ngStyle]="{ 'border':'2px solid #2563eb', 'background':'rgba(37,99,235,.10)' }">
     {{ tituloDia() }}
   </div>
 
   <ng-container *ngFor="let hora of horas">
-    <div class="cell time-cell">{{ labelHora(hora) }}</div>
+    <!-- Columna izquierda: Hora + Botón -->
+    <div class="cell time-cell time-with-btn">
+      <span>{{ labelHora(hora) }}</span>
 
+      <button
+        type="button"
+        class="btn-add-slot-left"
+        title="Crear turno en este horario"
+        (click)="crearOrdenEnSlot(fechaBase, hora)"
+      >
+        +
+      </button>
+    </div>
+
+    <!-- Columna derecha: Turnos -->
     <div
       class="cell day-cell"
       [ngStyle]="{ 'background':'rgba(37,99,235,.06)' }"
@@ -185,6 +200,34 @@
     </div>
   </ng-container>
 </section>
+
+<style>
+  /* hora + botón alineados */
+  .time-with-btn{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .btn-add-slot-left{
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    border:1px solid rgba(37,99,235,.35);
+    background:white;
+    font-weight:900;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+  }
+
+  .btn-add-slot-left:hover{
+    background:rgba(37,99,235,.08);
+  }
+</style>
 
 <!-- VISTA MENSUAL -->
 <section class="calendar-month" *ngIf="vista === 'mes'">

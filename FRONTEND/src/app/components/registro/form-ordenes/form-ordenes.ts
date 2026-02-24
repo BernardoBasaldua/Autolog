@@ -34,7 +34,8 @@ export class FormOrdenes {
 
   private prefillClienteId: number | null = null;
   private prefillVehiculoId: number | null = null;
-
+  private prefillFechaTurno: string | null = null; // "YYYY-MM-DD"
+  private prefillHoraTurno: string | null = null;  // "HH:00"
 
   esteTaller = this.tallerService.tallerActual;
   esteTallerId = this.esteTaller()?.id;
@@ -132,19 +133,30 @@ export class FormOrdenes {
     // 3) Valores default amigables
     // const hoy = new Date();
     // this.fechaTurno = hoy.toISOString().slice(0, 10);
-    this.fechaTurno = this.hoyLocalYYYYMMDD();
-    this.horaTurno = '';
+    //this.fechaTurno = this.hoyLocalYYYYMMDD();
+    //this.horaTurno = '';
     // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
     // this.generarHorariosBase();
     // this.refrescarHorariosDisponibles(); // carga ocupados y filtra
 
+    //this.generarHorarios();
+    // 3) Defaults (pero respetando prefill)
+    this.fechaTurno = this.prefillFechaTurno ?? this.hoyLocalYYYYMMDD();
+    this.horaTurno = this.prefillHoraTurno ?? '';
+
     this.generarHorarios();
   }
 
+  // generarHorarios() {
+  //   for (let h = 7; h <= 18; h++) {
+  //     const horaFormateada = (h < 10 ? '0' + h : h) + ':00';
+  //     this.horariosDisponibles.push(horaFormateada);
+  //   }
+  // }
   generarHorarios() {
-    for (let h = 8; h <= 18; h++) {
-      const horaFormateada = (h < 10 ? '0' + h : h) + ':00';
-      this.horariosDisponibles.push(horaFormateada);
+    this.horariosDisponibles = [];
+    for (let h = 7; h <= 18; h++) {
+      this.horariosDisponibles.push(String(h).padStart(2, '0') + ':00');
     }
   }
 
@@ -440,13 +452,17 @@ export class FormOrdenes {
   // =========================
 
   verAgenda(): void {
-    // TODO:
-    // 1) Si tenés AgendaService, abrir agenda disponible según:
-    //    - fechaTurno + horaTurno
-    //    - tecnico/taller (cuando estén implementados)
-    // 2) Podrías abrir un modal o navegar a /taller/agendas
-    console.log('Ver agenda (pendiente implementar)');
+    this.router.navigate(['/taller', 'turnos']);
   }
+//   verAgenda(): void {
+//   this.router.navigate(['/taller', 'turnos'], {
+//     queryParams: {
+//       fechaTurno: this.fechaTurno || null,
+//       horaTurno: this.horaTurno || null,
+//     },
+//     queryParamsHandling: 'merge',
+//   });
+// }
 
   cancelarOrden(): void {
     // UX simple: limpiar todo
@@ -505,9 +521,34 @@ export class FormOrdenes {
         this.router.navigate(['/taller', 'ordenes']);
       },
       error: (e) => {
-        console.error('Error creando orden', e);
-        const msg = e?.error?.detail || 'No se pudo crear la orden';
-        alert(msg);
+        console.error('Error creando orden RAW:', e);
+
+        const status = e?.status;
+        const data = e?.error;
+
+        const lines: string[] = [];
+
+        if (status === 0) {
+          lines.push('No hay conexión con el backend (CORS / servidor caído).');
+        } else if (typeof data === 'string') {
+          lines.push(data);
+        } else if (data?.detail) {
+          lines.push(String(data.detail));
+        } else if (data && typeof data === 'object') {
+          for (const [k, v] of Object.entries(data)) {
+            if (Array.isArray(v)) {
+              v.forEach(msg => lines.push(`${k}: ${msg}`));
+            } else if (v != null) {
+              lines.push(`${k}: ${String(v)}`);
+            }
+          }
+        }
+
+        if (!lines.length) {
+          lines.push('El backend no envió detalle del error. Mirá Network/Response.');
+        }
+
+        alert(`No se pudo crear la orden.\n\n${lines.join('\n')}`);
       }
     });
 
@@ -596,6 +637,25 @@ export class FormOrdenes {
     if (this.prefillVehiculoId && Number.isNaN(this.prefillVehiculoId)) {
       this.prefillVehiculoId = null;
     }
+
+    // ✅ NUEVO: fecha/hora desde TaTurnos
+    const fechaQP = qp.get('fechaTurno'); // "YYYY-MM-DD"
+    const horaQP  = qp.get('horaTurno');  // "HH:00"
+
+    this.prefillFechaTurno = fechaQP;
+    this.prefillHoraTurno = horaQP;
+
+    // Validación mínima (para no meter basura)
+    if (this.prefillFechaTurno && !/^\d{4}-\d{2}-\d{2}$/.test(this.prefillFechaTurno)) {
+      this.prefillFechaTurno = null;
+    }
+    if (this.prefillHoraTurno && !/^\d{2}:\d{2}$/.test(this.prefillHoraTurno)) {
+      this.prefillHoraTurno = null;
+    }
+    if (this.prefillHoraTurno) {
+      const hh = Number(this.prefillHoraTurno.split(':')[0]);
+    if (Number.isNaN(hh) || hh < 7 || hh > 18) this.prefillHoraTurno = null;
+}
   }
 
   private tryApplyPrefill(): void {

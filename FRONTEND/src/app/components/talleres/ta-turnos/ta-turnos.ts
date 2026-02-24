@@ -48,7 +48,7 @@ export class TaTurnos implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.generarHoras(7, 19);
+    this.generarHoras(7, 18);
     this.refrescarVista();      // arma grilla ya
     this.cargarTurnosAgenda();  // trae turnos
     this.anios = Array.from({ length: 16 }, (_, i) => (new Date().getFullYear() - 5) + i); // -5..+10
@@ -216,11 +216,14 @@ export class TaTurnos implements OnInit {
     });
   }
 
+  // generarHoras(desde: number, hasta: number): void {
+  //   this.horas = [];
+  //   for (let h = desde; h <= hasta; h++) this.horas.push(h);
+  // }
   generarHoras(desde: number, hasta: number): void {
     this.horas = [];
     for (let h = desde; h <= hasta; h++) this.horas.push(h);
   }
-
   // =========================
   // FORMATEO ESPAÑOL (manual)
   // =========================
@@ -319,5 +322,16 @@ export class TaTurnos implements OnInit {
     this.vista = 'dia';
     this.syncSelectoresConFechaBase();
     this.refrescarVista();
+  }
+  crearOrdenEnSlot(dia: Date, hora: number): void {
+    const fecha = this.toYYYYMMDD(dia); // "YYYY-MM-DD"
+    const hh = String(hora).padStart(2, '0') + ':00';
+
+    this.router.navigate(['/taller', 'form-orden'], {
+      queryParams: {
+        fechaTurno: fecha,  // YYYY-MM-DD
+        horaTurno: hh       // "HH:00"
+      }
+    });
   }
 }

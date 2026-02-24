@@ -52,6 +52,7 @@ export class TaOrdenes {
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
   private tallerService = inject(TalleresService);
+  
   // =========================
   // SIGNALS DE SERVICIOS
   // =========================
