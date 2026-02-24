@@ -1,9 +1,30 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+// import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+// import { provideRouter } from '@angular/router';
+
+// import { routes } from './app.routes';
+// import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+// import { HTTP_INTERCEPTORS } from '@angular/common/http';
+// import { AuthInterceptor } from './services/auth/interceptor';
+
+// export const appConfig: ApplicationConfig = {
+//   providers: [
+//     provideBrowserGlobalErrorListeners(),
+//     provideZoneChangeDetection({ eventCoalescing: true }),
+//     provideRouter(routes),
+//     provideHttpClient(withInterceptorsFromDi()),
+//     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+//   ]
+// };
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+  LOCALE_ID,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth/interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -13,5 +34,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    // ✅ Español Argentina
+    { provide: LOCALE_ID, useValue: 'es-AR' },
   ]
 };

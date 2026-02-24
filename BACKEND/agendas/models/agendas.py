@@ -72,7 +72,7 @@
 import datetime
 
 from django.db import models
-
+from django.utils import timezone
 
 class Agenda(models.Model):
     """Modelo para la configuración de la agenda de un Taller.
@@ -97,7 +97,7 @@ class Agenda(models.Model):
     horario_hasta = models.TimeField(default="18:00")
 
     # Capacidad del taller
-    turnos_maximos_por_hora = models.PositiveIntegerField(default=1)
+    turnos_maximos_por_hora = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         # Asumiendo que el modelo Taller tiene un campo 'nombre'
@@ -117,7 +117,7 @@ class Agenda(models.Model):
     def verificar_disponibilidad(self, fecha_hora_propuesta):
         """Verifica si un slot de tiempo específico está disponible en la agenda."""
         # 1. Validar que la fecha/hora sea en el futuro
-        if fecha_hora_propuesta <= datetime.datetime.now():
+        if fecha_hora_propuesta <= timezone.now():
             raise ValueError("No se pueden reservar turnos en el pasado.")
 
         # 2. Validar si es un día laboral
@@ -147,7 +147,7 @@ class Agenda(models.Model):
             .count()
         )
 
-        if turnos_en_esa_hora >= self.turnos_maximos_por_hora:
+        if self.turnos_maximos_por_hora and turnos_en_esa_hora >= self.turnos_maximos_por_hora:
             raise ValueError("No hay más cupos disponibles en el horario seleccionado.")
 
         return True  # Si todas las validaciones pasan, el turno está disponible

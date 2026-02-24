@@ -2,9 +2,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from agendas.models import Agenda
 from .models import OrdenDeTrabajo
 from .serializers import OrdenDeTrabajoSerializer
+from rest_framework.exceptions import ValidationError
 
 from django.db.models import Q
 from .serializers import OrdenDeTrabajoSerializer
@@ -44,6 +45,34 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
             return OrdenDeTrabajo.objects.all()
 
         return OrdenDeTrabajo.objects.none()
+    
+    def perform_create(self, serializer):
+        orden = serializer.save()
+
+        # Si viene taller y no viene agenda, la asignamos automáticamente
+        if orden.taller_id and orden.agenda_id is None:
+            agenda, _ = Agenda.objects.get_or_create(taller_id=orden.taller_id)
+            orden.agenda = agenda
+
+            # Lock de la agenda
+            agenda = Agenda.objects.select_for_update().get(id=orden.agenda_id)
+
+            try:
+                agenda.verificar_disponibilidad(orden.fecha_turno)
+            except ValueError:
+                raise ValidationError({
+                    "fecha_turno": "Ya existe una orden con ese horario en tu agenda."
+                })
+
+
+            orden.save(update_fields=["agenda"])
+
+    def perform_update(self, serializer):
+        orden = serializer.save()
+        if orden.taller_id and orden.agenda_id is None:
+            agenda, _ = Agenda.objects.get_or_create(taller_id=orden.taller_id)
+            orden.agenda = agenda
+            orden.save(update_fields=["agenda"])
     
     @action(detail=False, methods=["get"], url_path=r"vehiculo/(?P<vehiculo_id>\d+)/historial")
     def historial_por_vehiculo(self, request, vehiculo_id=None):

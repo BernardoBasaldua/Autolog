@@ -26,8 +26,8 @@ import { SeleccionUsuario } from './components/seleccion/seleccion-usuario/selec
 import { SeleccionVehiculo } from './components/seleccion/seleccion-vehiculos/seleccion-vehiculos';
 import { FormVehiculos } from './components/registro/form-vehiculos/form-vehiculos';
 import { TaCliSeleccion } from './components/talleres/ta-clientes/ta-cli-seleccion/ta-cli-seleccion';
-import { OrdenesVehiculoComponent } from './components/talleres/ta-vehiculos/ordenes-vehiculo/ordenes-vehiculo';
-
+//import { OrdenesVehiculoComponent } from './components/talleres/ta-vehiculos/ta-vehiculos/ordenes-vehiculo/';
+import { OrdenesVehiculoComponent } from './pages/taller/ta-vehiculos/ordenes-vehiculo/ordenes-vehiculo';
 
 export const routes: Routes = [
   {

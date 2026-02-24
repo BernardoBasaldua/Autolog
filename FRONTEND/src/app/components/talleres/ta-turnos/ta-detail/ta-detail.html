@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
     <section class="card p-6 mb-6">
         <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4">
@@ -12,9 +12,9 @@
         <p class="text-gray-700 font-semibold text-lg">Vehículos agendados: <span id="vehicle-count">2</span></p>
     </section>
 
-    <!-- List of Vehicles for this Time Slot -->
+     List of Vehicles for this Time Slot 
     <section class="space-y-4" id="appointments-list">
-        <!-- Appointment Item 1 -->
+         Appointment Item 1 
         <div class="card p-4 flex items-center justify-between">
             <div>
                 <p class="font-semibold text-lg text-gray-800">Ford Focus - ABC 123</p>
@@ -27,7 +27,7 @@
                     onclick="openDeleteModal('Ford Focus', 'ABC 123')">Eliminar</button>
             </div>
         </div>
-        <!-- Appointment Item 2 -->
+         Appointment Item 2
         <div class="card p-4 flex items-center justify-between">
             <div>
                 <p class="font-semibold text-lg text-gray-800">Chevrolet S-10 - XYZ 789</p>
@@ -51,7 +51,7 @@
     </footer>
 </div>
 
-<!-- Modals -->
+ Modals 
 <div id="modal-add" class="modal-overlay hidden">
     <div class="modal-container">
         <h3 class="text-xl font-bold mb-4">Agregar Nuevo Turno</h3>
@@ -107,4 +107,143 @@
                 onclick="handleDeleteAppointment()">Eliminar</button>
         </div>
     </div>
+</div> -->
+<style>
+  .modal-overlay{
+    position:fixed; inset:0;
+    background: rgba(0,0,0,.35);
+    display:flex; align-items:center; justify-content:center;
+    padding: 16px;
+    z-index: 50;
+  }
+  .modal-container{
+    width: min(520px, 100%);
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+</style>
+
+<div>
+  <section class="card p-6 mb-6" *ngIf="!cargando; else loading">
+    <div class="flex items-center mb-4">
+      <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+        <i class="fas fa-clock text-gray-600 text-2xl"></i>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Horario: {{ rangoHorario }}</h2>
+        <p class="text-gray-600">Fecha: {{ fechaBonita }}</p>
+      </div>
+    </div>
+
+    <p class="text-gray-700 font-semibold text-lg">
+      Vehículos agendados: <span class="font-bold">{{ turnosSlot.length }}</span>
+    </p>
+
+    <p class="text-red-600 mt-3" *ngIf="errorMsg">{{ errorMsg }}</p>
+  </section>
+
+  <ng-template #loading>
+    <section class="card p-6 mb-6">
+      <p class="text-gray-500">Cargando...</p>
+    </section>
+  </ng-template>
+
+  <!-- Lista -->
+  <section class="space-y-4" *ngIf="turnosSlot.length > 0; else sinTurnos">
+    <div class="card p-4 flex items-center justify-between" *ngFor="let t of turnosSlot">
+      <div>
+        <p class="font-semibold text-lg text-gray-800">{{ vehiculoLabel(t) }}</p>
+        <p class="text-sm text-gray-600">Servicio: {{ servicioLabel(t) }}</p>
+      </div>
+
+      <div class="flex space-x-2">
+        <button class="button-secondary text-sm" (click)="abrirEdit(t)">Editar</button>
+        <button
+          class="bg-red-500 text-white p-2 rounded-lg font-semibold text-sm hover:bg-red-700 transition"
+          (click)="abrirDelete(t)"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <ng-template #sinTurnos>
+    <section class="card p-4">
+      <p class="text-gray-600">No hay turnos asignados en este horario.</p>
+    </section>
+  </ng-template>
+
+  <footer class="flex justify-between mt-6">
+    <button class="button-secondary" (click)="verTurnos()">Volver</button>
+
+    <div class="flex gap-2">
+      <button class="button-secondary" (click)="abrirAdd()">
+        <i class="fas fa-plus mr-2"></i> Agregar acá (modal)
+      </button>
+
+      <button class="button-primary" (click)="crearNuevaOrden()">
+        <i class="fas fa-plus mr-2"></i> Agregar nuevo turno
+      </button>
+    </div>
+  </footer>
+</div>
+
+<!-- MODAL ADD -->
+<div class="modal-overlay" *ngIf="modalAdd">
+  <div class="modal-container">
+    <h3 class="text-xl font-bold mb-4">Agregar Nuevo Turno</h3>
+    <p class="text-gray-700 mb-4">
+      Fecha: {{ fechaBonita }}<br />
+      Horario: {{ rangoHorario }}
+    </p>
+
+    <div class="mb-4">
+      <label class="block text-gray-700 font-semibold mb-2">Servicio</label>
+      <input [(ngModel)]="nuevoServicio" class="w-full border rounded-lg p-2" placeholder="Ej: Cambio de aceite" />
+    </div>
+
+    <div class="flex justify-end space-x-2 mt-4">
+      <button class="button-secondary" (click)="cerrarAdd()">Cancelar</button>
+      <button class="button-primary" (click)="guardarNuevo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div class="modal-overlay" *ngIf="modalEdit">
+  <div class="modal-container">
+    <h3 class="text-xl font-bold mb-4">Editar Turno</h3>
+
+    <div class="mb-4">
+      <label class="block text-gray-700 font-semibold mb-2">Servicio</label>
+      <input [(ngModel)]="editServicio" class="w-full border rounded-lg p-2" />
+    </div>
+
+    <div class="flex justify-end space-x-2 mt-4">
+      <button class="button-secondary" (click)="cerrarEdit()">Cancelar</button>
+      <button class="button-primary" (click)="guardarEdicion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DELETE -->
+<div class="modal-overlay" *ngIf="modalDelete">
+  <div class="modal-container">
+    <h3 class="text-xl font-bold mb-4">Eliminar Turno</h3>
+    <p class="text-gray-700 mb-4">
+      ¿Estás seguro de que querés eliminar el turno #ORD-{{ turnoSeleccionado?.id }}?
+    </p>
+
+    <div class="flex justify-end space-x-2 mt-4">
+      <button class="button-secondary" (click)="cerrarDelete()">Cancelar</button>
+      <button class="bg-red-500 text-white p-2 rounded-lg font-semibold hover:bg-red-700 transition"
+              (click)="confirmarDelete()">
+        Eliminar
+      </button>
+    </div>
+  </div>
 </div>

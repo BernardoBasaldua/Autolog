@@ -1,183 +1,215 @@
-<!-- Calendar Controls -->
-<section class="flex justify-end items-center mb-6 space-x-4">
-    <div class="dropdown-button">
-        <i class="fas fa-user-friends mr-2 text-gray-600"></i>
-        <span>Cambiar</span>
-        <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
-    </div>
-    <select class="dropdown-button w-40">
-        <option>Semanal</option>
-        <option>Diaria</option>
-        <option>Mensual</option>
-        <option>Anual</option>
+<style>
+  /* Layout general */
+  .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; }
+  .toolbar-left { display:flex; align-items:center; gap:10px; }
+  .toolbar-title { font-size:18px; font-weight:800; color:#111827; }
+  .toolbar-right { display:flex; align-items:center; gap:10px; }
+
+  .btn { border:1px solid rgba(0,0,0,.15); background:white; padding:8px 12px; border-radius:10px; cursor:pointer; }
+  .btn:hover { background:rgba(0,0,0,.03); }
+  .select { border:1px solid rgba(0,0,0,.15); padding:8px 10px; border-radius:10px; background:white; }
+
+  /* Grid semanal/diario */
+  .calendar-grid{
+    display:grid;
+    grid-template-columns: 90px repeat(7, 1fr);
+    gap:8px;
+  }
+  .cell{
+    border:1px solid rgba(0,0,0,.10);
+    border-radius:10px;
+    background:white;
+    padding:10px;
+    min-height:54px;
+  }
+  .header-cell{ font-weight:800; color:#111827; background:rgba(0,0,0,.02); }
+  .time-cell{ font-weight:700; color:#374151; background:rgba(0,0,0,.02); }
+  .day-cell{ position:relative; cursor:pointer; }
+  .day-cell:hover{ background: rgba(0,0,0,.02); }
+
+  .event{
+    position:relative;
+    margin-top:6px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid rgba(37,99,235,.25);
+    background: rgba(37,99,235,.10);
+    font-weight:700;
+    font-size:12px;
+    color:#0f172a;
+  }
+
+  /* Mensual */
+  .calendar-month{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap:8px;
+  }
+  .month-header{
+    text-align:center;
+    font-weight:800;
+    color:#374151;
+  }
+  .month-cell{
+    min-height:110px;
+    border-radius:12px;
+    padding:10px;
+    cursor:pointer;
+    background:white;
+    border:1px solid rgba(0,0,0,.10);
+  }
+  .month-cell:hover{ background:rgba(0,0,0,.02); }
+  .month-day-num{ font-weight:900; color:#111827; }
+  .badge{
+    display:inline-block;
+    margin-top:8px;
+    padding:2px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    background: rgba(37,99,235,.10);
+    border:1px solid rgba(37,99,235,.20);
+  }
+
+  .muted{ color:#6b7280; font-size:12px; }
+</style>
+
+
+<!-- Toolbar -->
+<section class="toolbar">
+  <div class="toolbar-left">
+    <button class="btn" type="button" (click)="anterior()">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <button class="btn" type="button" (click)="irHoy()">
+      Hoy
+    </button>
+
+    <div class="toolbar-title" *ngIf="vista === 'semana'">{{ tituloSemana() }}</div>
+    <div class="toolbar-title" *ngIf="vista === 'dia'">{{ tituloDia() }}</div>
+    <div class="toolbar-title" *ngIf="vista === 'mes'">{{ tituloMes() }}</div>
+
+    <button class="btn" type="button" (click)="siguiente()">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <div class="toolbar-right">
+    <span class="muted" *ngIf="cargando">Cargando…</span>
+
+    <!-- Salto rápido MES/AÑO (ideal para ir de Febrero a Noviembre) -->
+    <select class="select" [(ngModel)]="mesSeleccionado" (ngModelChange)="cambiarMesAnio()">
+      <option *ngFor="let m of mesesES; let idx = index" [value]="idx">{{ m }}</option>
     </select>
+
+    <select class="select" [(ngModel)]="anioSeleccionado" (ngModelChange)="cambiarMesAnio()">
+      <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
+    </select>
+
+    <!-- Salto exacto a una fecha -->
+    <input
+      class="select"
+      type="date"
+      (change)="irAFecha($any($event.target).value)"
+      title="Ir a fecha"
+    />
+
+    <!-- Vista -->
+    <select class="select" [(ngModel)]="vista" (ngModelChange)="setVista($event)">
+      <option value="semana">Semanal</option>
+      <option value="dia">Diaria</option>
+      <option value="mes">Mensual</option>
+    </select>
+  </div>
 </section>
 
-<!-- Calendar Grid -->
-<section class="calendar-grid">
-    <!-- Top-left empty cell -->
-    <div class="calendar-header-cell"></div>
-    <!-- Day Headers -->
-    <div class="calendar-header-cell rounded-tr-lg">Dom 5</div>
-    <div class="calendar-header-cell">Lun 6</div>
-    <div class="calendar-header-cell">Mar 7</div>
-    <div class="calendar-header-cell">Mie 8</div>
-    <div class="calendar-header-cell">Jue 9</div>
-    <div class="calendar-header-cell">Vie 10</div>
-    <div class="calendar-header-cell rounded-tr-lg">Sáb 11</div>
+<!-- VISTA SEMANAL -->
+<section class="calendar-grid" *ngIf="vista === 'semana'">
+  <div class="cell header-cell"></div>
 
-    <!-- Time Slots and Events -->
-    <!-- Row 7 AM -->
-    <div class="calendar-time-cell">7 AM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 8 AM -->
-    <div class="calendar-time-cell">8 AM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 9 AM -->
-    <div class="calendar-time-cell">9 AM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 10 AM -->
-    <div class="calendar-time-cell">10 AM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-blue" (click)="verDetalleTurno()" style="top: 10px; height: 50px;">
-            #ORD-2025-004<br>Cambio de aceite de motor
-        </div>
-    </div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-green" (click)="verDetalleTurno()" style="top: 10px; height: 50px;">
-            #ORD-2025-009<br>Ajuste del freno de mano
-        </div>
-    </div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-blue" (click)="verDetalleTurno()" style="top: 10px; height: 50px;">
-            #ORD-2025-005<br>Cambio de aceite de motor
-        </div>
-    </div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-yellow" (click)="verDetalleTurno()" style="top: 10px; height: 50px;">
-            #ORD-2025-004<br>Chequeo general
-        </div>
+  <div
+    *ngFor="let dia of diasSemana"
+    class="cell header-cell"
+    style="cursor:pointer;"
+    (click)="abrirDiaDesdeSemana(dia)"
+    [ngStyle]="esHoy(dia) ? { 
+        'border':'2px solid #2563eb', 
+        'background':'rgba(37,99,235,.10)' 
+    } : {}"
+    >
+    {{ labelHeaderDia(dia) }}
     </div>
 
-    <!-- Row 11 AM -->
-    <div class="calendar-time-cell">11 AM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
+  <ng-container *ngFor="let hora of horas">
+    <div class="cell time-cell">{{ labelHora(hora) }}</div>
 
-    <!-- Row 12 PM -->
-    <div class="calendar-time-cell">12 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 1 PM -->
-    <div class="calendar-time-cell">1 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-purple" style="top: 10px; height: 70px;">
-            #ORD-2025-004<br>Cambio de aceite de motor
+    <div
+      *ngFor="let dia of diasSemana"
+      class="cell day-cell"
+      [ngStyle]="esHoy(dia) ? { 'background':'rgba(37,99,235,.06)' } : {}"
+      (click)="abrirDetalleSlot(dia, hora)"
+    >
+      <ng-container *ngFor="let t of getTurnosCelda(dia, hora)">
+        <div class="event" (click)="abrirDetalleTurno(t); $event.stopPropagation()">
+          #ORD-{{ t.id }}<br />
+          {{ t.mantenimiento }}
         </div>
+      </ng-container>
     </div>
-    <div class="calendar-day-cell relative">
-        <div class="calendar-event event-purple" style="top: 10px; height: 70px;">
-            #ORD-2025-004<br>Cambio de filtro de aire
+  </ng-container>
+</section>
+
+<!-- VISTA DIARIA -->
+<section class="calendar-grid" *ngIf="vista === 'dia'" style="grid-template-columns: 90px 1fr;">
+  <div class="cell header-cell"></div>
+
+  <div class="cell header-cell" [ngStyle]="{ 'border':'2px solid #2563eb', 'background':'rgba(37,99,235,.10)' }">
+    {{ tituloDia() }}
+  </div>
+
+  <ng-container *ngFor="let hora of horas">
+    <div class="cell time-cell">{{ labelHora(hora) }}</div>
+
+    <div
+      class="cell day-cell"
+      [ngStyle]="{ 'background':'rgba(37,99,235,.06)' }"
+      (click)="abrirDetalleSlot(fechaBase, hora)"
+    >
+      <ng-container *ngFor="let t of getTurnosCelda(fechaBase, hora)">
+        <div class="event" (click)="abrirDetalleTurno(t); $event.stopPropagation()">
+          #ORD-{{ t.id }}<br />
+          {{ t.mantenimiento }}
         </div>
+      </ng-container>
     </div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
+  </ng-container>
+</section>
 
-    <!-- Row 2 PM -->
-    <div class="calendar-time-cell">2 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
+<!-- VISTA MENSUAL -->
+<section class="calendar-month" *ngIf="vista === 'mes'">
+  <div class="month-header">Dom</div>
+  <div class="month-header">Lun</div>
+  <div class="month-header">Mar</div>
+  <div class="month-header">Mié</div>
+  <div class="month-header">Jue</div>
+  <div class="month-header">Vie</div>
+  <div class="month-header">Sáb</div>
 
-    <!-- Row 3 PM -->
-    <div class="calendar-time-cell">3 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
+  <div
+    *ngFor="let dia of diasMes"
+    class="month-cell"
+    [ngStyle]="{
+      'opacity': esDelMesActual(dia) ? '1' : '0.45',
+      'border': esHoy(dia) ? '2px solid #2563eb' : '1px solid rgba(0,0,0,.10)',
+      'background': esHoy(dia) ? 'rgba(37,99,235,.08)' : 'white'
+    }"
+    (click)="abrirDiaDesdeMes(dia)"
+  >
+    <div class="month-day-num">{{ dia.getDate() }}</div>
 
-    <!-- Row 4 PM -->
-    <div class="calendar-time-cell">4 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 5 PM -->
-    <div class="calendar-time-cell">5 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 6 PM -->
-    <div class="calendar-time-cell">6 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-
-    <!-- Row 7 PM -->
-    <div class="calendar-time-cell">7 PM</div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
-    <div class="calendar-day-cell"></div>
+    <div *ngIf="getTurnosDia(dia).length > 0">
+      <span class="badge">Turnos: {{ getTurnosDia(dia).length }}</span>
+    </div>
+  </div>
 </section>

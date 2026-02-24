@@ -17,7 +17,7 @@ export class TurnoService {
 
   private url = 'http://localhost:8000/api/clientes/historial_todos/';
 
-
+  private baseUrl = 'http://localhost:8000/api';
   constructor(private http: HttpClient) {}
 
   getHistorialTodos(): Observable<Turno[]> {
@@ -27,6 +27,18 @@ export class TurnoService {
     return this.http.delete(`http://localhost:8000/api/clientes/orden/${id}/eliminar/`);
   }
 
+  // ---- NUEVO: turnos por agenda ----
+  getTurnosAgenda(agendaId: number) {
+    return this.http.get<Turno[]>(
+      `${this.baseUrl}/agendas/${agendaId}/turnos-asignados/`
+    );
+  }
+
+  getTurnosAsignadosDia(agendaId: number, fecha: string): Observable<Turno[]> {
+    return this.http.get<Turno[]>(
+      `${this.baseUrl}/agendas/${agendaId}/turnos-asignados/?fecha=${fecha}`
+    );
+  }
 
 }
 
