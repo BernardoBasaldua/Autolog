@@ -6,6 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { TurnoService } from '../../../services/turnos/turno.service';
 import { Turno } from '../../../models/turnos/turno.model';
 
+import { forkJoin, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
 type Vista = 'semana' | 'dia' | 'mes';
 
 @Component({
@@ -13,10 +17,18 @@ type Vista = 'semana' | 'dia' | 'mes';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './ta-turnos.html',
+  styleUrl: './ta-turnos.css',
 })
 export class TaTurnos implements OnInit {
   private router = inject(Router);
   private turnoService = inject(TurnoService);
+
+  private http = inject(HttpClient);
+
+  // caches
+  talleresById = new Map<number, any>();
+  clientesById = new Map<number, any>();
+  vehiculosById = new Map<number, any>();
 
   agendaId = 1;
 
@@ -34,6 +46,35 @@ export class TaTurnos implements OnInit {
   mesSeleccionado = new Date().getMonth();      // 0..11
   anioSeleccionado = new Date().getFullYear();  // 2026...
   anios: number[] = [];
+
+  tallerNombre(id: number | null | undefined): string {
+    if (!id) return '-';
+    const t = this.talleresById.get(Number(id));
+    return t?.nombre ?? `Taller #${id}`;
+  }
+
+  clienteNombreApellido(id: number | null | undefined): string {
+    if (!id) return '-';
+    const c = this.clientesById.get(Number(id));
+    if (!c) return `Cliente #${id}`;
+
+    const first = c?.usuario?.first_name ?? '';
+    const last = c?.usuario?.last_name ?? '';
+    const full = `${first} ${last}`.trim();
+    return full || `Cliente #${id}`;
+  }
+
+  vehiculoLabel(id: number | null | undefined): string {
+    if (!id) return '-';
+    const v = this.vehiculosById.get(Number(id));
+    if (!v) return `Vehículo #${id}`;
+
+    const marca = v?.marca?.nombre ?? '';
+    const modelo = v?.modelo?.nombre ?? '';
+    const dom = v?.dominio ?? '';
+    const base = `${marca} ${modelo}`.trim();
+    return dom ? `${base} (${dom})`.trim() : (base || `Vehículo #${id}`);
+  }
 
   readonly mesesES = [
     'Enero','Febrero','Marzo','Abril','Mayo','Junio',
@@ -85,16 +126,50 @@ export class TaTurnos implements OnInit {
   // =========================
   // BACKEND
   // =========================
+  // cargarTurnosAgenda(): void {
+  //   this.cargando = true;
+  //   this.turnoService.getTurnosAgenda(this.agendaId).subscribe({
+  //     next: (all) => {
+  //       this.turnosAll = all ?? [];
+  //       this.cargando = false;
+  //       this.refrescarVista();
+  //     },
+  //     error: (err) => {
+  //       console.error('Error cargando turnos agenda', err);
+  //       this.turnosAll = [];
+  //       this.turnosVista = [];
+  //       this.cargando = false;
+  //     }
+  //   });
+  // }
   cargarTurnosAgenda(): void {
     this.cargando = true;
-    this.turnoService.getTurnosAgenda(this.agendaId).subscribe({
-      next: (all) => {
-        this.turnosAll = all ?? [];
+
+    forkJoin({
+      turnos: this.turnoService.getTurnosAgenda(this.agendaId)
+        .pipe(catchError((err) => { console.error(err); return of([] as Turno[]); })),
+
+      talleres: this.http.get<any[]>('http://127.0.0.1:8000/api/talleres/')
+        .pipe(catchError(() => of([]))),
+
+      clientes: this.http.get<any[]>('http://127.0.0.1:8000/api/clientes/')
+        .pipe(catchError(() => of([]))),
+
+      vehiculos: this.http.get<any[]>('http://127.0.0.1:8000/api/vehiculo/')
+        .pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ turnos, talleres, clientes, vehiculos }) => {
+        this.turnosAll = turnos ?? [];
         this.cargando = false;
         this.refrescarVista();
+
+        // Maps
+        this.talleresById = new Map<number, any>((talleres ?? []).map(t => [Number(t.id), t]));
+        this.clientesById = new Map<number, any>((clientes ?? []).map(c => [Number(c.id), c]));
+        this.vehiculosById = new Map<number, any>((vehiculos ?? []).map(v => [Number(v.id), v]));
       },
       error: (err) => {
-        console.error('Error cargando turnos agenda', err);
+        console.error('Error cargando todo', err);
         this.turnosAll = [];
         this.turnosVista = [];
         this.cargando = false;
@@ -333,5 +408,18 @@ export class TaTurnos implements OnInit {
         horaTurno: hh       // "HH:00"
       }
     });
+  }
+
+  modalDetalle = false;
+  ordenSeleccionada: any | null = null;
+
+  abrirDetalle(o: any) {
+    this.ordenSeleccionada = o;
+    this.modalDetalle = true;
+  }
+
+  cerrarDetalle() {
+    this.modalDetalle = false;
+    this.ordenSeleccionada = null;
   }
 }

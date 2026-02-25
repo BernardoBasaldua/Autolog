@@ -151,7 +151,7 @@
       (click)="abrirDetalleSlot(dia, hora)"
     >
       <ng-container *ngFor="let t of getTurnosCelda(dia, hora)">
-        <div class="event" (click)="abrirDetalleTurno(t); $event.stopPropagation()">
+        <div class="event" (click)="abrirDetalle(t); $event.stopPropagation()">
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
@@ -192,7 +192,7 @@
       (click)="abrirDetalleSlot(fechaBase, hora)"
     >
       <ng-container *ngFor="let t of getTurnosCelda(fechaBase, hora)">
-        <div class="event" (click)="abrirDetalleTurno(t); $event.stopPropagation()">
+        <div class="event" (click)="abrirDetalle(t); $event.stopPropagation()">
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
@@ -256,3 +256,121 @@
     </div>
   </div>
 </section>
+
+<!-- MODAL DETALLE ORDEN (estilo card como historial) -->
+<div class="modal-overlay" *ngIf="modalDetalle" (click)="cerrarDetalle()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="flex items-start justify-between gap-4 mb-4">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">
+          Detalle de la orden <span class="text-gray-500 font-normal">#ORD-{{ ordenSeleccionada?.id }}</span>
+        </h2>
+        <p class="text-gray-600 mt-1">
+          <i class="fas fa-calendar-alt mr-2"></i>
+          {{ ordenSeleccionada?.fecha_turno | date:"dd 'de' MMMM 'de' yyyy, HH:mm'hs'" }}
+        </p>
+      </div>
+
+      <button 
+        type="button"
+        class="btn-close-modal"
+        (click)="cerrarDetalle()"
+        aria-label="Cerrar"
+        >
+        <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <ng-container *ngIf="ordenSeleccionada as orden">
+      <!-- Card principal -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+
+        <!-- Bloque superior -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+
+          <div class="flex-1 mb-4 md:mb-0">
+
+            <!-- Resumen -->
+            <ul class="list-disc list-inside text-gray-700 mb-4 ml-4">
+              <li>Tipo de mantenimiento: <span class="font-semibold">{{ orden.mantenimiento }}</span></li>
+              <li>
+                Próximo servicio:
+                <span class="font-semibold">{{ orden.fecha_siguiente_servicio | date:'dd/MM/yyyy' }}</span>
+                · <span class="font-semibold">{{ orden.kilometraje_siguiente_servicio | number }}</span> km
+              </li>
+              <li>Kilometraje actual: <span class="font-semibold">{{ orden.kilometraje | number }}</span> km</li>
+            </ul>
+
+            <!-- Grilla de datos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+
+              <p>
+                <i class="fas fa-user mr-2 text-gray-600"></i>
+                Cliente:
+                <span class="font-semibold">{{ clienteNombreApellido(orden.cliente) }}</span>
+             </p>
+
+              <p>
+                <i class="fas fa-car mr-2 text-indigo-600"></i>
+                Vehículo:
+                <span class="font-semibold">{{ vehiculoLabel(orden.vehiculo) }}</span>
+              </p>
+
+               <p>
+                <i class="fas fa-industry mr-2 text-blue-600"></i>
+                Taller:
+                <span class="font-semibold">{{ tallerNombre(orden.taller) }}</span>
+                </p>
+              <p>
+                <i class="fas fa-calendar-check mr-2 text-purple-600"></i>
+                Entrega:
+                <span class="font-semibold">
+                  {{ orden.fecha_entrega ? (orden.fecha_entrega | date:"dd 'de' MMMM 'de' yyyy") : 'Pendiente' }}
+                </span>
+              </p>
+
+              <p>
+                <i class="fas fa-road mr-2 text-red-600"></i>
+                Odómetro:
+                <span class="font-semibold">{{ orden.kilometraje | number }} km</span>
+              </p>
+
+              <!-- <p>
+                <i class="fas fa-clipboard-list mr-2 text-gray-600"></i>
+                Agenda:
+                <span class="font-semibold">{{ orden.agenda }}</span>
+              </p> -->
+
+            </div>
+          </div>
+
+          <!-- Columna derecha opcional -->
+          <!-- <div class="flex flex-col items-start md:items-end">
+            <span class="text-xs text-gray-500">ID interno</span>
+            <span class="font-bold text-gray-900">#{{ orden.id }}</span>
+          </div> -->
+
+        </div>
+
+        <!-- Observaciones -->
+        @if (orden.observaciones_tecnicas) {
+          <div class="bg-gray-100 p-4 rounded-lg mt-4 w-full">
+            <p class="font-semibold text-gray-800 mb-2">Observaciones técnicas:</p>
+            <p class="text-gray-700">{{ orden.observaciones_tecnicas }}</p>
+          </div>
+        } @else {
+          <div class="bg-gray-50 p-4 rounded-lg mt-4 w-full">
+            <p class="text-gray-600">Sin observaciones técnicas.</p>
+          </div>
+        }
+
+      </div>
+
+      <!-- Acciones -->
+      
+    </ng-container>
+
+  </div>
+</div>
