@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError, transaction
 from rest_framework import status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -392,8 +393,32 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         user_serializer = UsuarioSerializer(data=usuario_data)
         taller_serializer = TallerSerializer(data=taller_data)
 
-        user_serializer.is_valid(raise_exception=True)
-        taller_serializer.is_valid(raise_exception=True)
+        # if not user_serializer.is_valid():
+        #     return Response(
+        #         {"origen": "usuario", "errors": user_serializer.errors},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+
+        # if not taller_serializer.is_valid():
+        #     return Response(
+        #         {"origen": "taller", "errors": taller_serializer.errors},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        try:
+            user_serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response(
+                {"origen": "usuario", "errors": user_serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            taller_serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response(
+                {"origen": "taller", "errors": taller_serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # 3) Crear todo dentro de una transacción
         with transaction.atomic():

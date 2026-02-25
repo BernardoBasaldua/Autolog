@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { VehiculoService } from '../../../../services/vehiculo/vehiculo.service';
 import { ClienteService } from '../../../../services/usuarios/clientes/cliente.service';
 import { HistorialModel, Vehiculo } from '../../../../models/vehiculo/vehiculo.model';
+import { TalleresService } from '../../../../services/talleres/talleres.service';
 
 @Component({
   selector: 'app-historial',
@@ -16,6 +17,8 @@ import { HistorialModel, Vehiculo } from '../../../../models/vehiculo/vehiculo.m
 
 export class Historial implements OnInit {
   clienteService = inject(ClienteService);
+  private tallerService = inject(TalleresService);
+  talleresSig = this.tallerService.listaTalleres;
   mis_vehiculos = this.clienteService.mis_vehiculos;
   historial : HistorialModel[] = [];
 
@@ -31,26 +34,6 @@ export class Historial implements OnInit {
     this.vehiculos = this.mis_vehiculos();
   }
 
-  // ngOnInit(): void {
-
-  //   this.vehiculo = this.vehiculos[this.vehiculoId];
-  //   this.historial = this.vehiculo.historial;
-    
-  //   // window.scrollTo(0, 0);
-  //   // this.vehiculoService.getVehiculoById(this.vehiculoId).subscribe({
-  //   //   next: (vehiculo) => {
-  //   //     console.log('Vehículo recibido:', vehiculo);
-  //   //     this.vehiculo = vehiculo;
-  //   //   },
-  //   //   error: (err) => {
-  //   //     console.error('Error al obtener vehículo', err);
-  //   //   }
-  //   // });
-  // }
-  // ngOnInit(): void {
-  //   this.vehiculo = this.vehiculos.find(v => v.id === this.vehiculoId) ?? null;
-  //   this.historial = this.vehiculo?.historial ?? [];
-  // }
   ngOnInit(): void {
     const cliente = this.clienteService.clienteActual();
 
@@ -61,7 +44,14 @@ export class Historial implements OnInit {
 
     this.vehiculo = todos.find(v => v.id === this.vehiculoId) ?? null;
     this.historial = this.vehiculo?.historial ?? [];
-}
+    this.tallerService.getTalleres().subscribe({
+    next: (talleres) => this.tallerService.listaTalleres.set(talleres),
+    });
+  }
 
-
+  tallerNombre(tallerId: number | null): string {
+    if (!tallerId) return '-';
+    const t = this.talleresSig().find(x => x.id === tallerId);
+    return t?.nombre ?? `Taller #${tallerId}`;
+  }
 }

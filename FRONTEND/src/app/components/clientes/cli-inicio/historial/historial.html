@@ -83,6 +83,10 @@
               / {{ orden.kilometraje_siguiente_servicio | number }} km
             </span>
           </p>
+          <p>
+            <i class="fas fa-warehouse mr-2 text-indigo-600"></i>Taller:
+            <span class="font-semibold">{{ tallerNombre(orden.taller) }}</span>
+          </p>
         </div>
 
         @if (orden.observaciones_tecnicas) {

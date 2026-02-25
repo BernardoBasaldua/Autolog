@@ -84,10 +84,39 @@ export class FormTalleres {
           alert('Establecimiento creado');
           this.router.navigate(['/login']);
         },
-        error: (e) => {
-          console.error('Error al crear establecimiento');
-          alert('No se pudo crear establecimiento');
-        },
+        error: (e: any) => {
+          console.error('Error al crear establecimiento', e);
+
+          const backend = e?.error; // <-- JSON del back
+          console.log('Detalle backend:', backend);
+
+          const mensajes: string[] = [];
+
+          // Caso nuevo: { origen, errors: { campo: [mensajes] } }
+          if (backend?.errors && typeof backend.errors === 'object') {
+            Object.values(backend.errors).forEach((val: any) => {
+              if (Array.isArray(val)) mensajes.push(...val);
+              else if (typeof val === 'string') mensajes.push(val);
+            });
+          }
+
+          // Fallback: errores a nivel raíz tipo { field: ["msg"] }
+          if (mensajes.length === 0 && backend && typeof backend === 'object') {
+            Object.entries(backend).forEach(([key, val]: [string, any]) => {
+              if (key === 'errors' || key === 'origen') return;
+              if (Array.isArray(val)) mensajes.push(...val);
+            });
+          }
+
+          const origen = backend?.origen ? ` (${backend.origen})` : '';
+          const msgFinal = mensajes.length
+            ? `No se pudo crear${origen}:\n\n${mensajes.join('\n')}`
+            : `Ocurrió un error al crear el establecimiento${origen}.`;
+
+          // Popup simple (después lo cambiás por MatDialog/Toast)
+          alert(msgFinal);
+        }
+        
       });
 
     } else {//LLAMOS A SERVICIO ACTUALIZAR
