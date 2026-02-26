@@ -260,13 +260,25 @@
           >
             Ver presupuesto
           </button> -->
+          
 
-          <button
-            class="button-primary"
-            (click)="irAEditarOrden(ordenSeleccionada)"
-          >
-            Editar orden
-          </button>
+          @if (!ordenSeleccionada.fecha_entrega) {
+            <button
+              class="button-primary"
+              (click)="irAEditarOrden(ordenSeleccionada)"
+            >
+              Editar orden
+            </button>
+          }
+          @if (esOrdenEliminable(ordenSeleccionada)) {
+            <button
+              type="button"
+              class="button-primary button-danger"
+              (click)="eliminarOrden(ordenSeleccionada)"
+            >
+              Eliminar orden
+            </button>
+          }
         </div>
       </div>
     </aside>

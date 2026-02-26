@@ -9,6 +9,7 @@ import { Turno } from '../../../models/turnos/turno.model';
 import { forkJoin, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute} from '@angular/router';
 
 type Vista = 'semana' | 'dia' | 'mes';
 
@@ -22,7 +23,7 @@ type Vista = 'semana' | 'dia' | 'mes';
 export class TaTurnos implements OnInit {
   private router = inject(Router);
   private turnoService = inject(TurnoService);
-
+  private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
 
   // caches
@@ -370,10 +371,15 @@ export class TaTurnos implements OnInit {
     return x;
   }
 
+  // toYYYYMMDD(d: Date): string {
+  //   return d.toISOString().split('T')[0];
+  // }
   toYYYYMMDD(d: Date): string {
-    return d.toISOString().split('T')[0];
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
-
   // =========================
   // NAVEGACIÓN
   // =========================
@@ -398,15 +404,38 @@ export class TaTurnos implements OnInit {
     this.syncSelectoresConFechaBase();
     this.refrescarVista();
   }
-  crearOrdenEnSlot(dia: Date, hora: number): void {
-    const fecha = this.toYYYYMMDD(dia); // "YYYY-MM-DD"
-    const hh = String(hora).padStart(2, '0') + ':00';
+  // crearOrdenEnSlot(dia: Date, hora: number): void {
+  //   const fecha = this.toYYYYMMDD(dia); // "YYYY-MM-DD"
+  //   const hh = String(hora).padStart(2, '0') + ':00';
 
+  //   this.router.navigate(['/taller', 'form-orden'], {
+  //     queryParams: {
+  //       fechaTurno: fecha,  // YYYY-MM-DD
+  //       horaTurno: hh       // "HH:00"
+  //     }
+  //   });
+  // }
+  crearOrdenEnSlot(dia: Date, hora: number): void {
+    const fecha = this.toYYYYMMDD(dia);                 // "YYYY-MM-DD"
+    const hh = String(hora).padStart(2, '0') + ':00';   // "HH:00"
+
+    const qp = this.route.snapshot.queryParamMap;
+    const returnTo = qp.get('returnTo');
+
+    if (returnTo) {
+      // ✅ Volver al form (editar o crear) con fecha/hora elegidas
+      this.router.navigateByUrl(
+        this.router.createUrlTree([returnTo], {
+          queryParams: { fechaTurno: fecha, horaTurno: hh },
+          queryParamsHandling: 'merge',
+        })
+      );
+      return;
+    }
+
+    // fallback
     this.router.navigate(['/taller', 'form-orden'], {
-      queryParams: {
-        fechaTurno: fecha,  // YYYY-MM-DD
-        horaTurno: hh       // "HH:00"
-      }
+      queryParams: { fechaTurno: fecha, horaTurno: hh },
     });
   }
 
@@ -421,5 +450,46 @@ export class TaTurnos implements OnInit {
   cerrarDetalle() {
     this.modalDetalle = false;
     this.ordenSeleccionada = null;
+  }
+
+  // ===== Regla: solo futuras =====
+  esOrdenEliminable(o: any): boolean {
+    if (!o?.fecha_turno) return false;
+    return new Date(o.fecha_turno).getTime() > Date.now();
+  }
+
+  eliminarOrden(o: any): void {
+    if (!this.esOrdenEliminable(o)) {
+      alert('Solo se pueden eliminar órdenes futuras.');
+      return;
+    }
+
+    const ok = confirm(`¿Eliminar la orden #ORD-${o.id}?`);
+    if (!ok) return;
+
+    this.cargando = true;
+
+    // IMPORTANTE: usá el método correcto del service para taller (deleteOrden / deleteTurno)
+    this.turnoService.deleteTurno(o.id).subscribe({
+      next: () => {
+        // ✅ remover de la lista global
+        this.turnosAll = (this.turnosAll || []).filter(t => t.id !== o.id);
+
+        // ✅ recalcular semana/día/mes
+        this.refrescarVista();
+
+        // ✅ cerrar modal si estaba abierto con esa orden
+        if (this.ordenSeleccionada?.id === o.id) {
+          this.cerrarDetalle();
+        }
+
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error eliminando orden:', err);
+        this.cargando = false;
+        alert(err?.error?.detail ?? 'No se pudo eliminar la orden.');
+      }
+    });
   }
 }

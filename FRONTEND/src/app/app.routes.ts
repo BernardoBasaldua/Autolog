@@ -64,7 +64,10 @@ export const routes: Routes = [
       { path: 'taller/turnos/detalle', component: TaDetail },
       { path: 'taller/config', component: TaConfig },
 
-      
+      {
+        path: 'taller/ordenes/:id/editar',
+        component: FormOrdenes, // <- tu componente actual de form-orden
+      },
 
     ]
   },

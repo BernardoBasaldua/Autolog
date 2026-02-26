@@ -24,6 +24,7 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
   templateUrl: './form-ordenes.html',
   styleUrl: './form-ordenes.css',
 })
+
 export class FormOrdenes {
   private router = inject(Router);
   private clienteService = inject(ClienteService);
@@ -36,6 +37,10 @@ export class FormOrdenes {
   private prefillVehiculoId: number | null = null;
   private prefillFechaTurno: string | null = null; // "YYYY-MM-DD"
   private prefillHoraTurno: string | null = null;  // "HH:00"
+  private fechaHoraVieneDeAgenda = false;
+  modo: 'crear' | 'editar' = 'crear';
+  ordenId: number | null = null;
+  cargandoOrden = false;
 
   esteTaller = this.tallerService.tallerActual;
   esteTallerId = this.esteTaller()?.id;
@@ -76,7 +81,7 @@ export class FormOrdenes {
   horariosBase: string[] = [];
   horariosDisponibles: string[] = [];
   fechaEntrega: string | null = null;
-
+  
   // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
   // // Agenda / Taller
   // agendaId!: number; // <- IMPORTANT: necesitás este id (o lo buscás por taller)
@@ -104,17 +109,96 @@ export class FormOrdenes {
   }
 
   ngOnInit(): void {
-
     // 0) Leo params (query y opcional param)
     this.initPrefillFromRoute();
+
+    // ✅ detectar edición
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.ordenId = idParam ? Number(idParam) : null;
+    this.modo = this.ordenId ? 'editar' : 'crear';
+
+    // ✅ cuando vuelvo desde /taller/turnos con ?fechaTurno&horaTurno
+    // this.route.queryParamMap.subscribe(qp => {
+    //   const fechaQP = qp.get('fechaTurno'); // "YYYY-MM-DD"
+    //   const horaQP  = qp.get('horaTurno');  // "HH:mm"
+
+    //   // si vuelve de la agenda, actualizo el form en vivo
+    //   if (fechaQP && /^\d{4}-\d{2}-\d{2}$/.test(fechaQP)) {
+    //     this.fechaTurno = fechaQP;
+    //   }
+    //   if (horaQP && /^\d{2}:\d{2}$/.test(horaQP)) {
+    //     this.horaTurno = horaQP;
+    //   }
+    // });
+   this.route.queryParamMap.subscribe(qp => {
+      const fechaQP = qp.get('fechaTurno');
+      const horaQP  = qp.get('horaTurno');
+
+      // si vuelvo desde la agenda, actualizo
+      if (fechaQP && /^\d{4}-\d{2}-\d{2}$/.test(fechaQP)) {
+        this.fechaTurno = fechaQP;
+        this.fechaHoraVieneDeAgenda = true;
+      }
+      if (horaQP && /^\d{2}:\d{2}$/.test(horaQP)) {
+        this.horaTurno = horaQP;
+        this.fechaHoraVieneDeAgenda = true;
+      }
+    });
+
+    // ✅ si es editar, cargar orden y prellenar
+    if (this.ordenId) {
+      this.cargandoOrden = true;
+      this.ordenService.obtenerOrden(this.ordenId).subscribe({
+        next: (o: OrdenDeTrabajo) => {
+          this.cargandoOrden = false;
+          // Prellenar fecha/hora desde fecha_turno (solo si NO viene de agenda)
+          if (o.fecha_turno && !this.fechaHoraVieneDeAgenda) {
+            this.fechaTurno = o.fecha_turno.slice(0, 10);
+            this.horaTurno  = o.fecha_turno.slice(11, 16);
+          }
+          // si ya fue entregada, no se edita (igual el back lo bloquea)
+          if (o.fecha_entrega) {
+            alert('Esta orden ya tiene fecha de entrega. No se puede editar.');
+            this.router.navigate(['/taller', 'ordenes']);
+            return;
+          }
+
+          // Prellenar campos simples
+          this.fechaEntrega = o.fecha_entrega;
+          this.kilometraje = o.kilometraje ?? 0;
+          this.observacionesTecnicas = o.observaciones_tecnicas ?? null;
+          this.mantenimiento = o.mantenimiento ?? 'preventivo';
+          this.responsableTecnicoTexto = o.responsable_tecnico ?? '';
+
+          // Prellenar fecha/hora desde fecha_turno
+           // "2026-02-26T16:00:00-03:00"
+          // if (o.fecha_turno) {
+           
+          //   this.fechaTurno = o.fecha_turno.slice(0, 10);
+          //   this.horaTurno = o.fecha_turno.slice(11, 16);
+          // }
+
+          // Prefill IDs para que tu tryApplyPrefill seleccione cliente/vehiculo
+          this.prefillClienteId = o.cliente ?? null;
+          this.prefillVehiculoId = o.vehiculo ?? null;
+
+          // Intentar aplicar si ya están cargadas las listas
+          this.tryApplyPrefill();
+        },
+        error: (e) => {
+          this.cargandoOrden = false;
+          console.error('Error cargando orden', e);
+          alert('No se pudo cargar la orden para editar.');
+          this.router.navigate(['/taller', 'ordenes']);
+        }
+      });
+    }
 
     // 1) Clientes
     this.clienteService.listarTodos().subscribe({
       next: (clientes) => {
         this.clienteService.clientes.set(clientes);
         this.clientesFiltrados = [...this.clientesSig()];
-
-        // intento precargar por si vino clienteId
         this.tryApplyPrefill();
       },
     });
@@ -124,29 +208,23 @@ export class FormOrdenes {
       next: (vehiculos) => {
         this.vehiculoService.vehiculos.set(vehiculos);
         this.vehiculosFiltrados = [...this.vehiculosSig()];
-
-        // intento precargar por si vino vehiculoId
         this.tryApplyPrefill();
       },
     });
 
-    // 3) Valores default amigables
-    // const hoy = new Date();
-    // this.fechaTurno = hoy.toISOString().slice(0, 10);
-    //this.fechaTurno = this.hoyLocalYYYYMMDD();
-    //this.horaTurno = '';
-    // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
-    // this.generarHorariosBase();
-    // this.refrescarHorariosDisponibles(); // carga ocupados y filtra
-
-    //this.generarHorarios();
-    // 3) Defaults (pero respetando prefill)
-    this.fechaTurno = this.prefillFechaTurno ?? this.hoyLocalYYYYMMDD();
-    this.horaTurno = this.prefillHoraTurno ?? '';
+    // 3) Defaults (respetando prefill si no es editar)
+    if (!this.ordenId) {
+      this.fechaTurno = this.prefillFechaTurno ?? this.hoyLocalYYYYMMDD();
+      this.horaTurno = this.prefillHoraTurno ?? '';
+    }
 
     this.generarHorarios();
   }
 
+
+  get esEdicion(): boolean {
+    return this.modo === 'editar' && !!this.ordenId;
+  }
   // generarHorarios() {
   //   for (let h = 7; h <= 18; h++) {
   //     const horaFormateada = (h < 10 ? '0' + h : h) + ':00';
@@ -159,6 +237,7 @@ export class FormOrdenes {
       this.horariosDisponibles.push(String(h).padStart(2, '0') + ':00');
     }
   }
+  
 
   // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
   // private generarHorariosBase() {
@@ -248,7 +327,7 @@ export class FormOrdenes {
   //   });
   // }
 
-  private extraerHoraAR(fechaISO: string): string | null {
+    private extraerHoraAR(fechaISO: string): string | null {
     if (!fechaISO) return null;
 
     const d = new Date(fechaISO);
@@ -303,28 +382,62 @@ export class FormOrdenes {
   // CLIENTE AUTOCOMPLETE
   // =========================
   abrirDropdownClientes() {
+    if (this.esEdicion) return;
     this.mostrarDropdownClientes = true;
     this.filtrarClientes();
   }
+
+  onClienteQueryChange() {
+    //if (this.esEdicion) return;
+    this.mostrarDropdownClientes = true;
+    this.filtrarClientes();
+
+    if (!this.clienteQuery.trim()) {
+      //this.clienteSeleccionado = null;
+      this.clienteAutoPorVehiculo = false;
+      this.vehiculosFiltrados = [...this.vehiculosSig()];
+    }
+  }
+
+  seleccionarCliente(c: ClienteModel) {
+    //if (this.esEdicion) return;
+
+    const vehiculos = this.vehiculosSig();
+    this.clienteAutoPorVehiculo = false;
+
+    this.clienteSeleccionado = c;
+    this.clienteQuery = this.formatCliente(c);
+    this.mostrarDropdownClientes = false;
+
+    this.vehiculosFiltrados = vehiculos.filter((v) => v.propietario === c.id);
+    this.vehiculoSeleccionado = null;
+    this.vehiculoQuery = '';
+  }
+
+
+  // abrirDropdownClientes() {
+  //   this.mostrarDropdownClientes = true;
+  //   this.filtrarClientes();
+  // }
 
   cerrarDropdownClientesConDelay() {
     setTimeout(() => (this.mostrarDropdownClientes = false), 120);
   }
 
-  onClienteQueryChange() {
-    this.mostrarDropdownClientes = true;
-    this.filtrarClientes();
+  // onClienteQueryChange() {
+  //   this.mostrarDropdownClientes = true;
+  //   this.filtrarClientes();
 
-    // Si el usuario borra manualmente el texto del cliente,
-    // interpretamos que quiere liberar filtros.
-    if (!this.clienteQuery.trim()) {
-      this.clienteSeleccionado = null;
-      this.clienteAutoPorVehiculo = false;
+  //   // Si el usuario borra manualmente el texto del cliente,
+  //   // interpretamos que quiere liberar filtros.
+  //   if (!this.clienteQuery.trim()) {
+  //     this.clienteSeleccionado = null;
+  //     this.clienteAutoPorVehiculo = false;
 
-      // Si no hay cliente, recupero lista global de vehículos
-      this.vehiculosFiltrados = [...this.vehiculosSig()];
-    }
-  }
+  //     // Si no hay cliente, recupero lista global de vehículos
+  //     this.vehiculosFiltrados = [...this.vehiculosSig()];
+  //   }
+  // }
 
   filtrarClientes() {
     const clientes = this.clientesSig();
@@ -343,54 +456,46 @@ export class FormOrdenes {
     });
   }
 
-  seleccionarCliente(c: ClienteModel) {
-    const vehiculos = this.vehiculosSig();
+  // seleccionarCliente(c: ClienteModel) {
+  //   const vehiculos = this.vehiculosSig();
 
-    this.clienteAutoPorVehiculo = false; // cliente elegido manualmente
+  //   this.clienteAutoPorVehiculo = false; // cliente elegido manualmente
 
-    this.clienteSeleccionado = c;
-    this.clienteQuery = this.formatCliente(c);
-    this.mostrarDropdownClientes = false;
+  //   this.clienteSeleccionado = c;
+  //   this.clienteQuery = this.formatCliente(c);
+  //   this.mostrarDropdownClientes = false;
 
-    // ✅ REGLA 1:
-    // al elegir cliente, muestro solo vehículos de ese cliente
-    this.vehiculosFiltrados = vehiculos.filter((v) => v.propietario === c.id);
+  //   // ✅ REGLA 1:
+  //   // al elegir cliente, muestro solo vehículos de ese cliente
+  //   this.vehiculosFiltrados = vehiculos.filter((v) => v.propietario === c.id);
 
-    // limpio vehículo actual para no dejar inconsistencia
-    this.vehiculoSeleccionado = null;
-    this.vehiculoQuery = '';
-  }
+  //   // limpio vehículo actual para no dejar inconsistencia
+  //   this.vehiculoSeleccionado = null;
+  //   this.vehiculoQuery = '';
+  // }
 
   // =========================
   // VEHICULO AUTOCOMPLETE
   // =========================
   abrirDropdownVehiculos() {
+    //if (this.esEdicion) return;
     this.mostrarDropdownVehiculos = true;
     this.filtrarVehiculos();
   }
 
-  cerrarDropdownVehiculosConDelay() {
-    setTimeout(() => (this.mostrarDropdownVehiculos = false), 120);
-  }
-
   onVehiculoQueryChange() {
-    const texto = this.vehiculoQuery.trim();
+    //if (this.esEdicion) return;
 
-    // ✅ Si borra el vehículo escrito:
+    const texto = this.vehiculoQuery.trim();
     if (!texto) {
       this.vehiculoSeleccionado = null;
 
-      // Si el cliente estaba auto-asignado por vehículo,
-      // lo limpiamos para volver a lista global
       if (this.clienteAutoPorVehiculo) {
         this.clienteSeleccionado = null;
         this.clienteQuery = '';
         this.clienteAutoPorVehiculo = false;
-
         this.vehiculosFiltrados = [...this.vehiculosSig()];
       } else {
-        // Si el cliente fue elegido manualmente,
-        // mantenemos la restricción por cliente
         this.vehiculosFiltrados = this.clienteSeleccionado
           ? this.vehiculosSig().filter((v) => v.propietario === this.clienteSeleccionado!.id)
           : [...this.vehiculosSig()];
@@ -403,6 +508,66 @@ export class FormOrdenes {
     this.mostrarDropdownVehiculos = true;
     this.filtrarVehiculos();
   }
+
+  seleccionarVehiculo(v: Vehiculo) {
+   // if (this.esEdicion) return;
+
+    const clientes = this.clientesSig();
+    const vehiculos = this.vehiculosSig();
+
+    this.vehiculoSeleccionado = v;
+    this.vehiculoQuery = this.formatVehiculo(v);
+    this.mostrarDropdownVehiculos = false;
+
+    const dueño = clientes.find((c) => c.id === v.propietario) ?? null;
+    if (dueño) {
+      this.clienteAutoPorVehiculo = true;
+      this.clienteSeleccionado = dueño;
+      this.clienteQuery = this.formatCliente(dueño);
+      this.vehiculosFiltrados = vehiculos.filter((x) => x.propietario === dueño.id);
+    }
+  }
+
+
+  // abrirDropdownVehiculos() {
+  //   this.mostrarDropdownVehiculos = true;
+  //   this.filtrarVehiculos();
+  // }
+
+  cerrarDropdownVehiculosConDelay() {
+    setTimeout(() => (this.mostrarDropdownVehiculos = false), 120);
+  }
+
+  // onVehiculoQueryChange() {
+  //   const texto = this.vehiculoQuery.trim();
+
+  //   // ✅ Si borra el vehículo escrito:
+  //   if (!texto) {
+  //     this.vehiculoSeleccionado = null;
+
+  //     // Si el cliente estaba auto-asignado por vehículo,
+  //     // lo limpiamos para volver a lista global
+  //     if (this.clienteAutoPorVehiculo) {
+  //       this.clienteSeleccionado = null;
+  //       this.clienteQuery = '';
+  //       this.clienteAutoPorVehiculo = false;
+
+  //       this.vehiculosFiltrados = [...this.vehiculosSig()];
+  //     } else {
+  //       // Si el cliente fue elegido manualmente,
+  //       // mantenemos la restricción por cliente
+  //       this.vehiculosFiltrados = this.clienteSeleccionado
+  //         ? this.vehiculosSig().filter((v) => v.propietario === this.clienteSeleccionado!.id)
+  //         : [...this.vehiculosSig()];
+  //     }
+
+  //     this.mostrarDropdownVehiculos = true;
+  //     return;
+  //   }
+
+  //   this.mostrarDropdownVehiculos = true;
+  //   this.filtrarVehiculos();
+  // }
 
   filtrarVehiculos() {
     const vehiculos = this.vehiculosSig();
@@ -425,34 +590,50 @@ export class FormOrdenes {
     });
   }
 
-  seleccionarVehiculo(v: Vehiculo) {
-    const clientes = this.clientesSig();
-    const vehiculos = this.vehiculosSig();
+  // seleccionarVehiculo(v: Vehiculo) {
+  //   const clientes = this.clientesSig();
+  //   const vehiculos = this.vehiculosSig();
 
-    this.vehiculoSeleccionado = v;
-    this.vehiculoQuery = this.formatVehiculo(v);
-    this.mostrarDropdownVehiculos = false;
+  //   this.vehiculoSeleccionado = v;
+  //   this.vehiculoQuery = this.formatVehiculo(v);
+  //   this.mostrarDropdownVehiculos = false;
 
-    // ✅ REGLA 2:
-    // si elijo vehículo primero => autoselecciono dueño
-    const dueño = clientes.find((c) => c.id === v.propietario) ?? null;
+  //   // ✅ REGLA 2:
+  //   // si elijo vehículo primero => autoselecciono dueño
+  //   const dueño = clientes.find((c) => c.id === v.propietario) ?? null;
 
-    if (dueño) {
-      this.clienteAutoPorVehiculo = true;
-      this.clienteSeleccionado = dueño;
-      this.clienteQuery = this.formatCliente(dueño);
+  //   if (dueño) {
+  //     this.clienteAutoPorVehiculo = true;
+  //     this.clienteSeleccionado = dueño;
+  //     this.clienteQuery = this.formatCliente(dueño);
 
-      // actualizo lista de vehículos del dueño
-      this.vehiculosFiltrados = vehiculos.filter((x) => x.propietario === dueño.id);
-    }
-  }
+  //     // actualizo lista de vehículos del dueño
+  //     this.vehiculosFiltrados = vehiculos.filter((x) => x.propietario === dueño.id);
+  //   }
+  // }
 
   // =========================
   // ACCIONES DE ORDEN
   // =========================
 
+  // verAgenda(): void {
+  //   this.router.navigate(['/taller', 'turnos']);
+  // }
   verAgenda(): void {
-    this.router.navigate(['/taller', 'turnos']);
+    const returnTo = this.esEdicion
+      ? `/taller/ordenes/${this.ordenId}/editar`
+      : `/taller/form-orden`;
+
+    this.router.navigate(['/taller', 'turnos'], {
+      queryParams: {
+        returnTo,
+        ordenId: this.ordenId ?? null,
+        // opcional: mando lo actual para que la agenda lo seleccione/muestre
+        fechaTurno: this.fechaTurno || null,
+        horaTurno: this.horaTurno || null,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 //   verAgenda(): void {
 //   this.router.navigate(['/taller', 'turnos'], {
@@ -501,58 +682,86 @@ export class FormOrdenes {
     // }
 
     // 2) Payload alineado a tu modelo Django
-    const payload: OrdenDeTrabajoCreatePayload = {
+    // const payload: OrdenDeTrabajoCreatePayload = {
+    //   taller: this.esteTallerId,
+    //   fecha_turno: fechaTurnoISO,
+    //   fecha_entrega: this.fechaEntrega,
+    //   kilometraje: this.kilometraje ?? 0,
+    //   observaciones_tecnicas: this.observacionesTecnicas,
+    //   mantenimiento: this.mantenimiento,
+    //   cliente: this.clienteSeleccionado.id,
+    //   vehiculo: this.vehiculoSeleccionado.id,
+    //   responsable_tecnico: this.responsableTecnicoTexto?.trim() || null,
+    //   // agenda, tecnico, taller cuando los tengas implementados
+    // };
+    const payload: any = {
       taller: this.esteTallerId,
       fecha_turno: fechaTurnoISO,
       fecha_entrega: this.fechaEntrega,
       kilometraje: this.kilometraje ?? 0,
       observaciones_tecnicas: this.observacionesTecnicas,
       mantenimiento: this.mantenimiento,
-      cliente: this.clienteSeleccionado.id,
-      vehiculo: this.vehiculoSeleccionado.id,
       responsable_tecnico: this.responsableTecnicoTexto?.trim() || null,
-      // agenda, tecnico, taller cuando los tengas implementados
     };
 
-    // 3) Llamada real al servicio
-    this.ordenService.crearOrden(payload).subscribe({
-      next: (ordenCreada) => {
-        alert('Orden creada correctamente ✔');
+    if (!this.esEdicion) {
+      payload.cliente = this.clienteSeleccionado.id;
+      payload.vehiculo = this.vehiculoSeleccionado.id;
+    }
+
+    const req$ = this.esEdicion
+      ? this.ordenService.editarOrden(this.ordenId!, payload)
+      : this.ordenService.crearOrden(payload);
+
+    req$.subscribe({
+      next: () => {
+        alert(this.esEdicion ? 'Orden editada correctamente ✔' : 'Orden creada correctamente ✔');
         this.router.navigate(['/taller', 'ordenes']);
       },
       error: (e) => {
-        console.error('Error creando orden RAW:', e);
-
-        const status = e?.status;
-        const data = e?.error;
-
-        const lines: string[] = [];
-
-        if (status === 0) {
-          lines.push('No hay conexión con el backend (CORS / servidor caído).');
-        } else if (typeof data === 'string') {
-          lines.push(data);
-        } else if (data?.detail) {
-          lines.push(String(data.detail));
-        } else if (data && typeof data === 'object') {
-          for (const [k, v] of Object.entries(data)) {
-            if (Array.isArray(v)) {
-              v.forEach(msg => lines.push(`${k}: ${msg}`));
-            } else if (v != null) {
-              lines.push(`${k}: ${String(v)}`);
-            }
-          }
-        }
-
-        if (!lines.length) {
-          lines.push('El backend no envió detalle del error. Mirá Network/Response.');
-        }
-
-        alert(`No se pudo crear la orden.\n\n${lines.join('\n')}`);
+        // dejá tu manejo de error actual
       }
     });
 
-    console.log('Confirmar orden (payload pendiente de conectar a service)');
+    // 3) Llamada real al servicio
+    // this.ordenService.crearOrden(payload).subscribe({
+    //   next: (ordenCreada) => {
+    //     alert('Orden creada correctamente ✔');
+    //     this.router.navigate(['/taller', 'ordenes']);
+    //   },
+    //   error: (e) => {
+    //     console.error('Error creando orden RAW:', e);
+
+    //     const status = e?.status;
+    //     const data = e?.error;
+
+    //     const lines: string[] = [];
+
+    //     if (status === 0) {
+    //       lines.push('No hay conexión con el backend (CORS / servidor caído).');
+    //     } else if (typeof data === 'string') {
+    //       lines.push(data);
+    //     } else if (data?.detail) {
+    //       lines.push(String(data.detail));
+    //     } else if (data && typeof data === 'object') {
+    //       for (const [k, v] of Object.entries(data)) {
+    //         if (Array.isArray(v)) {
+    //           v.forEach(msg => lines.push(`${k}: ${msg}`));
+    //         } else if (v != null) {
+    //           lines.push(`${k}: ${String(v)}`);
+    //         }
+    //       }
+    //     }
+
+    //     if (!lines.length) {
+    //       lines.push('El backend no envió detalle del error. Mirá Network/Response.');
+    //     }
+
+    //     alert(`No se pudo crear la orden.\n\n${lines.join('\n')}`);
+    //   }
+    // });
+
+    // console.log('Confirmar orden (payload pendiente de conectar a service)');
   }
 
   private buildFechaTurnoISO(): string | null {

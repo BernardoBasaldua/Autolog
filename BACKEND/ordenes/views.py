@@ -6,6 +6,8 @@ from agendas.models import Agenda
 from .models import OrdenDeTrabajo
 from .serializers import OrdenDeTrabajoSerializer
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError, PermissionDenied  # 👈 agregá PermissionDenied
 
 from django.db.models import Q
 from .serializers import OrdenDeTrabajoSerializer
@@ -14,7 +16,8 @@ from usuarios.models.pemisoAcceso import PermisoDeAcceso  # ajustá import segú
 class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
     serializer_class = OrdenDeTrabajoSerializer
     queryset = OrdenDeTrabajo.objects.all()
-
+    permission_classes = [IsAuthenticated]
+    
     def get_queryset(self):
         user = self.request.user
 
@@ -68,11 +71,18 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
             orden.save(update_fields=["agenda"])
 
     def perform_update(self, serializer):
+        # Bloquear edición si ya tiene fecha_entrega
+        orden_actual = self.get_object()
+        if orden_actual.fecha_entrega is not None:
+            raise PermissionDenied("No se puede editar una orden que ya tiene fecha de entrega.")
+        
         orden = serializer.save()
         if orden.taller_id and orden.agenda_id is None:
             agenda, _ = Agenda.objects.get_or_create(taller_id=orden.taller_id)
             orden.agenda = agenda
             orden.save(update_fields=["agenda"])
+
+        
     
     @action(detail=False, methods=["get"], url_path=r"vehiculo/(?P<vehiculo_id>\d+)/historial")
     def historial_por_vehiculo(self, request, vehiculo_id=None):

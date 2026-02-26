@@ -15,11 +15,11 @@
     type="button"
     (click)="crearNuevaOrden()"
   >
-    Nueva Orden
+    {{ esEdicion ? 'Editar orden' : 'Nueva Orden' }}
   </button>
 </div>
 
-<!-- New Order Form Section -->
+<!-- New / Edit Order Form Section -->
 <section id="nuevaOrdenContent" class="card p-6">
   <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -36,48 +36,57 @@
             class="w-full"
             placeholder="Buscar cliente por nombre, teléfono o mail..."
             [(ngModel)]="clienteQuery"
+            [ngModelOptions]="{standalone: true}"
             name="clienteQuery"
-            (input)="onClienteQueryChange()"
-            (focus)="abrirDropdownClientes()"
-            (blur)="cerrarDropdownClientesConDelay()"
+            (input)="!esEdicion && onClienteQueryChange()"
+            (focus)="!esEdicion && abrirDropdownClientes()"
+            (blur)="!esEdicion && cerrarDropdownClientesConDelay()"
+            [disabled]="esEdicion"
+            [class.opacity-60]="esEdicion"
+            [class.cursor-not-allowed]="esEdicion"
             autocomplete="off"
           />
 
-          <!-- Dropdown -->
-          @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
-            <div
-              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
-            >
-              @for (c of clientesFiltrados; track c.id) {
-                <button
-                  type="button"
-                  class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                  (mousedown)="seleccionarCliente(c)"
-                >
-                  <div class="text-sm font-medium text-gray-900">
-                    {{ formatCliente(c) }}
-                  </div>
-                </button>
-              }
-            </div>
-          }
-
-          @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
-            <div
-              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
-            >
-              <div class="px-3 py-2 text-sm text-gray-500">
-                No hay coincidencias.
+          <!-- Dropdown (solo crear) -->
+          @if (!esEdicion) {
+            @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
+              <div
+                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
+              >
+                @for (c of clientesFiltrados; track c.id) {
+                  <button
+                    type="button"
+                    class="w-full text-left px-3 py-2 hover:bg-gray-50"
+                    (mousedown)="seleccionarCliente(c)"
+                  >
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ formatCliente(c) }}
+                    </div>
+                  </button>
+                }
               </div>
-            </div>
+            }
+
+            @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
+              <div
+                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+              >
+                <div class="px-3 py-2 text-sm text-gray-500">
+                  No hay coincidencias.
+                </div>
+              </div>
+            }
           }
         </div>
 
-        <!-- Botón crear nuevo cliente -->
+        <!-- Botón crear nuevo cliente (solo crear) -->
         <button
           type="button"
           class="inline-add-button whitespace-nowrap"
           (click)="nuevoCliente()"
+          [disabled]="esEdicion"
+          [class.opacity-60]="esEdicion"
+          [class.cursor-not-allowed]="esEdicion"
           title="Crear nuevo cliente"
         >
           <i class="fas fa-plus mr-1 text-xs"></i>
@@ -88,6 +97,16 @@
       @if (clienteSeleccionado) {
         <p class="mt-1 text-xs text-gray-500">
           Seleccionado: <strong>{{ formatCliente(clienteSeleccionado) }}</strong>
+        </p>
+      } @else {
+        <p class="mt-1 text-xs text-gray-500">
+          Seleccionado: <strong>-</strong>
+        </p>
+      }
+
+      @if (esEdicion) {
+        <p class="mt-1 text-xs text-gray-500">
+          Cliente no editable en modo edición.
         </p>
       }
     </div>
@@ -105,49 +124,57 @@
             class="w-full"
             placeholder="Buscar por marca, modelo o patente..."
             [(ngModel)]="vehiculoQuery"
+            [ngModelOptions]="{standalone: true}"
             name="vehiculoQuery"
-            (input)="onVehiculoQueryChange()"
-            (focus)="abrirDropdownVehiculos()"
-            (blur)="cerrarDropdownVehiculosConDelay()"
-            [disabled]="bloquearVehiculoPorCliente && !clienteSeleccionado"
+            (input)="!esEdicion && onVehiculoQueryChange()"
+            (focus)="!esEdicion && abrirDropdownVehiculos()"
+            (blur)="!esEdicion && cerrarDropdownVehiculosConDelay()"
+            [disabled]="esEdicion || (bloquearVehiculoPorCliente && !clienteSeleccionado)"
+            [class.opacity-60]="esEdicion"
+            [class.cursor-not-allowed]="esEdicion"
             autocomplete="off"
           />
 
-          <!-- Dropdown -->
-          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
-            <div
-              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
-            >
-              @for (v of vehiculosFiltrados; track v.id) {
-                <button
-                  type="button"
-                  class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                  (mousedown)="seleccionarVehiculo(v)"
-                >
-                  <div class="text-sm font-medium text-gray-900">
-                    {{ formatVehiculo(v) }}
-                  </div>
-                </button>
-              }
-            </div>
-          }
-
-          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
-            <div
-              class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
-            >
-              <div class="px-3 py-2 text-sm text-gray-500">
-                No hay coincidencias.
+          <!-- Dropdown (solo crear) -->
+          @if (!esEdicion) {
+            @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
+              <div
+                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
+              >
+                @for (v of vehiculosFiltrados; track v.id) {
+                  <button
+                    type="button"
+                    class="w-full text-left px-3 py-2 hover:bg-gray-50"
+                    (mousedown)="seleccionarVehiculo(v)"
+                  >
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ formatVehiculo(v) }}
+                    </div>
+                  </button>
+                }
               </div>
-            </div>
+            }
+
+            @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
+              <div
+                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+              >
+                <div class="px-3 py-2 text-sm text-gray-500">
+                  No hay coincidencias.
+                </div>
+              </div>
+            }
           }
         </div>
 
-        <!-- Botón crear nuevo vehículo -->
+        <!-- Botón crear nuevo vehículo (solo crear) -->
         <button
           type="button"
           class="inline-add-button whitespace-nowrap"
           (click)="nuevoVehiculo()"
+          [disabled]="esEdicion"
+          [class.opacity-60]="esEdicion"
+          [class.cursor-not-allowed]="esEdicion"
           title="Crear nuevo vehículo"
         >
           <i class="fas fa-plus mr-1 text-xs"></i>
@@ -158,6 +185,16 @@
       @if (vehiculoSeleccionado) {
         <p class="mt-1 text-xs text-gray-500">
           Seleccionado: <strong>{{ formatVehiculo(vehiculoSeleccionado) }}</strong>
+        </p>
+      } @else {
+        <p class="mt-1 text-xs text-gray-500">
+          Seleccionado: <strong>-</strong>
+        </p>
+      }
+
+      @if (esEdicion) {
+        <p class="mt-1 text-xs text-gray-500">
+          Vehículo no editable en modo edición.
         </p>
       }
     </div>
@@ -183,15 +220,11 @@
           required
           class="horario-select"
         >
-          <option value="" disabled selected>Seleccionar horario</option>
+          <option value="" disabled>Seleccionar horario</option>
           <option *ngFor="let hora of horariosDisponibles" [value]="hora">
             {{ hora }}
           </option>
         </select>
-
-        <!-- <p *ngIf="errorHora" class="text-red-600 text-sm mt-1">
-          El horario debe estar entre 08:00 y 18:00
-        </p> -->
       </div>
 
       <button
@@ -203,7 +236,7 @@
       </button>
     </div>
 
-    <!-- ================= MANTENIMIENTO (esto sí existe en tu modelo) ================= -->
+    <!-- ================= MANTENIMIENTO ================= -->
     <div>
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Tipo de mantenimiento
@@ -218,7 +251,7 @@
       </select>
     </div>
 
-    <!-- ================= RESPONSABLE TÉCNICO (placeholder UI) ================= -->
+    <!-- ================= RESPONSABLE TÉCNICO ================= -->
     <div>
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Responsable Técnico
@@ -244,12 +277,9 @@
           name="kilometraje"
           min="0"
         />
-
         <span class="odometro-unit">km</span>
       </div>
     </div>
-
-
 
     <!-- ================= FECHA ENTREGA ================= -->
     <div>
@@ -276,7 +306,7 @@
       ></textarea>
     </div>
 
-    <!-- ================= CAMPOS FUTUROS (no en modelo aún) ================= -->
+    <!-- ================= CAMPOS FUTUROS ================= -->
     <div class="md:col-span-2 opacity-70">
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Práctica de mantenimiento (pendiente de implementar en el modelo)
@@ -304,7 +334,7 @@
       class="button-secondary"
       (click)="cancelarOrden()"
     >
-      Cancelar orden
+      Cancelar
     </button>
 
     <button
@@ -312,7 +342,7 @@
       class="button-primary"
       (click)="confirmarOrden()"
     >
-      Confirmar orden
+      {{ esEdicion ? 'Guardar cambios' : 'Confirmar orden' }}
     </button>
   </div>
 </section>

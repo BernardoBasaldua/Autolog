@@ -31,10 +31,16 @@ export class OrdenService {
     const url = `${this.apiOrdenesUrl}${id}/`;
     return this.http.get<OrdenDeTrabajo>(url);
   }
+  
 
   getOrdenesPorVehiculo(tecnicoId: number, vehiculoId: number) {
     const url = `${this.apiUrl}tecnicos/${tecnicoId}/vehiculo/${vehiculoId}/ordenes/`;
     return this.http.get<OrdenDeTrabajo[]>(url);
+  }
+  // ✅ EDITAR (PATCH) una orden existente
+  editarOrden(id: number, payload: Partial<OrdenDeTrabajoCreatePayload>): Observable<OrdenDeTrabajo> {
+    const url = `${this.apiOrdenesUrl}${id}/`;
+    return this.http.patch<OrdenDeTrabajo>(url, payload);
   }
 
   obtenerTurnosAsignadosPorAgendaYFecha(agendaId: number, fechaYYYYMMDD: string): Observable<OrdenDeTrabajo[]> {
@@ -52,4 +58,8 @@ export class OrdenService {
   //   return this.http.get<OrdenDeTrabajo[]>(this.apiOrdenesUrl, { params });
   // }
 
+  // ✅ ELIMINAR (DELETE) una orden por id
+  deleteOrden(id: number) {
+    return this.http.delete(`${this.apiOrdenesUrl}${id}/`);
+  }
 }

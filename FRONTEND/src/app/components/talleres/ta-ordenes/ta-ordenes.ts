@@ -209,7 +209,7 @@ export class TaOrdenes {
   // NAVEGACIÓN DESDE DETALLE
   // =========================
   irAEditarOrden(o: OrdenDeTrabajo): void {
-    // Ruta recomendada con param id
+    if (o.fecha_entrega) return; // por las dudas
     this.router.navigate(['/taller', 'ordenes', o.id, 'editar']);
   }
 
@@ -334,4 +334,39 @@ export class TaOrdenes {
     return [t.nombre, dir].filter(Boolean).join(' - ') || `Taller #${tallerId}`;
   }
 
+  // ===== Regla: solo futuras =====
+  esOrdenEliminable(o: OrdenDeTrabajo): boolean {
+    if (!o?.fecha_turno) return false;
+    return new Date(o.fecha_turno).getTime() > Date.now();
+  }
+
+  eliminarOrden(o: OrdenDeTrabajo): void {
+    if (!this.esOrdenEliminable(o)) {
+      alert('Solo se pueden eliminar órdenes futuras.');
+      return;
+    }
+
+    const ok = confirm(`¿Eliminar la orden #${o.id}?`);
+    if (!ok) return;
+
+    this.ordenService.deleteOrden(o.id).subscribe({
+      next: () => {
+        // 1) borrar de signal
+        const nuevas = this.ordenesSig().filter(x => x.id !== o.id);
+        this.ordenService.ordenes.set(nuevas);
+
+        // 2) refrescar lista filtrada
+        this.buscar();
+
+        // 3) cerrar detalle si era la seleccionada
+        if (this.ordenSeleccionada?.id === o.id) {
+          this.ordenSeleccionada = this.ordenesFiltradas[0] ?? null;
+        }
+      },
+      error: (err) => {
+        console.error('Error eliminando orden:', err);
+        alert(err?.error?.detail ?? 'No se pudo eliminar la orden.');
+      }
+    });
+  }
 }
