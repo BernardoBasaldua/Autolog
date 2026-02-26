@@ -22,7 +22,7 @@ class Vehiculo(models.Model):
 
     modelo = models.ForeignKey(Modelo, on_delete=models.PROTECT, related_name="vehiculos")
     propietario = models.ForeignKey(
-        "usuarios.Cliente", on_delete=models.PROTECT, related_name="vehiculos"
+        "usuarios.Cliente", on_delete=models.CASCADE, related_name="vehiculos"
     )
 
     @property

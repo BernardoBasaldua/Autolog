@@ -325,6 +325,23 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     serializer_class = AdministradorTecnicoSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=["get"], url_path="me", permission_classes=[IsAuthenticated])
+    def me(self, request):
+        try:
+            tecnico = AdministradorTecnico.objects.select_related("taller", "usuario").get(usuario=request.user)
+        except AdministradorTecnico.DoesNotExist:
+            return Response(
+                {"detail": "El usuario autenticado no tiene técnico asociado."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        return Response({
+            "tecnico_id": tecnico.id,
+            "taller_id": tecnico.taller_id,
+            "taller_nombre": tecnico.taller.nombre if tecnico.taller_id else None,
+            "user_id": tecnico.usuario_id,
+        }, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=["get"], url_path=r"vehiculo/(?P<vehiculo_id>\d+)/ordenes")
     def mis_ordenes_por_vehiculo(self, request, pk=None, vehiculo_id=None):
         tecnico = self.get_object()

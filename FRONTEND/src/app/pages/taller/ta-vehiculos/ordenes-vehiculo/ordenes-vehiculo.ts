@@ -11,6 +11,7 @@ import { OrdenDeTrabajo } from '../../../../models/orden/orden.models';
 
 import { TalleresService } from '../../../../services/talleres/talleres.service';
 import { Vehiculo } from '../../../../models/vehiculo/vehiculo.model';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-ordenes-vehiculo',
@@ -25,9 +26,10 @@ export class OrdenesVehiculoComponent implements OnInit {
 
   private ordenService = inject(OrdenService);
   private talleresService = inject(TalleresService);
+  private authService = inject(AuthService);
 
   vehiculoId!: number;
-  tecnicoId = 1; // TODO: sacarlo del auth
+  tecnicoId!: number;
 
   vehiculo: Vehiculo | null = history.state?.vehiculo ?? null;
 
@@ -40,6 +42,34 @@ export class OrdenesVehiculoComponent implements OnInit {
   clientesById = signal<Map<number, any>>(new Map());
 
   ngOnInit(): void {
+    const existing = this.authService.getTecnicoId();
+
+    if (existing) {
+      this.tecnicoId = existing;
+      this.cargarTodo();
+      return;
+    }
+
+    this.authService.fetchTecnicoMe().subscribe({
+      next: () => {
+        const tid = this.authService.getTecnicoId();
+        if (!tid) {
+          this.errorMsg = 'No se pudo determinar el técnico actual.';
+          this.cargando = false;
+          return;
+        }
+        this.tecnicoId = tid;
+        this.cargarTodo();
+      },
+      error: (err) => {
+        console.error('fetchTecnicoMe', err);
+        this.errorMsg = 'No se pudo determinar el técnico actual.';
+        this.cargando = false;
+      }
+    });
+  }
+
+  private cargarTodo(): void {
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
 
     const vehiculo$ = this.vehiculo
@@ -56,7 +86,12 @@ export class OrdenesVehiculoComponent implements OnInit {
 
       ordenes: this.ordenService
         .getOrdenesPorVehiculo(this.tecnicoId, this.vehiculoId)
-        .pipe(catchError(() => of([] as OrdenDeTrabajo[]))),
+        .pipe(
+          catchError((err) => {
+            console.error('ERROR ordenes', err);
+            return of([] as OrdenDeTrabajo[]);
+          })
+        ),
 
       talleres: this.http
         .get<any[]>('http://127.0.0.1:8000/api/talleres/')

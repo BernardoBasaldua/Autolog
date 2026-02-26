@@ -78,4 +78,25 @@ export class AuthService {
       })
     );
   }
+
+  setTecnicoContext(tecnicoId: number, tallerId: number | null) {
+    localStorage.setItem('tecnicoId', String(tecnicoId));
+    if (tallerId != null) localStorage.setItem('tallerId', String(tallerId));
+  }
+
+  getTecnicoId(): number | null {
+    const v = localStorage.getItem('tecnicoId');
+    return v ? Number(v) : null;
+  }
+
+  getTallerId(): number | null {
+    const v = localStorage.getItem('tallerId');
+    return v ? Number(v) : null;
+  }
+
+  fetchTecnicoMe() {
+    return this.http.get<any>('http://127.0.0.1:8000/api/tecnicos/me/').pipe(
+      tap(me => this.setTecnicoContext(me.tecnico_id, me.taller_id ?? null))
+    );
+}
 }
