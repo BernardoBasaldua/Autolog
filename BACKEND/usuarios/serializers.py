@@ -88,6 +88,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         if password:
+            try:
+                validate_password(password, instance)
+            except DjangoValidationError as e:
+                raise serializers.ValidationError({"password": e.messages})
+
             instance.set_password(password)
         instance.save()
         return instance
@@ -157,6 +162,25 @@ class ClienteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(self.errors)
 
         return valid
+    
+    def update(self, instance, validated_data):
+        usuario_data = validated_data.pop("usuario", None)
+
+        if usuario_data:
+            usuario_serializer = UsuarioSerializer(
+                instance=instance.usuario,
+                data=usuario_data,
+                partial=True
+            )
+            usuario_serializer.is_valid(raise_exception=True)
+            usuario_serializer.save()
+
+        # actualizar otros campos del cliente si existieran
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
 
     def create(self, validated_data):
         usuario_data = validated_data.pop("usuario")

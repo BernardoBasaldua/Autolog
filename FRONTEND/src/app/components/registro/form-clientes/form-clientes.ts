@@ -135,8 +135,8 @@ export class FormClientes {
       // precargar una contraseña por defecto
       // que el cliente tendrá que cambiar luego:
       this.clienteForm.patchValue({
-        password: '123456',
-        confirmPassword: '123456',
+        password: 'A1234567',
+        confirmPassword: 'A1234567',
       });
     }
   }
