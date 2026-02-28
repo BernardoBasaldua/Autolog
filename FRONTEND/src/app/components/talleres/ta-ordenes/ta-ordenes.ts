@@ -326,29 +326,6 @@ export class TaOrdenes {
   // =========================
   // FECHAS
   // =========================
-  // formatFechaTurno(fechaISO: string): string {
-  //   if (!fechaISO) return '-';
-
-  //   try {
-  //     console.log('fecha_turno raw:', fechaISO);
-  //     const d = new Date(fechaISO);
-
-  //     const fecha = d.toLocaleDateString('es-AR', {
-  //       year: 'numeric',
-  //       month: '2-digit',
-  //       day: '2-digit',
-  //     });
-
-  //     const hora = d.toLocaleTimeString('es-AR', {
-  //       hour: '2-digit',
-  //       minute: '2-digit',
-  //     });
-
-  //     return `${fecha} ${hora}`;
-  //   } catch {
-  //     return fechaISO;
-  //   }
-  // }
 
   formatFechaTurno(fechaISO: string): string {
     if (!fechaISO) return '-';

@@ -767,6 +767,8 @@ export class FormOrdenes {
         this.router.navigate(['/taller', 'ordenes']);
       },
       error: (e) => {
+        console.error('Error en orden', e);
+        this.showNotice(this.esEdicion ? 'No se pudo editar la orden. Revisa los datos ingresados.' : 'No se pudo crear la orden. Revisa los datos ingresados.', 'error', 5000);
         // dejá tu manejo de error actual
       }
     });

@@ -1,3 +1,21 @@
+<!-- NOTIFICACIONES -->
+@if (notice) {
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+  <div class="rounded-xl px-4 py-3 shadow-lg border" [ngClass]="{
+        'bg-red-50 border-red-200 text-red-800': notice.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': notice.type === 'info',
+        'bg-green-50 border-green-200 text-green-800': notice.type === 'success'
+      }">
+    <div class="flex items-start gap-3">
+      <div class="flex-1 text-sm font-medium">
+        {{ notice.text }}
+      </div>
+      <button type="button" class="text-lg leading-none" (click)="clearNotice()">X</button>
+    </div>
+  </div>
+</div>
+}
+
 <!-- =========================
      TABS
 ========================= -->
@@ -142,16 +160,12 @@
         </div>
 
         <div class="detail-header-right">
-          <span class="estado-pill estado-pill-lg"
-                [class]="'estado-' + ordenSeleccionada.estado_actual">
+          <span class="estado-pill estado-pill-lg" [class]="'estado-' + ordenSeleccionada.estado_actual">
             {{ etiquetaEstado(ordenSeleccionada.estado_actual) }}
           </span>
 
-          <button type="button"
-                  class="detail-close"
-                  (click)="cerrarDetalle()"
-                  title="Cerrar detalle"
-                  aria-label="Cerrar detalle">
+          <button type="button" class="detail-close" (click)="cerrarDetalle()" title="Cerrar detalle"
+            aria-label="Cerrar detalle">
             ✕
           </button>
         </div>
@@ -250,9 +264,9 @@
 
         <!-- EDITAR -->
         @if (puedeEditar(ordenSeleccionada)) {
-          <button class="button-primary" (click)="irAEditarOrden(ordenSeleccionada)">
-            Editar orden
-          </button>
+        <button class="button-primary" (click)="irAEditarOrden(ordenSeleccionada)">
+          Editar orden
+        </button>
         }
 
         <!-- FINALIZAR -->
@@ -264,107 +278,102 @@
 
         <!-- ANULAR -->
         @if (puedeAnular(ordenSeleccionada)) {
-          <button type="button" class="button-primary button-danger" (click)="abrirConfirmacionAnularOrden()">
-            Anular orden
-          </button>
+        <button type="button" class="button-primary button-danger" (click)="abrirConfirmacionAnularOrden()">
+          Anular orden
+        </button>
         }
 
         <!-- ELIMINAR (DELETE) -->
         @if (puedeEliminar(ordenSeleccionada)) {
-          <button type="button" class="button-primary button-danger" (click)="abrirConfirmacionEliminarOrden()">
-            Eliminar orden
-          </button>
+        <button type="button" class="button-primary button-danger" (click)="abrirConfirmacionEliminarOrden()">
+          Eliminar orden
+        </button>
         }
 
         <!-- =========================
             MODAL ANULAR
         ========================= -->
         @if(mostrarConfirmacionAnularOrden) {
-          <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
-              <h3 class="text-lg font-semibold text-gray-800 mb-3">
-                Anular orden de trabajo
-              </h3>
+        <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">
+              Anular orden de trabajo
+            </h3>
 
-              <p class="text-sm text-gray-600 mb-6">
-                ¿Seguro que desea anular esta orden? (Queda registrada como anulada)
-              </p>
+            <p class="text-sm text-gray-600 mb-6">
+              ¿Seguro que desea anular esta orden? (Queda registrada como anulada)
+            </p>
 
-              <div class="flex justify-end gap-3">
-                <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
-                        (click)="cancelarAnularOrden()">
-                  Cancelar
-                </button>
+            <div class="flex justify-end gap-3">
+              <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" (click)="cancelarAnularOrden()">
+                Cancelar
+              </button>
 
-                <button class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
-                        (click)="anularOrden(ordenSeleccionada!)">
-                  Anular
-                </button>
-              </div>
+              <button class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                (click)="anularOrden(ordenSeleccionada!)">
+                Anular
+              </button>
             </div>
           </div>
+        </div>
         }
 
         <!-- =========================
             MODAL ELIMINAR
         ========================= -->
         @if(mostrarConfirmacionEliminarOrden) {
-          <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
-              <h3 class="text-lg font-semibold text-gray-800 mb-3">
-                Eliminar orden de trabajo
-              </h3>
+        <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">
+              Eliminar orden de trabajo
+            </h3>
 
-              <p class="text-sm text-gray-600 mb-6">
-                ¿Seguro que desea eliminar esta orden de trabajo? Esta acción es permanente.
-              </p>
+            <p class="text-sm text-gray-600 mb-6">
+              ¿Seguro que desea eliminar esta orden de trabajo? Esta acción es permanente.
+            </p>
 
-              <div class="flex justify-end gap-3">
-                <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
-                        (click)="cancelarEliminarOrden()">
-                  Cancelar
-                </button>
+            <div class="flex justify-end gap-3">
+              <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" (click)="cancelarEliminarOrden()">
+                Cancelar
+              </button>
 
-                <button class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
-                        (click)="eliminarOrden(ordenSeleccionada)">
-                  Eliminar orden
-                </button>
-              </div>
+              <button class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                (click)="eliminarOrden(ordenSeleccionada)">
+                Eliminar orden
+              </button>
             </div>
           </div>
+        </div>
         }
 
         <!-- =========================
             MODAL FINALIZAR
         ========================= -->
         @if(mostrarModalFinalizar) {
-          <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
-              <h3 class="text-lg font-semibold text-gray-800 mb-3">
-                Finalizar orden #{{ ordenSeleccionada.id }}
-              </h3>
+        <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">
+              Finalizar orden #{{ ordenSeleccionada.id }}
+            </h3>
 
-              <p class="text-sm text-gray-600 mb-3">
-                Ingresá la fecha de entrega para finalizar la orden.
-              </p>
+            <p class="text-sm text-gray-600 mb-3">
+              Ingresá la fecha de entrega para finalizar la orden.
+            </p>
 
-              <input type="date"
-                    class="w-full px-3 py-2 border rounded-lg"
-                    [(ngModel)]="fechaEntregaInput" />
+            <input type="date" class="w-full px-3 py-2 border rounded-lg" [(ngModel)]="fechaEntregaInput" />
 
-              <div class="flex justify-end gap-3 mt-6">
-                <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
-                        (click)="cancelarFinalizar()">
-                  Cancelar
-                </button>
+            <div class="flex justify-end gap-3 mt-6">
+              <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" (click)="cancelarFinalizar()">
+                Cancelar
+              </button>
 
-                <button class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
-                        (click)="confirmarFinalizar(ordenSeleccionada)">
-                  Finalizar
-                </button>
-              </div>
+              <button class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
+                (click)="confirmarFinalizar(ordenSeleccionada)">
+                Finalizar
+              </button>
             </div>
           </div>
+        </div>
         }
 
       </div>

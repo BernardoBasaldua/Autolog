@@ -1,79 +1,163 @@
 <style>
   /* Layout general */
-  .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; }
-  .toolbar-left { display:flex; align-items:center; gap:10px; }
-  .toolbar-title { font-size:18px; font-weight:800; color:#111827; }
-  .toolbar-right { display:flex; align-items:center; gap:10px; }
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
 
-  .btn { border:1px solid rgba(0,0,0,.15); background:white; padding:8px 12px; border-radius:10px; cursor:pointer; }
-  .btn:hover { background:rgba(0,0,0,.03); }
-  .select { border:1px solid rgba(0,0,0,.15); padding:8px 10px; border-radius:10px; background:white; }
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toolbar-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    border: 1px solid rgba(0, 0, 0, .15);
+    background: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    background: rgba(0, 0, 0, .03);
+  }
+
+  .select {
+    border: 1px solid rgba(0, 0, 0, .15);
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: white;
+  }
 
   /* Grid semanal/diario */
-  .calendar-grid{
-    display:grid;
+  .calendar-grid {
+    display: grid;
     grid-template-columns: 90px repeat(7, 1fr);
-    gap:8px;
+    gap: 8px;
   }
-  .cell{
-    border:1px solid rgba(0,0,0,.10);
-    border-radius:10px;
-    background:white;
-    padding:10px;
-    min-height:54px;
-  }
-  .header-cell{ font-weight:800; color:#111827; background:rgba(0,0,0,.02); }
-  .time-cell{ font-weight:700; color:#374151; background:rgba(0,0,0,.02); }
-  .day-cell{ position:relative; cursor:pointer; }
-  .day-cell:hover{ background: rgba(0,0,0,.02); }
 
-  .event{
-    position:relative;
-    margin-top:6px;
-    padding:8px 10px;
-    border-radius:10px;
-    border:1px solid rgba(37,99,235,.25);
-    background: rgba(37,99,235,.10);
-    font-weight:700;
-    font-size:12px;
-    color:#0f172a;
+  .cell {
+    border: 1px solid rgba(0, 0, 0, .10);
+    border-radius: 10px;
+    background: white;
+    padding: 10px;
+    min-height: 54px;
+  }
+
+  .header-cell {
+    font-weight: 800;
+    color: #111827;
+    background: rgba(0, 0, 0, .02);
+  }
+
+  .time-cell {
+    font-weight: 700;
+    color: #374151;
+    background: rgba(0, 0, 0, .02);
+  }
+
+  .day-cell {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .day-cell:hover {
+    background: rgba(0, 0, 0, .02);
+  }
+
+  .event {
+    position: relative;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(37, 99, 235, .25);
+    background: rgba(37, 99, 235, .10);
+    font-weight: 700;
+    font-size: 12px;
+    color: #0f172a;
   }
 
   /* Mensual */
-  .calendar-month{
-    display:grid;
+  .calendar-month {
+    display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap:8px;
-  }
-  .month-header{
-    text-align:center;
-    font-weight:800;
-    color:#374151;
-  }
-  .month-cell{
-    min-height:110px;
-    border-radius:12px;
-    padding:10px;
-    cursor:pointer;
-    background:white;
-    border:1px solid rgba(0,0,0,.10);
-  }
-  .month-cell:hover{ background:rgba(0,0,0,.02); }
-  .month-day-num{ font-weight:900; color:#111827; }
-  .badge{
-    display:inline-block;
-    margin-top:8px;
-    padding:2px 10px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:800;
-    background: rgba(37,99,235,.10);
-    border:1px solid rgba(37,99,235,.20);
+    gap: 8px;
   }
 
-  .muted{ color:#6b7280; font-size:12px; }
+  .month-header {
+    text-align: center;
+    font-weight: 800;
+    color: #374151;
+  }
+
+  .month-cell {
+    min-height: 110px;
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, .10);
+  }
+
+  .month-cell:hover {
+    background: rgba(0, 0, 0, .02);
+  }
+
+  .month-day-num {
+    font-weight: 900;
+    color: #111827;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    background: rgba(37, 99, 235, .10);
+    border: 1px solid rgba(37, 99, 235, .20);
+  }
+
+  .muted {
+    color: #6b7280;
+    font-size: 12px;
+  }
 </style>
 
+<!-- NOTIFICACIONES -->
+@if (notice) {
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+  <div class="rounded-xl px-4 py-3 shadow-lg border" [ngClass]="{
+        'bg-red-50 border-red-200 text-red-800': notice.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': notice.type === 'info',
+        'bg-green-50 border-green-200 text-green-800': notice.type === 'success'
+      }">
+    <div class="flex items-start gap-3">
+      <div class="flex-1 text-sm font-medium">
+        {{ notice.text }}
+      </div>
+      <button type="button" class="text-lg leading-none" (click)="clearNotice()">X</button>
+    </div>
+  </div>
+</div>
+}
 
 <!-- Toolbar -->
 <section class="toolbar">
@@ -108,12 +192,7 @@
     </select>
 
     <!-- Salto exacto a una fecha -->
-    <input
-      class="select"
-      type="date"
-      (change)="irAFecha($any($event.target).value)"
-      title="Ir a fecha"
-    />
+    <input class="select" type="date" (change)="irAFecha($any($event.target).value)" title="Ir a fecha" />
 
     <!-- Vista -->
     <select class="select" [(ngModel)]="vista" (ngModelChange)="setVista($event)">
@@ -128,34 +207,22 @@
 <section class="calendar-grid" *ngIf="vista === 'semana'">
   <div class="cell header-cell"></div>
 
-  <div
-    *ngFor="let dia of diasSemana"
-    class="cell header-cell"
-    style="cursor:pointer;"
-    (click)="abrirDiaDesdeSemana(dia)"
-    [ngStyle]="esHoy(dia) ? { 
+  <div *ngFor="let dia of diasSemana" class="cell header-cell" style="cursor:pointer;"
+    (click)="abrirDiaDesdeSemana(dia)" [ngStyle]="esHoy(dia) ? { 
         'border':'2px solid #2563eb', 
         'background':'rgba(37,99,235,.10)' 
-    } : {}"
-    >
+    } : {}">
     {{ labelHeaderDia(dia) }}
-    </div>
+  </div>
 
   <ng-container *ngFor="let hora of horas">
     <div class="cell time-cell">{{ labelHora(hora) }}</div>
 
-    <div
-      *ngFor="let dia of diasSemana"
-      class="cell day-cell"
-      [ngStyle]="esHoy(dia) ? { 'background':'rgba(37,99,235,.06)' } : {}"
-      (click)="abrirDetalleSlot(dia, hora)"
-    >
+    <div *ngFor="let dia of diasSemana" class="cell day-cell"
+      [ngStyle]="esHoy(dia) ? { 'background':'rgba(37,99,235,.06)' } : {}" (click)="abrirDetalleSlot(dia, hora)">
       <ng-container *ngFor="let t of getTurnosCelda(dia, hora)">
-        <div
-          class="event"
-          [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
-          (click)="abrirDetalle(t); $event.stopPropagation()"
-        >
+        <div class="event" [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
+          (click)="abrirDetalle(t); $event.stopPropagation()">
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
@@ -169,8 +236,7 @@
 <section class="calendar-grid" *ngIf="vista === 'dia'" style="grid-template-columns: 140px 1fr;">
   <div class="cell header-cell"></div>
 
-  <div class="cell header-cell"
-       [ngStyle]="{ 'border':'2px solid #2563eb', 'background':'rgba(37,99,235,.10)' }">
+  <div class="cell header-cell" [ngStyle]="{ 'border':'2px solid #2563eb', 'background':'rgba(37,99,235,.10)' }">
     {{ tituloDia() }}
   </div>
 
@@ -179,28 +245,18 @@
     <div class="cell time-cell time-with-btn">
       <span>{{ labelHora(hora) }}</span>
 
-      <button
-        type="button"
-        class="btn-add-slot-left"
-        title="Crear turno en este horario"
-        (click)="crearOrdenEnSlot(fechaBase, hora)"
-      >
+      <button type="button" class="btn-add-slot-left" title="Crear turno en este horario"
+        (click)="crearOrdenEnSlot(fechaBase, hora)">
         +
       </button>
     </div>
 
     <!-- Columna derecha: Turnos -->
-    <div
-      class="cell day-cell"
-      [ngStyle]="{ 'background':'rgba(37,99,235,.06)' }"
-      (click)="abrirDetalleSlot(fechaBase, hora)"
-    >
+    <div class="cell day-cell" [ngStyle]="{ 'background':'rgba(37,99,235,.06)' }"
+      (click)="abrirDetalleSlot(fechaBase, hora)">
       <ng-container *ngFor="let t of getTurnosCelda(fechaBase, hora)">
-        <div
-          class="event"
-          [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
-          (click)="abrirDetalle(t); $event.stopPropagation()"
-        >
+        <div class="event" [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
+          (click)="abrirDetalle(t); $event.stopPropagation()">
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
@@ -215,29 +271,29 @@
 
 <style>
   /* hora + botón alineados */
-  .time-with-btn{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
+  .time-with-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
   }
 
-  .btn-add-slot-left{
-    width:28px;
-    height:28px;
-    border-radius:999px;
-    border:1px solid rgba(37,99,235,.35);
-    background:white;
-    font-weight:900;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex:0 0 auto;
+  .btn-add-slot-left {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 99, 235, .35);
+    background: white;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
   }
 
-  .btn-add-slot-left:hover{
-    background:rgba(37,99,235,.08);
+  .btn-add-slot-left:hover {
+    background: rgba(37, 99, 235, .08);
   }
 </style>
 
@@ -251,16 +307,11 @@
   <div class="month-header">Vie</div>
   <div class="month-header">Sáb</div>
 
-  <div
-    *ngFor="let dia of diasMes"
-    class="month-cell"
-    [ngStyle]="{
+  <div *ngFor="let dia of diasMes" class="month-cell" [ngStyle]="{
       'opacity': esDelMesActual(dia) ? '1' : '0.45',
       'border': esHoy(dia) ? '2px solid #2563eb' : '1px solid rgba(0,0,0,.10)',
       'background': esHoy(dia) ? 'rgba(37,99,235,.08)' : 'white'
-    }"
-    (click)="abrirDiaDesdeMes(dia)"
-  >
+    }" (click)="abrirDiaDesdeMes(dia)">
     <div class="month-day-num">{{ dia.getDate() }}</div>
 
     <div *ngIf="getTurnosDia(dia).length > 0">
@@ -286,19 +337,11 @@
       </div>
 
       <div class="modal-header-right">
-        <span
-          class="estado-pill"
-          [ngClass]="'estado-' + getEstado(ordenSeleccionada)"
-        >
+        <span class="estado-pill" [ngClass]="'estado-' + getEstado(ordenSeleccionada)">
           {{ etiquetaEstado(getEstado(ordenSeleccionada)) }}
         </span>
 
-        <button
-          type="button"
-          class="btn-close-modal"
-          (click)="cerrarDetalle()"
-          aria-label="Cerrar"
-        >
+        <button type="button" class="btn-close-modal" (click)="cerrarDetalle()" aria-label="Cerrar">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -331,7 +374,7 @@
                 <i class="fas fa-user mr-2 text-gray-600"></i>
                 Cliente:
                 <span class="font-semibold">{{ clienteNombreApellido(orden.cliente) }}</span>
-             </p>
+              </p>
 
               <p>
                 <i class="fas fa-car mr-2 text-indigo-600"></i>
@@ -339,11 +382,11 @@
                 <span class="font-semibold">{{ vehiculoLabel(orden.vehiculo) }}</span>
               </p>
 
-               <p>
+              <p>
                 <i class="fas fa-industry mr-2 text-blue-600"></i>
                 Taller:
                 <span class="font-semibold">{{ tallerNombre(orden.taller) }}</span>
-                </p>
+              </p>
               <p>
                 <i class="fas fa-calendar-check mr-2 text-purple-600"></i>
                 Entrega:
@@ -377,20 +420,20 @@
 
         <!-- Observaciones -->
         @if (orden.observaciones_tecnicas) {
-          <div class="bg-gray-100 p-4 rounded-lg mt-4 w-full">
-            <p class="font-semibold text-gray-800 mb-2">Observaciones técnicas:</p>
-            <p class="text-gray-700">{{ orden.observaciones_tecnicas }}</p>
-          </div>
+        <div class="bg-gray-100 p-4 rounded-lg mt-4 w-full">
+          <p class="font-semibold text-gray-800 mb-2">Observaciones técnicas:</p>
+          <p class="text-gray-700">{{ orden.observaciones_tecnicas }}</p>
+        </div>
         } @else {
-          <div class="bg-gray-50 p-4 rounded-lg mt-4 w-full">
-            <p class="text-gray-600">Sin observaciones técnicas.</p>
-          </div>
+        <div class="bg-gray-50 p-4 rounded-lg mt-4 w-full">
+          <p class="text-gray-600">Sin observaciones técnicas.</p>
+        </div>
         }
 
       </div>
 
       <!-- Acciones -->
-      
+
     </ng-container>
 
   </div>

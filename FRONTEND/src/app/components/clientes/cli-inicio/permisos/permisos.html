@@ -1,10 +1,26 @@
+<!-- NOTIFICACIONES -->
+@if (notice) {
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+  <div class="rounded-xl px-4 py-3 shadow-lg border" [ngClass]="{
+        'bg-red-50 border-red-200 text-red-800': notice.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': notice.type === 'info',
+        'bg-green-50 border-green-200 text-green-800': notice.type === 'success'
+      }">
+    <div class="flex items-start gap-3">
+      <div class="flex-1 text-sm font-medium">
+        {{ notice.text }}
+      </div>
+      <button type="button" class="text-lg leading-none" (click)="clearNotice()">X</button>
+    </div>
+  </div>
+</div>
+}
+
 <main class="flex-1 p-8">
 
   <!-- Botón volver -->
   <section>
-    <button type="button"
-            class="button-secondary mb-6"
-            (click)="volver()">
+    <button type="button" class="button-secondary mb-6" (click)="volver()">
       ← Volver
     </button>
   </section>
@@ -15,9 +31,7 @@
       Crear Nuevo Permiso
     </h2>
 
-    <button
-      class="button-primary"
-      [routerLink]="['/cliente/seleccion-usuario', vehiculoId]">
+    <button class="button-primary" [routerLink]="['/cliente/seleccion-usuario', vehiculoId]">
       + Nuevo permiso
     </button>
   </section>
@@ -28,11 +42,9 @@
       Permisos Otorgados
     </h2>
 
-    <div class="space-y-4"
-         *ngIf="permisosOtorgados.length > 0; else noOtorgados">
+    <div class="space-y-4" *ngIf="permisosOtorgados.length > 0; else noOtorgados">
 
-      <div *ngFor="let p of permisosOtorgados"
-           class="p-4 border-b border-gray-200 last:border-b-0">
+      <div *ngFor="let p of permisosOtorgados" class="p-4 border-b border-gray-200 last:border-b-0">
 
         <div class="flex flex-col md:flex-row md:items-center justify-between">
 
@@ -51,8 +63,7 @@
           </div>
 
           <div class="flex space-x-4 mt-4 md:mt-0">
-            <button class="button-secondary text-sm"
-                    (click)="revocarPermiso(p)">
+            <button class="button-secondary text-sm" (click)="revocarPermiso(p)">
               Revocar
             </button>
           </div>

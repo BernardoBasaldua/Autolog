@@ -1,20 +1,28 @@
+<!-- NOTIFICACIONES -->
+@if (notice) {
+<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+  <div class="rounded-xl px-4 py-3 shadow-lg border" [ngClass]="{
+        'bg-red-50 border-red-200 text-red-800': notice.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': notice.type === 'info',
+        'bg-green-50 border-green-200 text-green-800': notice.type === 'success'
+      }">
+    <div class="flex items-start gap-3">
+      <div class="flex-1 text-sm font-medium">
+        {{ notice.text }}
+      </div>
+      <button type="button" class="text-lg leading-none" (click)="clearNotice()">X</button>
+    </div>
+  </div>
+</div>
+}
+
 <!-- Tabs for Orders -->
 <div class="flex mb-0">
-  <button
-    class="tab-button"
-    id="ordenesTrabajoTab"
-    type="button"
-    (click)="verOrdenesTrabajo()"
-  >
+  <button class="tab-button" id="ordenesTrabajoTab" type="button" (click)="verOrdenesTrabajo()">
     Órdenes de Trabajo
   </button>
 
-  <button
-    class="tab-button active"
-    id="nuevaOrdenTab"
-    type="button"
-    (click)="crearNuevaOrden()"
-  >
+  <button class="tab-button active" id="nuevaOrdenTab" type="button" (click)="crearNuevaOrden()">
     {{ esEdicion ? 'Editar orden' : 'Nueva Orden' }}
   </button>
 </div>
@@ -31,83 +39,61 @@
 
       <div class="flex gap-2 items-center">
         <div class="relative flex-1">
-          <input
-            type="text"
-            class="w-full"
-            placeholder="Buscar cliente por nombre, teléfono o mail..."
-            [(ngModel)]="clienteQuery"
-            [ngModelOptions]="{standalone: true}"
-            name="clienteQuery"
-            (input)="!esEdicion && onClienteQueryChange()"
-            (focus)="!esEdicion && abrirDropdownClientes()"
-            (blur)="!esEdicion && cerrarDropdownClientesConDelay()"
-            [disabled]="esEdicion"
-            [class.opacity-60]="esEdicion"
-            [class.cursor-not-allowed]="esEdicion"
-            autocomplete="off"
-          />
+          <input type="text" class="w-full" placeholder="Buscar cliente por nombre, teléfono o mail..."
+            [(ngModel)]="clienteQuery" [ngModelOptions]="{standalone: true}" name="clienteQuery"
+            (input)="!esEdicion && onClienteQueryChange()" (focus)="!esEdicion && abrirDropdownClientes()"
+            (blur)="!esEdicion && cerrarDropdownClientesConDelay()" [disabled]="esEdicion"
+            [class.opacity-60]="esEdicion" [class.cursor-not-allowed]="esEdicion" autocomplete="off" />
 
           <!-- Dropdown (solo crear) -->
           @if (!esEdicion) {
-            @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
-              <div
-                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
-              >
-                @for (c of clientesFiltrados; track c.id) {
-                  <button
-                    type="button"
-                    class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                    (mousedown)="seleccionarCliente(c)"
-                  >
-                    <div class="text-sm font-medium text-gray-900">
-                      {{ formatCliente(c) }}
-                    </div>
-                  </button>
-                }
+          @if (mostrarDropdownClientes && clientesFiltrados.length > 0) {
+          <div
+            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+            @for (c of clientesFiltrados; track c.id) {
+            <button type="button" class="w-full text-left px-3 py-2 hover:bg-gray-50"
+              (mousedown)="seleccionarCliente(c)">
+              <div class="text-sm font-medium text-gray-900">
+                {{ formatCliente(c) }}
               </div>
+            </button>
             }
+          </div>
+          }
 
-            @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
-              <div
-                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
-              >
-                <div class="px-3 py-2 text-sm text-gray-500">
-                  No hay coincidencias.
-                </div>
-              </div>
-            }
+          @if (mostrarDropdownClientes && clientesFiltrados.length === 0 && clienteQuery.trim()) {
+          <div class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="px-3 py-2 text-sm text-gray-500">
+              No hay coincidencias.
+            </div>
+          </div>
+          }
           }
         </div>
 
         <!-- Botón crear nuevo cliente (solo crear) -->
-        <button
-          type="button"
-          class="inline-add-button whitespace-nowrap"
-          (click)="nuevoCliente()"
-          [disabled]="esEdicion"
-          [class.opacity-60]="esEdicion"
-          [class.cursor-not-allowed]="esEdicion"
-          title="Crear nuevo cliente"
-        >
+        <button type="button" class="inline-add-button whitespace-nowrap" (click)="nuevoCliente()"
+          [disabled]="esEdicion" [class.opacity-60]="esEdicion" [class.cursor-not-allowed]="esEdicion"
+          title="Crear nuevo cliente">
           <i class="fas fa-plus mr-1 text-xs"></i>
           Nuevo
         </button>
       </div>
 
       @if (clienteSeleccionado) {
-        <p class="mt-1 text-xs text-gray-500">
-          Seleccionado: <strong>{{ formatCliente(clienteSeleccionado) }}</strong>
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Seleccionado: <strong>{{ formatCliente(clienteSeleccionado) }}</strong>
+      </p>
       } @else {
-        <p class="mt-1 text-xs text-gray-500">
-          Seleccionado: <strong>-</strong>
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Seleccionado: <strong>-</strong>
+      </p>
       }
 
       @if (esEdicion) {
-        <p class="mt-1 text-xs text-gray-500">
-          Cliente no editable en modo edición.
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Cliente no editable en modo edición.
+      </p>
       }
     </div>
 
@@ -119,83 +105,62 @@
 
       <div class="flex gap-2 items-center">
         <div class="relative flex-1">
-          <input
-            type="text"
-            class="w-full"
-            placeholder="Buscar por marca, modelo o patente..."
-            [(ngModel)]="vehiculoQuery"
-            [ngModelOptions]="{standalone: true}"
-            name="vehiculoQuery"
-            (input)="!esEdicion && onVehiculoQueryChange()"
-            (focus)="!esEdicion && abrirDropdownVehiculos()"
+          <input type="text" class="w-full" placeholder="Buscar por marca, modelo o patente..."
+            [(ngModel)]="vehiculoQuery" [ngModelOptions]="{standalone: true}" name="vehiculoQuery"
+            (input)="!esEdicion && onVehiculoQueryChange()" (focus)="!esEdicion && abrirDropdownVehiculos()"
             (blur)="!esEdicion && cerrarDropdownVehiculosConDelay()"
             [disabled]="esEdicion || (bloquearVehiculoPorCliente && !clienteSeleccionado)"
-            [class.opacity-60]="esEdicion"
-            [class.cursor-not-allowed]="esEdicion"
-            autocomplete="off"
-          />
+            [class.opacity-60]="esEdicion" [class.cursor-not-allowed]="esEdicion" autocomplete="off" />
 
           <!-- Dropdown (solo crear) -->
           @if (!esEdicion) {
-            @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
-              <div
-                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto"
-              >
-                @for (v of vehiculosFiltrados; track v.id) {
-                  <button
-                    type="button"
-                    class="w-full text-left px-3 py-2 hover:bg-gray-50"
-                    (mousedown)="seleccionarVehiculo(v)"
-                  >
-                    <div class="text-sm font-medium text-gray-900">
-                      {{ formatVehiculo(v) }}
-                    </div>
-                  </button>
-                }
+          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length > 0) {
+          <div
+            class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+            @for (v of vehiculosFiltrados; track v.id) {
+            <button type="button" class="w-full text-left px-3 py-2 hover:bg-gray-50"
+              (mousedown)="seleccionarVehiculo(v)">
+              <div class="text-sm font-medium text-gray-900">
+                {{ formatVehiculo(v) }}
               </div>
+            </button>
             }
+          </div>
+          }
 
-            @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
-              <div
-                class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
-              >
-                <div class="px-3 py-2 text-sm text-gray-500">
-                  No hay coincidencias.
-                </div>
-              </div>
-            }
+          @if (mostrarDropdownVehiculos && vehiculosFiltrados.length === 0 && vehiculoQuery.trim()) {
+          <div class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+            <div class="px-3 py-2 text-sm text-gray-500">
+              No hay coincidencias.
+            </div>
+          </div>
+          }
           }
         </div>
 
         <!-- Botón crear nuevo vehículo (solo crear) -->
-        <button
-          type="button"
-          class="inline-add-button whitespace-nowrap"
-          (click)="nuevoVehiculo()"
-          [disabled]="esEdicion"
-          [class.opacity-60]="esEdicion"
-          [class.cursor-not-allowed]="esEdicion"
-          title="Crear nuevo vehículo"
-        >
+        <button type="button" class="inline-add-button whitespace-nowrap" (click)="nuevoVehiculo()"
+          [disabled]="esEdicion" [class.opacity-60]="esEdicion" [class.cursor-not-allowed]="esEdicion"
+          title="Crear nuevo vehículo">
           <i class="fas fa-plus mr-1 text-xs"></i>
           Nuevo
         </button>
       </div>
 
       @if (vehiculoSeleccionado) {
-        <p class="mt-1 text-xs text-gray-500">
-          Seleccionado: <strong>{{ formatVehiculo(vehiculoSeleccionado) }}</strong>
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Seleccionado: <strong>{{ formatVehiculo(vehiculoSeleccionado) }}</strong>
+      </p>
       } @else {
-        <p class="mt-1 text-xs text-gray-500">
-          Seleccionado: <strong>-</strong>
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Seleccionado: <strong>-</strong>
+      </p>
       }
 
       @if (esEdicion) {
-        <p class="mt-1 text-xs text-gray-500">
-          Vehículo no editable en modo edición.
-        </p>
+      <p class="mt-1 text-xs text-gray-500">
+        Vehículo no editable en modo edición.
+      </p>
       }
     </div>
 
@@ -205,23 +170,13 @@
         <label class="block text-gray-700 text-sm font-semibold mb-2">
           Fecha y hora turno
         </label>
-        <input
-          type="date"
-          [(ngModel)]="fechaTurno"
-          name="fechaTurno"
-          (ngModelChange)="onFechaHoraChange()"
-        />
+        <input type="date" [(ngModel)]="fechaTurno" name="fechaTurno" (ngModelChange)="onFechaHoraChange()" />
       </div>
 
       <div>
         <label class="block text-gray-700 text-sm font-semibold mb-2"></label>
-        <select
-          [(ngModel)]="horaTurno"
-          name="horaTurno"
-          required
-          class="horario-select"
-          (ngModelChange)="onFechaHoraChange()"
-        >
+        <select [(ngModel)]="horaTurno" name="horaTurno" required class="horario-select"
+          (ngModelChange)="onFechaHoraChange()">
           <option value="" disabled>Seleccionar horario</option>
           <option *ngFor="let hora of horariosDisponibles" [value]="hora">
             {{ hora }}
@@ -229,11 +184,7 @@
         </select>
       </div>
 
-      <button
-        type="button"
-        class="button-secondary w-full md:w-auto self-end"
-        (click)="verAgenda()"
-      >
+      <button type="button" class="button-secondary w-full md:w-auto self-end" (click)="verAgenda()">
         Ver agenda
       </button>
     </div>
@@ -243,11 +194,7 @@
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Tipo de mantenimiento
       </label>
-      <select
-        [(ngModel)]="mantenimiento"
-        name="mantenimiento"
-        class="mantenimiento-select"
-      >
+      <select [(ngModel)]="mantenimiento" name="mantenimiento" class="mantenimiento-select">
         <option [ngValue]="'preventivo'">Preventivo</option>
         <option [ngValue]="'correctivo'">Correctivo</option>
       </select>
@@ -258,12 +205,8 @@
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Responsable Técnico
       </label>
-      <input
-        type="text"
-        placeholder="Ej.: Juan Pérez"
-        [(ngModel)]="responsableTecnicoTexto"
-        name="responsableTecnicoTexto"
-      />
+      <input type="text" placeholder="Ej.: Juan Pérez" [(ngModel)]="responsableTecnicoTexto"
+        name="responsableTecnicoTexto" />
     </div>
 
     <!-- ================= ODÓMETRO ================= -->
@@ -271,14 +214,8 @@
       <label class="block text-gray-700 text-sm font-semibold mb-2">Odómetro</label>
 
       <div class="odometro-control">
-        <input
-          type="number"
-          class="odometro-input"
-          placeholder="Ej.: 34340"
-          [(ngModel)]="kilometraje"
-          name="kilometraje"
-          min="0"
-        />
+        <input type="number" class="odometro-input" placeholder="Ej.: 34340" [(ngModel)]="kilometraje"
+          name="kilometraje" min="0" />
         <span class="odometro-unit">km</span>
       </div>
     </div>
@@ -288,11 +225,7 @@
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Fecha de entrega
       </label>
-      <input
-        type="date"
-        [(ngModel)]="fechaEntrega"
-        name="fechaEntrega"
-      />
+      <input type="date" [(ngModel)]="fechaEntrega" name="fechaEntrega" />
     </div>
 
     <!-- ================= OBSERVACIONES TÉCNICAS ================= -->
@@ -300,12 +233,8 @@
       <label class="block text-gray-700 text-sm font-semibold mb-2">
         Observaciones técnicas
       </label>
-      <textarea
-        rows="3"
-        placeholder="Escribe aquí"
-        [(ngModel)]="observacionesTecnicas"
-        name="observacionesTecnicas"
-      ></textarea>
+      <textarea rows="3" placeholder="Escribe aquí" [(ngModel)]="observacionesTecnicas"
+        name="observacionesTecnicas"></textarea>
     </div>
 
     <!-- ================= CAMPOS FUTUROS ================= -->
@@ -314,13 +243,8 @@
         Práctica de mantenimiento (pendiente de implementar en el modelo)
       </label>
       <div class="flex">
-        <input
-          type="text"
-          placeholder="cambio de aceite y filtros..."
-          class="flex-1"
-          [(ngModel)]="practicaTexto"
-          name="practicaTexto"
-        />
+        <input type="text" placeholder="cambio de aceite y filtros..." class="flex-1" [(ngModel)]="practicaTexto"
+          name="practicaTexto" />
         <select class="ml-2 w-auto" disabled>
           <option>---</option>
         </select>
@@ -331,19 +255,11 @@
 
   <!-- ================= ACTIONS ================= -->
   <div class="mt-8 flex justify-end space-x-4">
-    <button
-      type="button"
-      class="button-secondary"
-      (click)="cancelarOrden()"
-    >
+    <button type="button" class="button-secondary" (click)="cancelarOrden()">
       Cancelar
     </button>
 
-    <button
-      type="button"
-      class="button-primary"
-      (click)="confirmarOrden()"
-    >
+    <button type="button" class="button-primary" (click)="confirmarOrden()">
       {{ esEdicion ? 'Guardar cambios' : 'Confirmar orden' }}
     </button>
   </div>
