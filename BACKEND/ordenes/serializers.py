@@ -28,9 +28,7 @@ class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
         return obj.estado_por_tiempo
 
     def validate(self, attrs):
-        request = self.context.get("request")
-        instance: OrdenDeTrabajo | None = getattr(self, "instance", None)
-
+        instance = getattr(self, "instance", None)
 
         fecha_turno = attrs.get("fecha_turno")
         taller = attrs.get("taller")
