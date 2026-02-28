@@ -16,6 +16,9 @@ export enum ModoSeleccion {
   NuevoDesdeTaller = 'nuevo-desde-taller'
 }
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
+
 @Component({
   selector: 'app-ta-cli-seleccion',
   imports: [CommonModule, FormsModule, FormClientes],
@@ -37,11 +40,26 @@ export class TaCliSeleccion {
   modo: string = 'default';
   tipo: string = "";
 
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
   clienteActual: ClienteModel | null = null;
 
   vehiculoId!: number;
 
   terminoBusqueda = '';
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
 
   ngOnInit(): void {
     this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
@@ -64,21 +82,26 @@ export class TaCliSeleccion {
 
         this.clientesFiltrados = this.clientes;
       },
-      error: (e) => console.error('Error cargando clientes', e),
+      error: (e) => {
+        console.error('Error cargando clientes', e),
+          this.showNotice('Error al cargar clientes. Intentá nuevamente.', 'error');
+      },
     });
   }
 
 
+  mostrarConfirmacionCederTitularidad = false;
+
+  abrirConfirmacionCederTitularidad() {
+    this.mostrarConfirmacionCederTitularidad = true;
+  }
+
+  cancelarCederTitularidad() {
+    this.mostrarConfirmacionCederTitularidad = false;
+  }
+
   confirmarCederTitularidad(c: any) {
-    const nombre = `${c.first_name ?? ''} ${c.last_name ?? ''}`.trim() || c.email || 'este cliente';
-
-    const ok = confirm(
-      `¿Estás segura que querés ceder la titularidad a ${nombre}?\n\n` +
-      `Vas a perder acceso a este vehículo y a todo su historial/órdenes.`
-    );
-
-    if (!ok) return;
-
+    this.mostrarConfirmacionCederTitularidad = false;
     this.cederTitularidad(c);
   }
 
@@ -86,13 +109,13 @@ export class TaCliSeleccion {
     // Ajustá "this.vehiculoId" al nombre real que uses en este componente
     this.vehiculoService.transferirTitularidad(this.vehiculoId, c.id).subscribe({
       next: () => {
-        alert('Titularidad transferida correctamente');
+        this.showNotice('Titularidad transferida correctamente', 'success', 2500);
         // Ajustá la ruta a donde quieras volver
         this.router.navigate(['/taller/clientes']);
       },
       error: (err) => {
         console.error(err);
-        alert('Error al transferir titularidad');
+        this.showNotice('Error al transferir titularidad. Intentá nuevamente.', 'error');
       }
     });
   }
@@ -181,13 +204,17 @@ export class TaCliSeleccion {
   crearPermiso(nuevoPermiso: PermisoDeAcceso, vehiculoId: number): void {
     this.clienteService.crearPermiso(nuevoPermiso as PermisoDeAcceso, this.vehiculoId).subscribe({
       next: () => {
-        alert('Permiso creado con éxito');
+        this.showNotice('Permiso creado con éxito', 'success', 2500);
         this.router.navigate(['/taller/clientes', this.vehiculoId]);
       },
       error: (err: any) => {
         console.error(err);
-        alert('Error al crear el permiso');
+        this.showNotice('Error al crear el permiso. Intentá nuevamente.', 'error');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

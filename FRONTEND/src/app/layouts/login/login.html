@@ -1,33 +1,43 @@
 <div class="flex items-center justify-center min-h-screen p-4">
   <main class="w-full max-w-lg">
     <header class="flex flex-col items-center mb-8">
-      <img src="icons/autolog-logo.png" alt="Logo Autolog"
-           class="h-24 w-24 object-contain rounded-lg shadow-sm"
-           onerror="this.onerror=null;this.src='Autolog.png';" />
+      <img src="icons/autolog-logo.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm"
+        onerror="this.onerror=null;this.src='Autolog.png';" />
       <h1 class="text-3xl font-bold text-gray-800 mt-4">Bienvenido</h1>
     </header>
     <!-----------router login registe------------------------->
     <section class="card p-8">
       <!-- Tabs -->
       <div class="flex justify-center mb-6 border-b border-gray-200 gap-4">
-        <button
-          type="button"
-          class="tab-button active"
-          (click)="showLogin()">
+        <button type="button" class="tab-button active" (click)="showLogin()">
           Iniciar Sesión
         </button>
 
-        <button
-          type="button"
-          class="tab-button"
-          [ngClass]="{ 'active': vistaActual === 'register' }"
+        <button type="button" class="tab-button" [ngClass]="{ 'active': vistaActual === 'register' }"
           (click)="showRegister()">
           Registrarse
         </button>
       </div>
       <!-----------FIN router login registe------------------------->
-      
+
       <!-- LOGIN JWTSIMPLE DJANGO -->
+      @if (notice) {
+      <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md">
+        <div class="rounded-xl px-4 py-3 shadow-lg border" [ngClass]="{
+        'bg-red-50 border-red-200 text-red-800': notice.type === 'error',
+        'bg-blue-50 border-blue-200 text-blue-800': notice.type === 'info',
+        'bg-green-50 border-green-200 text-green-800': notice.type === 'success'
+      }">
+          <div class="flex items-start gap-3">
+            <div class="flex-1 text-sm font-medium">
+              {{ notice.text }}
+            </div>
+            <button type="button" class="text-lg leading-none" (click)="clearNotice()">X</button>
+          </div>
+        </div>
+      </div>
+      }
+
       <!-- Vinculamos el FormGroup y disparamos token() al submit -->
       <form [formGroup]="loginForm" (ngSubmit)="token()" class="space-y-6">
 
@@ -35,13 +45,9 @@
           <label for="login-username" class="block text-gray-700 font-semibold mb-2">
             Nombre de usuario
           </label>
-          <input id="login-username"
-                  type="text"
-                  class="w-full"
-                  formControlName="username"
-                  autocomplete="username" />
+          <input id="login-username" type="text" class="w-full" formControlName="username" autocomplete="username" />
           @if(loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
-            <small class="text-red-600">El usuario es requerido</small>
+          <small class="text-red-600">El usuario es requerido</small>
           }
         </div>
 
@@ -49,23 +55,27 @@
           <label for="login-password" class="block text-gray-700 font-semibold mb-2">
             Contraseña
           </label>
-          <input id="login-password"
-                  type="password"
-                  class="w-full"
-                  formControlName="password"
-                  autocomplete="current-password" />
+          <input id="login-password" type="password" class="w-full" formControlName="password"
+            autocomplete="current-password" />
           @if(loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
-            <small class="text-red-600">La contraseña es requerida</small>
+          <small class="text-red-600">La contraseña es requerida</small>
           }
         </div>
 
         <button type="submit" class="button-primary w-full" [disabled]="loginForm.invalid">
           Iniciar Sesión
         </button>
+        @if(loginError) {
+        <div class="mt-3 text-center">
+          <small class="text-red-600 font-medium">
+            {{ loginError }}
+          </small>
+        </div>
+        }
         <!-- FIN LOGIN JWTSIMPLE DJANGO -->
 
         <!-- LOGIN GOOGLE -->
-         <div id="google-btn"></div>
+        <div id="google-btn"></div>
         <!-- <div class="flex items-center">
           <hr class="flex-grow border-gray-300" />
           <span class="mx-4 text-gray-500">o</span>
@@ -77,7 +87,7 @@
           Iniciar Sesión con Google
         </button> -->
       </form>
-       
+
     </section>
   </main>
 </div>

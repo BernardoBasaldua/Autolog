@@ -2,19 +2,11 @@
      TABS
 ========================= -->
 <div class="tabs flex mb-0">
-  <button
-    class="tab-button active"
-    id="ordenesTrabajoTab"
-    (click)="verOrdenesTrabajo()"
-  >
+  <button class="tab-button active" id="ordenesTrabajoTab" (click)="verOrdenesTrabajo()">
     Órdenes de Trabajo
   </button>
 
-  <button
-    class="tab-button"
-    id="nuevaOrdenTab"
-    (click)="crearNuevaOrden()"
-  >
+  <button class="tab-button" id="nuevaOrdenTab" (click)="crearNuevaOrden()">
     Nueva Orden
   </button>
 </div>
@@ -34,14 +26,8 @@
 
   <div class="filters-field filters-input">
     <label class="filters-label">Búsqueda</label>
-    <input
-      type="text"
-      placeholder="Buscar..."
-      class="w-full"
-      [(ngModel)]="terminoBusqueda"
-      name="terminoBusqueda"
-      (input)="buscar()"
-    />
+    <input type="text" placeholder="Buscar..." class="w-full" [(ngModel)]="terminoBusqueda" name="terminoBusqueda"
+      (input)="buscar()" />
   </div>
 
   <div class="filters-actions">
@@ -85,48 +71,44 @@
 
         <tbody>
           @if (ordenesFiltradas.length === 0) {
-            <tr>
-              <td class="empty-row" colspan="4">
-                No hay órdenes para mostrar.
-              </td>
-            </tr>
+          <tr>
+            <td class="empty-row" colspan="4">
+              No hay órdenes para mostrar.
+            </td>
+          </tr>
           }
 
           @for (o of ordenesFiltradas; track o.id) {
-            <tr
-              class="orders-row"
-              [class.row-selected]="ordenSeleccionada?.id === o.id"
-              (click)="seleccionarOrden(o)"
-              title="Click para ver detalle"
-            >
-              <td class="text-cell nowrap">
-                #{{ o.id }}
-              </td>
+          <tr class="orders-row" [class.row-selected]="ordenSeleccionada?.id === o.id" (click)="seleccionarOrden(o)"
+            title="Click para ver detalle">
+            <td class="text-cell nowrap">
+              #{{ o.id }}
+            </td>
 
-              <!-- CLIENTE -->
-              <td class="col-cliente">
-                <div class="cell-main">
-                  {{ formatClienteNombre(o.cliente) }}
-                </div>
-                <div class="cell-sub">
-                  {{ formatClienteExtras(o.cliente) }}
-                </div>
-              </td>
+            <!-- CLIENTE -->
+            <td class="col-cliente">
+              <div class="cell-main">
+                {{ formatClienteNombre(o.cliente) }}
+              </div>
+              <div class="cell-sub">
+                {{ formatClienteExtras(o.cliente) }}
+              </div>
+            </td>
 
-              <!-- VEHICULO -->
-              <td class="col-vehiculo">
-                <div class="cell-main">
-                  {{ formatVehiculoMain(o.vehiculo) }}
-                </div>
-                <div class="cell-sub">
-                  {{ formatVehiculoSub(o.vehiculo) }}
-                </div>
-              </td>
+            <!-- VEHICULO -->
+            <td class="col-vehiculo">
+              <div class="cell-main">
+                {{ formatVehiculoMain(o.vehiculo) }}
+              </div>
+              <div class="cell-sub">
+                {{ formatVehiculoSub(o.vehiculo) }}
+              </div>
+            </td>
 
-              <td class="text-cell nowrap">
-                {{ formatFechaTurno(o.fecha_turno) }}
-              </td>
-            </tr>
+            <td class="text-cell nowrap">
+              {{ formatFechaTurno(o.fecha_turno) }}
+            </td>
+          </tr>
           }
         </tbody>
       </table>
@@ -137,151 +119,163 @@
        DETALLE
   ========================= -->
   @if (ordenSeleccionada) {
-    <aside class="orders-detail">
-      <div class="detail-card">
+  <aside class="orders-detail">
+    <div class="detail-card">
 
-        <!-- Header detalle -->
-        <div class="detail-header">
-          <div>
-            <h3 class="detail-title">
-              Orden #{{ ordenSeleccionada.id }}
-            </h3>
-            <p class="detail-subtitle">
-              {{ formatFechaTurno(ordenSeleccionada.fecha_turno) }}
-            </p>
-          </div>
-
-          <!-- Botón cerrar -->
-          <button
-            type="button"
-            class="detail-close"
-            (click)="cerrarDetalle()"
-            title="Cerrar detalle"
-            aria-label="Cerrar detalle"
-          >
-            ✕
-          </button>
+      <!-- Header detalle -->
+      <div class="detail-header">
+        <div>
+          <h3 class="detail-title">
+            Orden #{{ ordenSeleccionada.id }}
+          </h3>
+          <p class="detail-subtitle">
+            {{ formatFechaTurno(ordenSeleccionada.fecha_turno) }}
+          </p>
         </div>
 
-        <!-- Grilla de datos completos -->
-        <div class="detail-grid">
-          <div>
-            <span class="label">Cliente</span>
-            <span class="value">
-              {{ formatClienteNombre(ordenSeleccionada.cliente) }}
-            </span>
-            <span class="sub">
-              {{ formatClienteExtras(ordenSeleccionada.cliente) || '-' }}
-            </span>
-          </div>
+        <!-- Botón cerrar -->
+        <button type="button" class="detail-close" (click)="cerrarDetalle()" title="Cerrar detalle"
+          aria-label="Cerrar detalle">
+          ✕
+        </button>
+      </div>
 
-          <div>
-            <span class="label">Vehículo</span>
-            <span class="value">
-              {{ formatVehiculoMain(ordenSeleccionada.vehiculo) }}
-            </span>
-            <span class="sub">
-              {{ formatVehiculoSub(ordenSeleccionada.vehiculo) || '-' }}
-            </span>
-          </div>
+      <!-- Grilla de datos completos -->
+      <div class="detail-grid">
+        <div>
+          <span class="label">Cliente</span>
+          <span class="value">
+            {{ formatClienteNombre(ordenSeleccionada.cliente) }}
+          </span>
+          <span class="sub">
+            {{ formatClienteExtras(ordenSeleccionada.cliente) || '-' }}
+          </span>
+        </div>
 
-          <div>
-            <span class="label">Mantenimiento</span>
-            <span class="value">
-              {{ ordenSeleccionada.mantenimiento }}
-            </span>
-          </div>
+        <div>
+          <span class="label">Vehículo</span>
+          <span class="value">
+            {{ formatVehiculoMain(ordenSeleccionada.vehiculo) }}
+          </span>
+          <span class="sub">
+            {{ formatVehiculoSub(ordenSeleccionada.vehiculo) || '-' }}
+          </span>
+        </div>
 
-          <div>
-            <span class="label">Odómetro</span>
-            <span class="value">
-              {{ ordenSeleccionada.kilometraje }} km
-            </span>
-          </div>
+        <div>
+          <span class="label">Mantenimiento</span>
+          <span class="value">
+            {{ ordenSeleccionada.mantenimiento }}
+          </span>
+        </div>
 
-          <div>
-            <span class="label">Fecha entrega</span>
-            <span class="value">
-              {{ formatFechaSimple(ordenSeleccionada.fecha_entrega) }}
-            </span>
-          </div>
+        <div>
+          <span class="label">Odómetro</span>
+          <span class="value">
+            {{ ordenSeleccionada.kilometraje }} km
+          </span>
+        </div>
 
-          <!-- <div>
+        <div>
+          <span class="label">Fecha entrega</span>
+          <span class="value">
+            {{ formatFechaSimple(ordenSeleccionada.fecha_entrega) }}
+          </span>
+        </div>
+
+        <!-- <div>
             <span class="label">Agenda</span>
             <span class="value">
               {{ ordenSeleccionada.agenda ?? '-' }}
             </span>
           </div> -->
 
-          <div>
-            <span class="label">Fecha sig. servicio</span>
-            <span class="value">
-              {{ formatFechaSimple(ordenSeleccionada.fecha_siguiente_servicio) }}
-            </span>
-          </div>
-
-          <div>
-            <span class="label">Km sig. servicio</span>
-            <span class="value">
-              {{ ordenSeleccionada.kilometraje_siguiente_servicio ?? '-' }}
-            </span>
-          </div>
-
-          <div>
-            <span class="label">workshop</span>
-            <span class="value">
-              {{ formatTallerNombre(ordenSeleccionada.taller) }}
-            </span>
-            <span class="sub">
-              {{ formatTallerFull(ordenSeleccionada.taller) }}
-            </span>
-          </div>
-
-          <div>
-            <span class="label">Técnico</span>
-            <span class="value">
-              {{ ordenSeleccionada.responsable_tecnico ?? '-' }}
-            </span>
-          </div>
-
-          <div class="full">
-            <span class="label">Observaciones técnicas</span>
-            <span class="value">
-              {{ ordenSeleccionada.observaciones_tecnicas ?? '-' }}
-            </span>
-          </div>
+        <div>
+          <span class="label">Fecha sig. servicio</span>
+          <span class="value">
+            {{ formatFechaSimple(ordenSeleccionada.fecha_siguiente_servicio) }}
+          </span>
         </div>
 
-        <!-- Acciones del detalle -->
-        <div class="detail-actions">
-          <!-- <button
+        <div>
+          <span class="label">Km sig. servicio</span>
+          <span class="value">
+            {{ ordenSeleccionada.kilometraje_siguiente_servicio ?? '-' }}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">workshop</span>
+          <span class="value">
+            {{ formatTallerNombre(ordenSeleccionada.taller) }}
+          </span>
+          <span class="sub">
+            {{ formatTallerFull(ordenSeleccionada.taller) }}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">Técnico</span>
+          <span class="value">
+            {{ ordenSeleccionada.responsable_tecnico ?? '-' }}
+          </span>
+        </div>
+
+        <div class="full">
+          <span class="label">Observaciones técnicas</span>
+          <span class="value">
+            {{ ordenSeleccionada.observaciones_tecnicas ?? '-' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Acciones del detalle -->
+      <div class="detail-actions">
+        <!-- <button
             class="button-secondary"
             (click)="verPresupuestoDeOrden(ordenSeleccionada)"
           >
             Ver presupuesto
           </button> -->
-          
 
-          @if (!ordenSeleccionada.fecha_entrega) {
-            <button
-              class="button-primary"
-              (click)="irAEditarOrden(ordenSeleccionada)"
-            >
-              Editar orden
-            </button>
-          }
-          @if (esOrdenEliminable(ordenSeleccionada)) {
-            <button
-              type="button"
-              class="button-primary button-danger"
-              (click)="eliminarOrden(ordenSeleccionada)"
-            >
-              Eliminar orden
-            </button>
-          }
+
+        @if (!ordenSeleccionada.fecha_entrega) {
+        <button class="button-primary" (click)="irAEditarOrden(ordenSeleccionada)">
+          Editar orden
+        </button>
+        }
+        @if (esOrdenEliminable(ordenSeleccionada)) {
+        <button type="button" class="button-primary button-danger" (click)="abrirConfirmacionEliminarOrden()">
+          Eliminar orden
+        </button>
+        @if(mostrarConfirmacionEliminarOrden) {
+        <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">
+              Eliminar orden de trabajo
+            </h3>
+
+            <p class="text-sm text-gray-600 mb-6">
+              ¿Seguro que desea eliminar esta orden de trabajo? Esta acción es permanente.
+            </p>
+
+            <div class="flex justify-end gap-3">
+              <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" (click)="cancelarEliminarOrden()">
+                Cancelar
+              </button>
+
+              <button class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                (click)="eliminarOrden(ordenSeleccionada)">
+                Eliminar orden
+              </button>
+            </div>
+          </div>
         </div>
+        }
+        }
       </div>
-    </aside>
+    </div>
+  </aside>
   }
 
 </section>

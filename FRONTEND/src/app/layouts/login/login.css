@@ -129,3 +129,9 @@ input:focus {
     box-shadow: 0 0 0 1px #2a69ac33; /* sombra suave azul */
     background-color: #f0f7ff;       /* sutil azul muy claro */
 }
+
+#google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

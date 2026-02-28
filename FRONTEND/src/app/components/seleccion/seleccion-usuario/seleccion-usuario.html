@@ -7,120 +7,118 @@
 <section class="mb-4 card p-4 flex flex-col gap-4">
   <!-- 🔹 Tabs (como en login) -->
   <div class="flex justify-center mb-2 border-b border-gray-200 gap-4">
-    <button
-      type="button"
-      class="tab-button"
-      [ngClass]="{ 'active': modo === 'default' }"
-      (click)="mostrarUsuariosExistentes()"
-    >
+    <button type="button" class="tab-button" [ngClass]="{ 'active': modo === 'default' }"
+      (click)="mostrarUsuariosExistentes()">
       Usuarios existentes
     </button>
 
-    @if (tipo != "permisos"){ 
-    <button
-        type="button"
-        class="tab-button"
-        [ngClass]="{ 'active': modo === 'nuevo-desde-taller-CLI' }"
-        (click)="crearUsuarioNuevo()"
-      >
-        Crear usuario nuevo
+    @if (tipo != "permisos"){
+    <button type="button" class="tab-button" [ngClass]="{ 'active': modo === 'nuevo-desde-taller-CLI' }"
+      (click)="crearUsuarioNuevo()">
+      Crear usuario nuevo
     </button>
     }
     @else {
-      <button
-        type="button"
-        class="tab-button"
-        [ngClass]="{ 'active': modo === 'permisos' }"
-        (click)="mostrarTalleresExistentes()"
-      >
-        Talleres existentes
+    <button type="button" class="tab-button" [ngClass]="{ 'active': modo === 'permisos' }"
+      (click)="mostrarTalleresExistentes()">
+      Talleres existentes
     </button>
     }
   </div>
 
   <!-- 🔹 Filtro: solo tiene sentido en usuarios existentes -->
   @if (modo === 'default'|| modo === 'permisos') {
-    <div class="flex flex-col md:flex-row gap-4">
-      <input
-        type="text"
-        class="w-full"
-        placeholder="Buscar por nombre, DNI, email..."
-        [(ngModel)]="terminoBusqueda"
-        (input)="filtrar()"
-      />
-    </div>
+  <div class="flex flex-col md:flex-row gap-4">
+    <input type="text" class="w-full" placeholder="Buscar por nombre, DNI, email..." [(ngModel)]="terminoBusqueda"
+      (input)="filtrar()" />
+  </div>
   }
 </section>
 
 <!-- 🔹 Contenido según modo -->
 @if (modo === 'default') {
-  <!-- Lista de usuarios existentes -->
-  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (c of clientesFiltrados; track c.id) {
-      <div class="card card-usuario p-4 flex flex-col">
-        <h2 class="font-bold text-lg">
-          {{ c.first_name }} {{ c.last_name }}
-        </h2>
-        <p class="text-sm text-gray-600">Email: {{ c.email }}</p>
+<!-- Lista de usuarios existentes -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  @for (c of clientesFiltrados; track c.id) {
+  <div class="card card-usuario p-4 flex flex-col">
+    <h2 class="font-bold text-lg">
+      {{ c.first_name }} {{ c.last_name }}
+    </h2>
+    <p class="text-sm text-gray-600">Email: {{ c.email }}</p>
 
 
-        <div class="mt-4 flex justify-end gap-3">
-          <button
-            *ngIf="!tienePermisoCliente(c.id)"
-            class="button-secondary whitespace-nowrap px-4 py-2"
-            (click)="otorgarPermisoCliente(c); $event.stopPropagation()"
-          >
-            Otorgar permiso
-          </button>
+    <div class="mt-4 flex justify-end gap-3">
+      <button *ngIf="!tienePermisoCliente(c.id)" class="button-secondary whitespace-nowrap px-4 py-2"
+        (click)="otorgarPermisoCliente(c); $event.stopPropagation()">
+        Otorgar permiso
+      </button>
 
-          <button
-            class="button-secondary whitespace-nowrap px-4 py-2"
-            (click)="confirmarCederTitularidad(c); $event.stopPropagation()"
-          >
-            Ceder titularidad
-          </button>
-        </div>
+      <button class="button-secondary whitespace-nowrap px-4 py-2"
+        (click)="abrirConfirmacionCederTitularidad(c); $event.stopPropagation()">
+        Ceder titularidad
+      </button>
+    </div>
+  </div>
+  }@empty {
+  <div class="col-span-full text-center text-gray-500">
+    No se encontraron usuarios.
+  </div>
+  }
+  @if(mostrarConfirmacionCederTitularidad && clienteSeleccionadoParaCeder) {
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-3">
+        Ceder titularidad
+      </h3>
 
-        
-        
-        
+      <p class="text-sm text-gray-600 mb-6">
+        ¿Seguro que desea ceder la titularidad a
+        {{ clienteSeleccionadoParaCeder.first_name }}
+        {{ clienteSeleccionadoParaCeder.last_name }}?
+        Esta acción es permanente.<br>
+        Vas a perder acceso a este vehículo y a todo su historial/órdenes.
+      </p>
 
+      <div class="flex justify-end gap-3">
+        <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" (click)="cancelarCederTitularidad()">
+          Cancelar
+        </button>
+
+        <button class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+          (click)="confirmarCederTitularidad()">
+          Ceder titularidad
+        </button>
       </div>
-    }@empty {
-      <div class="col-span-full text-center text-gray-500">
-        No se encontraron usuarios.
-      </div>
-    }
-  </section>
+    </div>
+  </div>
+  }
+</section>
 
 } @else if (modo === 'nuevo-desde-taller-CLI') {
-  <!-- Formulario para crear cliente/usuario nuevo -->
-  <app-form-clientes 
-  [modo]="'alta-desde-taller-CLI'"
-  (perfilCreado)="mostrarUsuariosExistentes()"></app-form-clientes>
+<!-- Formulario para crear cliente/usuario nuevo -->
+<app-form-clientes [modo]="'alta-desde-taller-CLI'" (perfilCreado)="mostrarUsuariosExistentes()"></app-form-clientes>
 
-  <!-- DE ACA PARA ABAJO ME PARECE QUE SE REPITE CODIGO Y SE SOLUCION CON UN OR EN EL IF ANTERIOR -->
+<!-- DE ACA PARA ABAJO ME PARECE QUE SE REPITE CODIGO Y SE SOLUCION CON UN OR EN EL IF ANTERIOR -->
 } @else if (modo === 'permisos') {
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      @for (t of talleresFiltrados; track t.id) {
-        <div class="card card-usuario p-4 flex flex-col">
-          <h2 class="font-bold text-lg">{{ t.nombre }}</h2>
-          <p class="text-sm text-gray-600">CUIT: {{ t.cuit }}</p>
-          <p class="text-sm text-gray-600">Tel: {{ t.telefono }}</p>
-          <p class="text-sm text-gray-600">Dirección: {{ t.direccion }}</p>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  @for (t of talleresFiltrados; track t.id) {
+  <div class="card card-usuario p-4 flex flex-col">
+    <h2 class="font-bold text-lg">{{ t.nombre }}</h2>
+    <p class="text-sm text-gray-600">CUIT: {{ t.cuit }}</p>
+    <p class="text-sm text-gray-600">Tel: {{ t.telefono }}</p>
+    <p class="text-sm text-gray-600">Dirección: {{ t.direccion }}</p>
 
-          <div class="mt-4 flex justify-end">
-            <button *ngIf="!tienePermisoTaller(t.id!)" class="button-secondary" (click)="otorgarPermisoTaller(t); $event.stopPropagation()">
-              Otorgar permiso
-            </button>
-          </div>
-        </div>
-      } @empty {
-        <div class="col-span-full text-center text-gray-500">
-          No se encontraron talleres.
-        </div>
-      }
-    </section>
+    <div class="mt-4 flex justify-end">
+      <button *ngIf="!tienePermisoTaller(t.id!)" class="button-secondary"
+        (click)="otorgarPermisoTaller(t); $event.stopPropagation()">
+        Otorgar permiso
+      </button>
+    </div>
+  </div>
+  } @empty {
+  <div class="col-span-full text-center text-gray-500">
+    No se encontraron talleres.
+  </div>
   }
-
-
+</section>
+}

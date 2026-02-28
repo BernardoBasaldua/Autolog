@@ -1,38 +1,44 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ClienteService } from  '../../../../services/usuarios/clientes/cliente.service'
-import { UsuarioService } from  '../../../../services/usuarios/usuarios/usuario.service'
-import { VehiculoService } from  '../../../../services/vehiculo/vehiculo.service'
-import { TalleresService } from  '../../../../services/talleres/talleres.service'
+import { ClienteService } from '../../../../services/usuarios/clientes/cliente.service'
+import { UsuarioService } from '../../../../services/usuarios/usuarios/usuario.service'
+import { VehiculoService } from '../../../../services/vehiculo/vehiculo.service'
+import { TalleresService } from '../../../../services/talleres/talleres.service'
 import { PermisoDeAcceso } from '../../../../models/permisos/permiso-acceso.model';
 import { NgIf, NgForOf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Vehiculo } from  '../../../../models/vehiculo/vehiculo.model'
-import { Taller } from  '../../../../models/talleres/taller.model'
-import { ClienteModel, UsuarioModel } from  '../../../../models/usuarios/usuario.model'
+import { Vehiculo } from '../../../../models/vehiculo/vehiculo.model'
+import { Taller } from '../../../../models/talleres/taller.model'
+import { ClienteModel, UsuarioModel } from '../../../../models/usuarios/usuario.model'
 import { ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { ClientePublicoModel } from  '../../../../models/usuarios/usuario.model'
+import { ClientePublicoModel } from '../../../../models/usuarios/usuario.model'
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
 
 @Component({
   selector: 'app-permisos',
   templateUrl: './permisos.html',
   imports: [NgIf, NgForOf, CommonModule,
-    FormsModule, RouterModule] 
+    FormsModule, RouterModule]
 })
 export class Permisos implements OnInit {
 
   solicitudesPendientes: PermisoDeAcceso[] = [];
   permisosOtorgados: PermisoDeAcceso[] = [];
 
-  constructor() {}
-  clienteService = inject(ClienteService); 
-  usuarioService = inject(UsuarioService); 
-  vehiculoService = inject(VehiculoService); 
-  tallerService = inject(TalleresService); 
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
+  constructor() { }
+  clienteService = inject(ClienteService);
+  usuarioService = inject(UsuarioService);
+  vehiculoService = inject(VehiculoService);
+  tallerService = inject(TalleresService);
   route = inject(ActivatedRoute);
   location = inject(Location);
   router = inject(Router);
@@ -44,12 +50,12 @@ export class Permisos implements OnInit {
   vehiculoId!: number;
 
   cliente_ids: number[] = [];
-  taller_ids: number [] = [];
+  taller_ids: number[] = [];
 
-  
+
   // hacer que pueda obtener todos los clientes existentes
   //clientesExistentes : UsuarioModel[] = [];
-  talleresExistentes : Taller[] = [];
+  talleresExistentes: Taller[] = [];
   //clientesConAcceso : UsuarioModel[] = [];
   talleresConAcceso: Taller[] = [];
 
@@ -57,7 +63,7 @@ export class Permisos implements OnInit {
   clientesConAcceso: ClientePublicoModel[] = [];
 
   // hacer que pueda obtener todos los talleres existentes
-  talleres : Taller[] = [];
+  talleres: Taller[] = [];
   vehiculoActual?: Vehiculo;
 
 
@@ -85,33 +91,42 @@ export class Permisos implements OnInit {
 
   }
 
-
-
-revocarPermiso(permiso: PermisoDeAcceso): void {
-  if (!permiso.id) {
-    alert("El permiso no tiene id definido");
-    return;
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
   }
 
-  this.clienteService.eliminarPermiso(this.clienteActual.id, permiso.id).subscribe({
-    next: () => {
-      alert("Permiso revocado con éxito");
-      this.cargarPermisosYProcesar(); // refrescás la lista
-    },
-    error: (err) => {
-      console.error(err);
-      alert("Error al revocar el permiso");
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
+
+  revocarPermiso(permiso: PermisoDeAcceso): void {
+    if (!permiso.id) {
+      this.showNotice("El permiso no tiene id definido", "error");
+      return;
     }
-  });
-}
+
+    this.clienteService.eliminarPermiso(this.clienteActual.id, permiso.id).subscribe({
+      next: () => {
+        this.showNotice("Permiso revocado con éxito", "success", 2500);
+        this.cargarPermisosYProcesar(); // refrescás la lista
+      },
+      error: (err) => {
+        console.error(err);
+        this.showNotice("Error al revocar el permiso", "error", 3500);
+      }
+    });
+  }
 
 
 
   mostrarFormulario = false;
 
   formNuevoPermiso = {
-  tipo_destinatario: 'cliente', // cliente | taller
-  destinatario_id: null,        // id del cliente o taller autorizado
+    tipo_destinatario: 'cliente', // cliente | taller
+    destinatario_id: null,        // id del cliente o taller autorizado
   };
 
   cargarPermisosYProcesar() {
@@ -119,7 +134,7 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
       //guardo el cliente
       this.clienteActual = cliente;
       // Luego de obtener a mi cliente obtenemos los permisos que otorgo como un atributo suyo
-      this.permisosOtorgados =(cliente.permisos_que_otorgo || []).filter(p => p.vehiculo_autorizado === this.vehiculoId);
+      this.permisosOtorgados = (cliente.permisos_que_otorgo || []).filter(p => p.vehiculo_autorizado === this.vehiculoId);
 
       console.log("PERMISOS:", this.permisosOtorgados);
 
@@ -177,40 +192,44 @@ revocarPermiso(permiso: PermisoDeAcceso): void {
 
   crearNuevoPermiso() {
 
-  const nuevoPermiso: Partial<PermisoDeAcceso> = {
-    vehiculo_autorizado: this.vehiculoId,
-    autoriza: this.clienteActual.id,
-  };
+    const nuevoPermiso: Partial<PermisoDeAcceso> = {
+      vehiculo_autorizado: this.vehiculoId,
+      autoriza: this.clienteActual.id,
+    };
 
-  const destinatarioId = Number(this.formNuevoPermiso.destinatario_id);
+    const destinatarioId = Number(this.formNuevoPermiso.destinatario_id);
 
-  if (this.formNuevoPermiso.tipo_destinatario === 'cliente') {
-    const clienteSeleccionado = this.clientesExistentes.find(c => c.id === destinatarioId);
-    if (!clienteSeleccionado) {
-      return alert('Cliente no encontrado');
-    } else {
-      nuevoPermiso.cliente_autorizado = clienteSeleccionado.id;
+    if (this.formNuevoPermiso.tipo_destinatario === 'cliente') {
+      const clienteSeleccionado = this.clientesExistentes.find(c => c.id === destinatarioId);
+      if (!clienteSeleccionado) {
+        this.showNotice('Cliente no encontrado', 'error');
+      } else {
+        nuevoPermiso.cliente_autorizado = clienteSeleccionado.id;
+      }
+
+    } else if (this.formNuevoPermiso.tipo_destinatario === 'taller') {
+      const tallerSeleccionado = this.talleresExistentes.find((t: Taller) => t.id === destinatarioId);
+      if (!tallerSeleccionado) {
+        this.showNotice('Taller no encontrado', 'error');
+      } else {
+        nuevoPermiso.taller_autorizado = destinatarioId;
+      }
     }
-      
-  } else if (this.formNuevoPermiso.tipo_destinatario === 'taller') {
-     const tallerSeleccionado = this.talleresExistentes.find((t: Taller) => t.id === destinatarioId);
-     if (!tallerSeleccionado) {
-      return alert('Taller no encontrado');
-    } else {
-      nuevoPermiso.taller_autorizado = destinatarioId;
-    }
+
+    this.clienteService.crearPermiso(nuevoPermiso as PermisoDeAcceso, this.vehiculoId).subscribe({
+      next: () => {
+        this.showNotice("Permiso creado con éxito", "success", 2500);
+        this.mostrarFormulario = false;
+        this.cargarPermisosYProcesar();
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.showNotice("Error al crear el permiso", "error", 3500);
+      }
+    });
   }
 
-  this.clienteService.crearPermiso(nuevoPermiso as PermisoDeAcceso, this.vehiculoId).subscribe({
-    next: () => {
-      alert('Permiso creado con éxito');
-      this.mostrarFormulario = false;
-      this.cargarPermisosYProcesar();
-    },
-    error: (err: any) => {
-      console.error(err);
-      alert('Error al crear el permiso');
-    }
-    });
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

@@ -5,6 +5,8 @@ import { ClienteService } from "../../../services/usuarios/clientes/cliente.serv
 import { Router } from '@angular/router';
 import { AuthService } from "../../../services/auth/auth.service";
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
 
 @Component({
   selector: 'app-cli-config',
@@ -17,11 +19,26 @@ export class CliConfig {
 
   editandoPerfil = false;
 
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
   constructor(
     private clienteService: ClienteService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
 
   editarPerfil() {
     this.editandoPerfil = true;
@@ -32,32 +49,39 @@ export class CliConfig {
     this.editandoPerfil = false;
   }
 
-  eliminarCuenta() {
-    const confirmar = confirm(
-      '¿Seguro que querés eliminar tu cuenta? Esta acción es permanente.'
-    );
+  mostrarConfirmacionEliminar = false;
 
-    if (!confirmar) return;
-    
-    this.clienteService.eliminarCuenta().subscribe({
-      next: () => {
-        console.log('Cuenta eliminada correctamente en el backend');
-        // 1) Notificás
-        alert('Tu cuenta se eliminó correctamente.');
-        // acá podrías limpiar sesión si tenés AuthService.logout()
-        this.authService.logout();
-        
-      },
-      error: (err) => {
-        console.error('Error al eliminar la cuenta', err);
-        alert('Ocurrió un error al eliminar la cuenta. Intentá nuevamente.');
-      }
-    });
-
-    // Acá después llamás a un servicio:
-    // this.usuarioService.eliminarCuenta().subscribe(...)
-    //console.log('Eliminar cuenta confirmado');
+  abrirConfirmacionEliminar() {
+    this.mostrarConfirmacionEliminar = true;
   }
 
- 
+  cancelarEliminacion() {
+    this.mostrarConfirmacionEliminar = false;
+  }
+
+  confirmarEliminacion() {
+    this.mostrarConfirmacionEliminar = false;
+
+    this.clienteService.eliminarCuenta().subscribe({
+      next: () => {
+        this.showNotice('Tu cuenta se eliminó correctamente.', 'success', 2500);
+
+        setTimeout(() => {
+          this.authService.logout();
+        }, 1200);
+      },
+      error: () => {
+        this.showNotice(
+          'Ocurrió un error al eliminar la cuenta. Intentá nuevamente.',
+          'error',
+          3500
+        );
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
+  }
+
 }

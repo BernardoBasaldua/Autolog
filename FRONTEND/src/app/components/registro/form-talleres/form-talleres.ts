@@ -11,6 +11,9 @@ import { Taller } from '../../../models/talleres/taller.model';
 import { FormClientes } from "../form-clientes/form-clientes";
 import { TalleresService } from '../../../services/talleres/talleres.service';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
+
 @Component({
   selector: 'app-form-talleres',
   standalone: true,
@@ -30,6 +33,10 @@ export class FormTalleres {
   private servicioTaller = inject(TalleresService)
   tallerActual = this.servicioTaller.tallerActual;
   tallerForm: FormGroup;
+
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
 
 
   constructor(
@@ -59,6 +66,17 @@ export class FormTalleres {
     }
   }
 
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
+
   onSubmit(): void {
     if (this.tallerForm.invalid) {
       this.tallerForm.markAllAsTouched();
@@ -74,14 +92,14 @@ export class FormTalleres {
       // datos del usuario admin técnico (form hijo)
       const datosUsuario = this.formClientes.getUsuarioDesdeForm(true);
       if (!datosUsuario) {
-        alert('Revisá los datos del administrador técnico');
+        this.showNotice('Revisá los datos del administrador técnico', 'error', 3500);
         return;
       }
       console.log('Paso 1 datos capturados, llamando al servicio CREAR:', datosTaller);
       this.servicioTaller.crearEstablecimiento(datosUsuario,datosTaller).subscribe({
         next:(nuevoTaller)=>{
           console.log('servicio registro taller responde: ', nuevoTaller);
-          alert('Establecimiento creado');
+          this.showNotice('Establecimiento creado exitosamente', 'success', 2500);
           this.router.navigate(['/login']);
         },
         error: (e: any) => {
@@ -114,7 +132,7 @@ export class FormTalleres {
             : `Ocurrió un error al crear el establecimiento${origen}.`;
 
           // Popup simple (después lo cambiás por MatDialog/Toast)
-          alert(msgFinal);
+          this.showNotice(msgFinal, 'error', 5000);
         }
         
       });
@@ -126,15 +144,19 @@ export class FormTalleres {
       this.servicioTaller.updateTaller(datosTaller).subscribe({
         next:(nuevoTaller)=>{
           console.log('servicio registro taller responde: ', nuevoTaller);
-          alert('Establecimiento ACTUALIZADO');
+          this.showNotice('Establecimiento actualizado exitosamente', 'success', 2500);
           this.router.navigate(['/taller/ordenes']);
         },
         error: (e) => {
           console.error('Error al ACTUALIZAR establecimiento');
-          alert('No se pudo ACTUALIZAR establecimiento');
+          this.showNotice('Ocurrió un error al actualizar el establecimiento', 'error', 3500);
         },
       });
 
     }
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

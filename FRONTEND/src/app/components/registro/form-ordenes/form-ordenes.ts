@@ -17,6 +17,9 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
 // Si ya creaste el service:
 // import { OrdenDeTrabajoService } from '../../../../services/ordenes/orden-de-trabajo.service';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
+
 @Component({
   selector: 'app-form-ornden',
   standalone: true,
@@ -100,12 +103,27 @@ export class FormOrdenes {
   responsableTecnicoTexto: string = '';
   practicaTexto = '';
 
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
   private hoyLocalYYYYMMDD(): string {
     const d = new Date();
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${day}`;
+  }
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
   }
 
   ngOnInit(): void {
@@ -158,7 +176,7 @@ export class FormOrdenes {
           }
           // si ya fue entregada, no se edita (igual el back lo bloquea)
           if (o.fecha_entrega) {
-            alert('Esta orden ya tiene fecha de entrega. No se puede editar.');
+            this.showNotice('Esta orden ya tiene fecha de entrega. No se puede editar.', 'info', 5000); 
             this.router.navigate(['/taller', 'ordenes']);
             return;
           }
@@ -188,7 +206,7 @@ export class FormOrdenes {
         error: (e) => {
           this.cargandoOrden = false;
           console.error('Error cargando orden', e);
-          alert('No se pudo cargar la orden para editar.');
+          this.showNotice('No se pudo cargar la orden para editar.', 'error', 5000);
           this.router.navigate(['/taller', 'ordenes']);
         }
       });
@@ -666,13 +684,13 @@ export class FormOrdenes {
   confirmarOrden(): void {
     // 1) Validaciones mínimas de front
     if (!this.clienteSeleccionado || !this.vehiculoSeleccionado) {
-      alert('Seleccioná un cliente y un vehículo.');
+      this.showNotice('Seleccioná un cliente y un vehículo.', 'error', 4000);
       return;
     }
 
     const fechaTurnoISO = this.buildFechaTurnoISO();
     if (!fechaTurnoISO) {
-      alert('Completá fecha y hora del turno.');
+      this.showNotice('Completá fecha y hora del turno.', 'error', 4000);
       return;
     }
 
@@ -715,7 +733,7 @@ export class FormOrdenes {
 
     req$.subscribe({
       next: () => {
-        alert(this.esEdicion ? 'Orden editada correctamente ✔' : 'Orden creada correctamente ✔');
+        this.showNotice(this.esEdicion ? 'Orden editada correctamente ✔' : 'Orden creada correctamente ✔', 'success', 3000);
         this.router.navigate(['/taller', 'ordenes']);
       },
       error: (e) => {
@@ -898,5 +916,9 @@ export class FormOrdenes {
       this.prefillClienteId = null;
       return;
     }
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

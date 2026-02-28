@@ -13,6 +13,9 @@ import { ActivatedRoute} from '@angular/router';
 
 type Vista = 'semana' | 'dia' | 'mes';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
+
 @Component({
   selector: 'app-ta-turnos',
   standalone: true,
@@ -47,6 +50,10 @@ export class TaTurnos implements OnInit {
   mesSeleccionado = new Date().getMonth();      // 0..11
   anioSeleccionado = new Date().getFullYear();  // 2026...
   anios: number[] = [];
+
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
 
   tallerNombre(id: number | null | undefined): string {
     if (!id) return '-';
@@ -88,6 +95,17 @@ export class TaTurnos implements OnInit {
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
   ];
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
 
   ngOnInit(): void {
     this.generarHoras(7, 18);
@@ -171,6 +189,7 @@ export class TaTurnos implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando todo', err);
+        this.showNotice('Error al cargar turnos y datos relacionados. Intentá nuevamente.', 'error');
         this.turnosAll = [];
         this.turnosVista = [];
         this.cargando = false;
@@ -458,9 +477,10 @@ export class TaTurnos implements OnInit {
     return new Date(o.fecha_turno).getTime() > Date.now();
   }
 
+  // No se usa
   eliminarOrden(o: any): void {
     if (!this.esOrdenEliminable(o)) {
-      alert('Solo se pueden eliminar órdenes futuras.');
+      this.showNotice('Solo se pueden eliminar órdenes futuras.', 'error');
       return;
     }
 
@@ -488,8 +508,12 @@ export class TaTurnos implements OnInit {
       error: (err) => {
         console.error('Error eliminando orden:', err);
         this.cargando = false;
-        alert(err?.error?.detail ?? 'No se pudo eliminar la orden.');
+        this.showNotice(err?.error?.detail ?? 'No se pudo eliminar la orden. Intentá nuevamente.', 'error');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

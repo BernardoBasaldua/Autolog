@@ -38,6 +38,9 @@ export interface OrdenDeTrabajo {
 // Para el combo actual del buscador
 type FiltroCampo = 'cliente' | 'vehiculo' | 'fecha_turno';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
+
 @Component({
   selector: 'app-ta-ordenes',
   standalone: true,
@@ -52,7 +55,7 @@ export class TaOrdenes {
   private clienteService = inject(ClienteService);
   private vehiculoService = inject(VehiculoService);
   private tallerService = inject(TalleresService);
-  
+
   // =========================
   // SIGNALS DE SERVICIOS
   // =========================
@@ -72,6 +75,21 @@ export class TaOrdenes {
   ordenSeleccionada: OrdenDeTrabajo | null = null;
   ordenesFiltradas: OrdenDeTrabajo[] = [];
 
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
+
   ngOnInit(): void {
     // 1) Cargar órdenes del taller
     this.ordenService.listarOrdenesDelTaller().subscribe({
@@ -85,7 +103,10 @@ export class TaOrdenes {
           this.ordenSeleccionada = ordenes[0] ?? null;
         }
       },
-      error: (e) => console.error('Error cargando órdenes', e),
+      error: (e) => {
+        console.error('Error cargando órdenes', e),
+          this.showNotice('Error al cargar las órdenes. Intentá nuevamente.', 'error');
+      },
     });
 
     // 2) Cargar clientes/vehículos para formateo legible
@@ -93,17 +114,26 @@ export class TaOrdenes {
     // podrías eliminar estas llamadas.
     this.clienteService.listarTodos().subscribe({
       next: (clientes) => this.clienteService.clientes.set(clientes),
-      error: (e) => console.error('Error cargando clientes', e),
+      error: (e) => {
+        console.error('Error cargando clientes', e),
+          this.showNotice('Error al cargar los clientes. Intentá nuevamente.', 'error');
+      },
     });
 
     this.vehiculoService.listarTodos().subscribe({
       next: (vehiculos) => this.vehiculoService.vehiculos.set(vehiculos),
-      error: (e) => console.error('Error cargando vehículos', e),
+      error: (e) => {
+        console.error('Error cargando vehículos', e),
+          this.showNotice('Error al cargar los vehículos. Intentá nuevamente.', 'error');
+      },
     });
 
     this.tallerService.getTalleres().subscribe({
       next: (talleres) => this.tallerService.listaTalleres.set(talleres),
-      error: (e) => console.error('Error cargando talleres', e),
+      error: (e) => {
+        console.error('Error cargando talleres', e),
+          this.showNotice('Error al cargar los talleres. Intentá nuevamente.', 'error');
+      },
     });
   }
 
@@ -193,7 +223,7 @@ export class TaOrdenes {
   // =========================
   acciones(): void {
     if (!this.ordenSeleccionada) {
-      alert('Seleccioná una orden primero.');
+      this.showNotice('Seleccioná una orden primero.', 'info');
       return;
     }
 
@@ -340,14 +370,21 @@ export class TaOrdenes {
     return new Date(o.fecha_turno).getTime() > Date.now();
   }
 
+  mostrarConfirmacionEliminarOrden = false;
+
+  abrirConfirmacionEliminarOrden() {
+    this.mostrarConfirmacionEliminarOrden = true;
+  }
+
+  cancelarEliminarOrden() {
+    this.mostrarConfirmacionEliminarOrden = false;
+  }
+
   eliminarOrden(o: OrdenDeTrabajo): void {
     if (!this.esOrdenEliminable(o)) {
-      alert('Solo se pueden eliminar órdenes futuras.');
+      this.showNotice('Solo se pueden eliminar órdenes futuras.', 'info');
       return;
     }
-
-    const ok = confirm(`¿Eliminar la orden #${o.id}?`);
-    if (!ok) return;
 
     this.ordenService.deleteOrden(o.id).subscribe({
       next: () => {
@@ -365,8 +402,12 @@ export class TaOrdenes {
       },
       error: (err) => {
         console.error('Error eliminando orden:', err);
-        alert(err?.error?.detail ?? 'No se pudo eliminar la orden.');
+        this.showNotice('Error al eliminar la orden. Intentá nuevamente.', 'error');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }

@@ -17,16 +17,14 @@ import { ClientePublicoModel } from '../../../models/usuarios/usuario.model';
 import { NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
-
-
-
-
 // 🔹 Enum declarado FUERA de la clase
 export enum ModoSeleccion {
   Default = 'default',
   Permisos = 'permisos',
   NuevoDesdeTaller = 'nuevo-desde-taller'
 }
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
 
 @Component({
   selector: 'app-seleccion-usuario',
@@ -43,27 +41,24 @@ export class SeleccionUsuario {
   private talleresService = inject(TalleresService);
   private vehiculoService = inject(VehiculoService);
 
-
-  // clientes: ClienteModel[] = [];
-  // clientesFiltrados: ClienteModel[] = [];
-
   clientes: ClientePublicoModel[] = [];
   clientesFiltrados: ClientePublicoModel[] = [];
 
   talleres: Taller[] = [];
   talleresFiltrados: Taller[] = [];
 
-
   // 🔹 Exponer el enum al template
   modo: string = 'default';
   tipo: string = "";
-
 
   clienteActual: ClienteModel | null = null;
 
   vehiculoId!: number;
 
-  
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
+
   terminoBusqueda = '';
 
   permisosVehiculo: PermisoDeAcceso[] = [];
@@ -81,7 +76,10 @@ export class SeleccionUsuario {
         // me quedo solo con permisos del vehículo actual
         this.permisosVehiculo = (permisos ?? []).filter(p => p.vehiculo_autorizado === this.vehiculoId);
       },
-      error: (e) => console.error('Error cargando permisos', e),
+      error: (e) => {
+        console.error('Error cargando permisos', e),
+        this.showNotice('Error al cargar permisos del vehículo. Intentá nuevamente.', 'error');
+      },
     });
   }
 
@@ -101,120 +99,133 @@ export class SeleccionUsuario {
     return this.permisosVehiculo.find(p => p.taller_autorizado === tallerId)?.id ?? null;
   }
 
-  
-
-
-  ngOnInit(): void {
-  this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
-  this.clienteActual = this.clienteService.clienteActual();
-
-  this.tipo = this.route.snapshot.data?.['modo'] ?? '';
-  this.modo = 'default';
-
-  this.cargarClientes(); // carga tab default
-  this.cargarPermisosVehiculo();
-  this.router.events
-    .pipe(filter(e => e instanceof NavigationEnd))
-    .subscribe(() => {
-      this.clienteActual = this.clienteService.clienteActual();
-      this.cargarPermisosVehiculo();
-    });
-
-
-}
-
-
-
-//   cargarUsuarios(): void {
-//   this.usuarioService.getClientes().subscribe({
-//     next: (clientes) => {
-//       const miPk = this.clienteActual?.usuario?.pk;
-
-//       // clientes vienen con { id, usuario: {...} }
-//       // Excluirme a mí (comparando por pk del usuario)
-//       const filtrados = miPk
-//         ? clientes.filter(c => c.usuario?.pk !== miPk)
-//         : clientes;
-
-//       // Acá guardamos como "usuarios" pero realmente son clientes
-//       // Si querés, renombramos después a "clientes"
-//       // this.usuarios = filtrados as any;
-//       // this.usuariosFiltrados = filtrados as any;
-
-//       console.log('clientes total', clientes.length);
-//       console.log('miPk', miPk);
-//       console.log('clientes sin mi', filtrados.length);
-//       console.log('primer cliente', filtrados[0]);
-//     },
-//     error: (e) => console.error('Error cargando clientes', e),
-//   });
-// }
-
-
-
-
-cargarClientes(): void {
-  this.clienteService.getClientesPublicos().subscribe({
-    next: (clientes) => {
-      const miPk = this.clienteActual?.usuario?.pk;
-
-      this.clientes = miPk
-        ? clientes.filter(c => c.usuario_pk !== miPk)
-        : clientes;
-
-      this.clientesFiltrados = this.clientes;
-    },
-    error: (e) => console.error('Error cargando clientes', e),
-  });
-}
-
-
-cargarTalleres(): void {
-  this.talleresService.getTalleres().subscribe({
-    next: (talleres) => {
-      this.talleres = talleres;
-      this.talleresFiltrados = talleres;
-    },
-    error: (e) => console.error('Error cargando talleres', e),
-  });
-}
-
-
-  confirmarCederTitularidad(c: any) {
-    const nombre = `${c.first_name ?? ''} ${c.last_name ?? ''}`.trim() || c.email || 'este cliente';
-
-    const ok = confirm(
-      `¿Estás segura que querés ceder la titularidad a ${nombre}?\n\n` +
-      `Vas a perder acceso a este vehículo y a todo su historial/órdenes.`
-    );
-
-    if (!ok) return;
-
-    this.cederTitularidad(c);
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
   }
 
-  cederTitularidad(c: any) {
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
+
+  ngOnInit(): void {
+    this.vehiculoId = Number(this.route.snapshot.paramMap.get('vehiculoId'));
+    this.clienteActual = this.clienteService.clienteActual();
+
+    this.tipo = this.route.snapshot.data?.['modo'] ?? '';
+    this.modo = 'default';
+
+    this.cargarClientes(); // carga tab default
+    this.cargarPermisosVehiculo();
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.clienteActual = this.clienteService.clienteActual();
+        this.cargarPermisosVehiculo();
+      });
+  }
+
+  //   cargarUsuarios(): void {
+  //   this.usuarioService.getClientes().subscribe({
+  //     next: (clientes) => {
+  //       const miPk = this.clienteActual?.usuario?.pk;
+
+  //       // clientes vienen con { id, usuario: {...} }
+  //       // Excluirme a mí (comparando por pk del usuario)
+  //       const filtrados = miPk
+  //         ? clientes.filter(c => c.usuario?.pk !== miPk)
+  //         : clientes;
+
+  //       // Acá guardamos como "usuarios" pero realmente son clientes
+  //       // Si querés, renombramos después a "clientes"
+  //       // this.usuarios = filtrados as any;
+  //       // this.usuariosFiltrados = filtrados as any;
+
+  //       console.log('clientes total', clientes.length);
+  //       console.log('miPk', miPk);
+  //       console.log('clientes sin mi', filtrados.length);
+  //       console.log('primer cliente', filtrados[0]);
+  //     },
+  //     error: (e) => console.error('Error cargando clientes', e),
+  //   });
+  // }
+
+  cargarClientes(): void {
+    this.clienteService.getClientesPublicos().subscribe({
+      next: (clientes) => {
+        const miPk = this.clienteActual?.usuario?.pk;
+
+        this.clientes = miPk
+          ? clientes.filter(c => c.usuario_pk !== miPk)
+          : clientes;
+
+        this.clientesFiltrados = this.clientes;
+      },
+      error: (e) => {
+        console.error('Error cargando clientes', e),
+          this.showNotice('Error al cargar clientes. Intentá nuevamente.', 'error');
+      },
+    });
+  }
+
+  cargarTalleres(): void {
+    this.talleresService.getTalleres().subscribe({
+      next: (talleres) => {
+        this.talleres = talleres;
+        this.talleresFiltrados = talleres;
+      },
+      error: (e) => {
+        console.error('Error cargando talleres', e),
+          this.showNotice('Error al cargar talleres. Intentá nuevamente.', 'error');
+      },
+    });
+  }
+
+  clienteSeleccionadoParaCeder: any | null = null;
+  mostrarConfirmacionCederTitularidad = false;
+
+  abrirConfirmacionCederTitularidad(cliente: any) {
+    this.clienteSeleccionadoParaCeder = cliente;
+    this.mostrarConfirmacionCederTitularidad = true;
+  }
+
+  cancelarCederTitularidad() {
+    this.mostrarConfirmacionCederTitularidad = false;
+    this.clienteSeleccionadoParaCeder = null;
+  }
+
+  confirmarCederTitularidad() {
+    const c = this.clienteSeleccionadoParaCeder;
+    if (!c || !c.id) {
+      this.showNotice('No se pudo identificar al cliente seleccionado. Intentá nuevamente.', 'error');
+      return;
+    }
+    
     // Ajustá "this.vehiculoId" al nombre real que uses en este componente
     this.vehiculoService.transferirTitularidad(this.vehiculoId, c.id).subscribe({
       next: () => {
-        alert('Titularidad transferida correctamente');
+        this.showNotice('Titularidad transferida correctamente', 'success');
         // Ajustá la ruta a donde quieras volver
         this.router.navigate(['/cliente/vehiculos']);
       },
       error: (err) => {
         console.error(err);
-        alert('Error al transferir titularidad');
+        this.showNotice('Error al transferir titularidad. Intentá nuevamente.', 'error');
       }
     });
-  }
 
+    this.mostrarConfirmacionCederTitularidad = false;
+    this.clienteSeleccionadoParaCeder = null;
+  }
 
   volver(): void {
     this.router.navigate(['/cliente/permisos', this.vehiculoId]);
   }
 
   filtrar(): void {
-  const termino = this.terminoBusqueda.toLowerCase().trim();
+    const termino = this.terminoBusqueda.toLowerCase().trim();
 
     if (this.modo === 'default') {
       if (!termino) {
@@ -229,10 +240,7 @@ cargarTalleres(): void {
         return nombre.includes(termino) || email.includes(termino);
       });
     }
-}
-
-
-
+  }
 
   crearOrden(usuario: UsuarioModel): void {
     // Ejemplo de navegación si querés crear orden
@@ -265,27 +273,27 @@ cargarTalleres(): void {
     console.log('click en ver usuario', usuario);
   }
 
-//  otorgarPermisoUsuario(usuario: UsuarioModel): void {
-//   if (!this.vehiculoId || !this.clienteActual?.id || !usuario.pk) {
-//     console.error('Faltan datos para crear permiso', {
-//       vehiculoId: this.vehiculoId,
-//       autoriza: this.clienteActual?.id,
-//       cliente: usuario.pk
-//     });
-//     return;
-//   }
+  //  otorgarPermisoUsuario(usuario: UsuarioModel): void {
+  //   if (!this.vehiculoId || !this.clienteActual?.id || !usuario.pk) {
+  //     console.error('Faltan datos para crear permiso', {
+  //       vehiculoId: this.vehiculoId,
+  //       autoriza: this.clienteActual?.id,
+  //       cliente: usuario.pk
+  //     });
+  //     return;
+  //   }
 
-  
 
-//   const nuevoPermiso: PermisoDeAcceso = {
-//     vehiculo_autorizado: this.vehiculoId,
-//     autoriza: this.clienteActual.id,        // ← bien
-//     cliente_autorizado: usuario.pk,         // ← bien
-//     taller_autorizado: null                 // ← dejalo null si no aplica
-//   };
 
-//   this.crearPermiso(nuevoPermiso, this.vehiculoId);
-// }
+  //   const nuevoPermiso: PermisoDeAcceso = {
+  //     vehiculo_autorizado: this.vehiculoId,
+  //     autoriza: this.clienteActual.id,        // ← bien
+  //     cliente_autorizado: usuario.pk,         // ← bien
+  //     taller_autorizado: null                 // ← dejalo null si no aplica
+  //   };
+
+  //   this.crearPermiso(nuevoPermiso, this.vehiculoId);
+  // }
 
   otorgarPermisoCliente(cliente: ClientePublicoModel): void {
     if (!this.vehiculoId || !this.clienteActual?.id) return;
@@ -302,9 +310,6 @@ cargarTalleres(): void {
 
   }
 
-
-
-
   otorgarPermisoTaller(taller: Taller): void {
     if (this.vehiculoId && this.clienteActual?.id && taller.id) {
       const nuevoPermiso: PermisoDeAcceso = {
@@ -317,8 +322,8 @@ cargarTalleres(): void {
 
     } else {
       console.error('Faltan datos para crear permiso');
+      this.showNotice('Error al otorgar permiso. Intentá nuevamente.', 'error');
     }
-
   }
 
   crearPermiso(nuevoPermiso: PermisoDeAcceso): void {
@@ -327,14 +332,18 @@ cargarTalleres(): void {
 
     this.clienteService.crearPermiso(nuevoPermiso, autorizaId).subscribe({
       next: () => {
-        alert('Permiso creado con éxito');
+        this.showNotice('Permiso creado con éxito', 'success');
         this.cargarPermisosVehiculo(); // ✅ oculta "Otorgar"
       },
       error: (err) => {
         console.error(err);
-        alert('Error al crear el permiso');
+        this.showNotice('Error al crear el permiso. Intentá nuevamente.', 'error');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 
 }

@@ -8,6 +8,8 @@ import { UsuarioService } from '../../../services/usuarios/usuarios/usuario.serv
 
 type Modo = 'crear' | 'editar' | 'registroEstablecimiento' | 'alta-desde-taller-CLI' | 'alta-desde-taller-VEHI' | 'alta-desde-taller-ORD';
 
+// tipo para mensajes de notificación (se usa si hace falta en la clase)
+type NoticeType = 'error' | 'info' | 'success';
 
 @Component({
   selector: 'app-form-clientes',
@@ -35,6 +37,10 @@ export class FormClientes {
       m === 'alta-desde-taller-ORD'
     );
   }
+
+  // Cartel de error para login de Google
+  notice: { type: NoticeType; text: string } | null = null;
+  private noticeTimer: any;
 
   constructor(
     private fb: FormBuilder, 
@@ -134,6 +140,17 @@ export class FormClientes {
       });
     }
   }
+
+  showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
+    this.notice = { type, text };
+    clearTimeout(this.noticeTimer);
+    this.noticeTimer = setTimeout(() => (this.notice = null), ms);
+  }
+
+  clearNotice() {
+    this.notice = null;
+    clearTimeout(this.noticeTimer);
+  }
   
   getUsuarioDesdeForm(marcarComoTocado = false): UsuarioModel | null {
     if (marcarComoTocado) {
@@ -177,7 +194,7 @@ export class FormClientes {
         {next: (cliente) => {
           // Éxito: cramos usuario
           console.log('cliente crado', cliente, this.modoInterno());
-          alert('Cuenta creada correctamente ✔');
+          this.showNotice('Cuenta creada correctamente ✔', 'success');
           //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
           if (this.modoInterno() === 'alta-desde-taller-CLI') {
             this.perfilCreado.emit();
@@ -229,7 +246,7 @@ export class FormClientes {
             ? mensajes.join('\n')
             : 'Ocurrió un error al crear el usuario.';
 
-          alert(msgFinal);
+          this.showNotice(msgFinal, 'error');
 
           // FIN MANEJO ERRORES
         }
@@ -239,13 +256,13 @@ export class FormClientes {
       this.usuarioService.actualizarUsuario(datosUsuario).subscribe({
         next: (usuarioActualizado) => {
           console.log('Usuario actualizado', usuarioActualizado);
-          alert('Perfil actualizado correctamente ✔');
+          this.showNotice('Perfil actualizado correctamente ✔', 'success');
           // avisar al padre "ya terminé"
           this.perfilActualizado.emit();
         },
         error: (e) => {
           console.error('Error al actualizar perfil', e);
-          alert('No se pudo actualizar el perfil');
+          this.showNotice('Ocurrió un error al actualizar el perfil', 'error');
         },
       });
     }
@@ -268,5 +285,9 @@ export class FormClientes {
 
     // Si son distintos → devolvemos un error de grupo
     return { passwordMismatch: true };
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.noticeTimer);
   }
 }
