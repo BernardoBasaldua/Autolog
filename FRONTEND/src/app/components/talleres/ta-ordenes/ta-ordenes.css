@@ -294,12 +294,23 @@
 
 /* Header del detalle con X */
 .detail-header{
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+}
+
+.detail-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* badge grande */
+.estado-pill-lg{
+  font-size:13px;
+  padding:6px 14px;
+  font-weight:700;
 }
 
 .detail-title{
@@ -371,3 +382,21 @@
   gap: 8px;
   justify-content: flex-end;
 }
+
+
+
+
+.estado-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  border:1px solid rgba(0,0,0,.12);
+}
+
+.estado-pendiente{ background:#FEF3C7; } /* amarillo suave */
+.estado-en_proceso{ background:#DBEAFE; } /* celeste suave */
+.estado-finalizada{ background:#DCFCE7; } /* verde suave */
+.estado-anulada{ background:#FEE2E2; } /* rojo suave */

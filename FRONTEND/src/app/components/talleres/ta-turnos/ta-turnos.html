@@ -151,7 +151,11 @@
       (click)="abrirDetalleSlot(dia, hora)"
     >
       <ng-container *ngFor="let t of getTurnosCelda(dia, hora)">
-        <div class="event" (click)="abrirDetalle(t); $event.stopPropagation()">
+        <div
+          class="event"
+          [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
+          (click)="abrirDetalle(t); $event.stopPropagation()"
+        >
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
@@ -192,10 +196,18 @@
       (click)="abrirDetalleSlot(fechaBase, hora)"
     >
       <ng-container *ngFor="let t of getTurnosCelda(fechaBase, hora)">
-        <div class="event" (click)="abrirDetalle(t); $event.stopPropagation()">
+        <div
+          class="event"
+          [ngClass]="'event-' + ($any(t).estado_actual || $any(t).estado || 'pendiente')"
+          (click)="abrirDetalle(t); $event.stopPropagation()"
+        >
           #ORD-{{ t.id }}<br />
           {{ t.mantenimiento }}
         </div>
+        <!-- <div class="event" (click)="abrirDetalle(t); $event.stopPropagation()">
+          #ORD-{{ t.id }}<br />
+          {{ t.mantenimiento }}
+        </div> -->
       </ng-container>
     </div>
   </ng-container>
@@ -273,14 +285,23 @@
         </p>
       </div>
 
-      <button 
-        type="button"
-        class="btn-close-modal"
-        (click)="cerrarDetalle()"
-        aria-label="Cerrar"
+      <div class="modal-header-right">
+        <span
+          class="estado-pill"
+          [ngClass]="'estado-' + getEstado(ordenSeleccionada)"
         >
-        <i class="fas fa-times"></i>
+          {{ etiquetaEstado(getEstado(ordenSeleccionada)) }}
+        </span>
+
+        <button
+          type="button"
+          class="btn-close-modal"
+          (click)="cerrarDetalle()"
+          aria-label="Cerrar"
+        >
+          <i class="fas fa-times"></i>
         </button>
+      </div>
     </div>
 
     <ng-container *ngIf="ordenSeleccionada as orden">

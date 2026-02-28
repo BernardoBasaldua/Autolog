@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { computed } from '@angular/core';
 import { ClienteService } from '../../../services/usuarios/clientes/cliente.service';
 import { VehiculoService } from '../../../services/vehiculo/vehiculo.service';
 import { OrdenService } from '../../../services/ordenes/orden.service';
@@ -12,6 +12,7 @@ import { TalleresService } from '../../../services/talleres/talleres.service';
 // MODELO FRONT (alineado a DRF)
 // =========================
 export type TipoMantenimiento = 'preventivo' | 'correctivo';
+export type EstadoOrden = 'pendiente' | 'en_proceso' | 'finalizada' | 'anulada';
 
 export interface OrdenDeTrabajo {
   id: number;
@@ -27,6 +28,9 @@ export interface OrdenDeTrabajo {
   kilometraje_siguiente_servicio: number | null;
 
   mantenimiento: TipoMantenimiento;
+
+  estado: EstadoOrden;
+  estado_actual: EstadoOrden;
 
   cliente: number;   // FK id
   vehiculo: number;  // FK id
@@ -74,10 +78,37 @@ export class TaOrdenes {
   // =========================
   ordenSeleccionada: OrdenDeTrabajo | null = null;
   ordenesFiltradas: OrdenDeTrabajo[] = [];
+  // ordenesFiltradasSig = computed(() => {
+  //   const todas = this.ordenesSig();
+  //   const t = this.terminoBusqueda.trim().toLowerCase();
+
+  //   if (!t) return todas;
+
+  //   if (this.filtroCampo === 'cliente') {
+  //     return todas.filter(o => {
+  //       const nombre = this.formatClienteNombre(o.cliente).toLowerCase();
+  //       const extras = this.formatClienteExtras(o.cliente).toLowerCase();
+  //       return nombre.includes(t) || extras.includes(t) || String(o.cliente).includes(t);
+  //     });
+  //   }
+
+  //   if (this.filtroCampo === 'vehiculo') {
+  //     return todas.filter(o => {
+  //       const main = this.formatVehiculoMain(o.vehiculo).toLowerCase();
+  //       const sub = this.formatVehiculoSub(o.vehiculo).toLowerCase();
+  //       return main.includes(t) || sub.includes(t) || String(o.vehiculo).includes(t);
+  //     });
+  //   }
+
+  //   return todas.filter(o => this.formatFechaTurno(o.fecha_turno).toLowerCase().includes(t));
+  // });
 
   // Cartel de error para login de Google
   notice: { type: NoticeType; text: string } | null = null;
   private noticeTimer: any;
+
+  mostrarConfirmacionEliminarOrden = false;
+  mostrarConfirmacionAnularOrden = false; // ✅ FALTA ESTO
 
   showNotice(text: string, type: NoticeType = 'error', ms = 3500) {
     this.notice = { type, text };
@@ -238,8 +269,12 @@ export class TaOrdenes {
   // =========================
   // NAVEGACIÓN DESDE DETALLE
   // =========================
+  // irAEditarOrden(o: OrdenDeTrabajo): void {
+  //   if (o.fecha_entrega) return; // por las dudas
+  //   this.router.navigate(['/taller', 'ordenes', o.id, 'editar']);
+  // }
   irAEditarOrden(o: OrdenDeTrabajo): void {
-    if (o.fecha_entrega) return; // por las dudas
+    if (!this.puedeEditar(o)) return;
     this.router.navigate(['/taller', 'ordenes', o.id, 'editar']);
   }
 
@@ -370,7 +405,7 @@ export class TaOrdenes {
     return new Date(o.fecha_turno).getTime() > Date.now();
   }
 
-  mostrarConfirmacionEliminarOrden = false;
+
 
   abrirConfirmacionEliminarOrden() {
     this.mostrarConfirmacionEliminarOrden = true;
@@ -386,22 +421,33 @@ export class TaOrdenes {
       return;
     }
 
-    this.ordenService.deleteOrden(o.id).subscribe({
+    // ✅ Cerrar modal YA (así no queda pegado)
+    this.mostrarConfirmacionEliminarOrden = false;
+
+    const id = o.id;
+
+    this.ordenService.deleteOrden(id).subscribe({
       next: () => {
-        // 1) borrar de signal
-        const nuevas = this.ordenesSig().filter(x => x.id !== o.id);
+        // 1) actualizar signal
+        const nuevas = this.ordenesSig().filter(x => x.id !== id);
         this.ordenService.ordenes.set(nuevas);
 
-        // 2) refrescar lista filtrada
-        this.buscar();
+        // 2) actualizar tabla si tu HTML usa ordenesFiltradas
+        this.ordenesFiltradas = this.ordenesFiltradas.filter(x => x.id !== id);
 
-        // 3) cerrar detalle si era la seleccionada
-        if (this.ordenSeleccionada?.id === o.id) {
+        // 3) actualizar selección/detalle
+        if (this.ordenSeleccionada?.id === id) {
           this.ordenSeleccionada = this.ordenesFiltradas[0] ?? null;
         }
+
+        this.showNotice('Orden eliminada.', 'success');
       },
       error: (err) => {
         console.error('Error eliminando orden:', err);
+
+        // ✅ también cerralo en error (por las dudas)
+        this.mostrarConfirmacionEliminarOrden = false;
+
         this.showNotice('Error al eliminar la orden. Intentá nuevamente.', 'error');
       }
     });
@@ -410,4 +456,150 @@ export class TaOrdenes {
   ngOnDestroy(): void {
     clearTimeout(this.noticeTimer);
   }
+
+  puedeEditar(o: OrdenDeTrabajo): boolean {
+    return o.estado_actual !== 'finalizada' && o.estado_actual !== 'anulada';
+  }
+
+  puedeAnular(o: OrdenDeTrabajo): boolean {
+    return o.estado_actual === 'en_proceso';
+  }
+
+  puedeFinalizar(o: OrdenDeTrabajo): boolean {
+    return o.estado_actual === 'en_proceso';
+  }
+  puedeEliminar(o: OrdenDeTrabajo): boolean {
+    return o.estado_actual === 'pendiente' && this.esOrdenEliminable(o);
+  }
+  //FINALIZAR
+  mostrarModalFinalizar = false;
+  fechaEntregaInput = ''; // 'YYYY-MM-DD'
+
+  abrirFinalizarOrden(o: OrdenDeTrabajo) {
+    if (!this.puedeFinalizar(o)) {
+      this.showNotice('Solo se puede finalizar una orden EN PROCESO.', 'info');
+      return;
+    }
+    this.fechaEntregaInput = new Date().toISOString().slice(0, 10);
+    this.mostrarModalFinalizar = true;
+  }
+
+  cancelarFinalizar() {
+    this.mostrarModalFinalizar = false;
+    this.fechaEntregaInput = '';
+  }
+
+  confirmarFinalizar(o: OrdenDeTrabajo) {
+    if (!this.fechaEntregaInput) {
+      this.showNotice('Ingresá una fecha de entrega.', 'info');
+      return;
+    }
+
+    this.ordenService.finalizarOrden(o.id, this.fechaEntregaInput).subscribe({
+      next: () => {
+        // refresh
+        this.ordenService.listarOrdenesDelTaller().subscribe({
+          next: (ordenes) => {
+            this.ordenService.ordenes.set(ordenes);
+            this.ordenesFiltradas = [...ordenes];
+            this.buscar();
+
+            const misma = ordenes.find(x => x.id === o.id);
+            this.ordenSeleccionada = misma ?? (this.ordenesFiltradas[0] ?? null);
+
+            this.mostrarModalFinalizar = false;
+            this.showNotice('Orden finalizada.', 'success');
+          },
+          error: () => {
+            this.mostrarModalFinalizar = false;
+            this.showNotice('Orden finalizada, pero falló el refresh.', 'info');
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error finalizando orden:', err);
+        const msg =
+          err?.error?.detail ||
+          err?.error?.fecha_entrega?.[0] ||
+          err?.error?.non_field_errors?.[0] ||
+          'Error al finalizar la orden. Intentá nuevamente.';
+        this.showNotice(msg, 'error');
+      }
+    });
+  }
+  anularOrden(o: OrdenDeTrabajo): void {
+    if (!this.puedeAnular(o)) {
+      this.showNotice('Solo se puede anular una orden EN PROCESO.', 'info');
+      return;
+    }
+
+    const id = o.id;
+    const ANULADA: EstadoOrden = 'anulada';
+
+    // cierro modal primero
+    this.mostrarConfirmacionAnularOrden = false;
+
+    // ===== UPDATE OPTIMISTA (instantáneo)
+    // 1) signal
+    const sigActualizadas: OrdenDeTrabajo[] = this.ordenesSig().map((x): OrdenDeTrabajo =>
+      x.id === id ? { ...x, estado: ANULADA, estado_actual: ANULADA } : x
+    );
+    this.ordenService.ordenes.set(sigActualizadas);
+
+    // 2) tabla (TU HTML USA ESTO)
+    this.ordenesFiltradas = this.ordenesFiltradas.map((x): OrdenDeTrabajo =>
+      x.id === id ? { ...x, estado: ANULADA, estado_actual: ANULADA } : x
+    );
+
+    // 3) detalle
+    if (this.ordenSeleccionada?.id === id) {
+      this.ordenSeleccionada = { ...this.ordenSeleccionada, estado: ANULADA, estado_actual: ANULADA };
+    }
+
+    // ===== llamada real al backend
+    this.ordenService.anularOrden(id).subscribe({
+      next: () => {
+        // opcional: si querés refrescar después por consistencia
+        // (pero NO hace falta para que se vea instantáneo)
+        this.showNotice('Orden anulada.', 'success');
+      },
+      error: (err) => {
+        console.error('Error anulando orden:', err);
+
+        // rollback: traigo desde signal anterior del backend (o recargo)
+        this.ordenService.listarOrdenesDelTaller().subscribe({
+          next: (ordenes) => {
+            this.ordenService.ordenes.set(ordenes);
+            this.ordenesFiltradas = [...ordenes];
+            // re-selección coherente
+            this.ordenSeleccionada = ordenes.find(x => x.id === id) ?? null;
+          }
+        });
+
+        const msg =
+          err?.error?.detail ||
+          err?.error?.non_field_errors?.[0] ||
+          'Error al anular la orden. Intentá nuevamente.';
+        this.showNotice(msg, 'error');
+      }
+    });
+  }
+  abrirConfirmacionAnularOrden() {
+    this.mostrarConfirmacionAnularOrden = true;
+  }
+
+  cancelarAnularOrden() {
+    this.mostrarConfirmacionAnularOrden = false;
+  }
+
+  etiquetaEstado(e: EstadoOrden): string {
+    switch (e) {
+      case 'pendiente': return 'Pendiente';
+      case 'en_proceso': return 'En proceso';
+      case 'finalizada': return 'Finalizada';
+      case 'anulada': return 'Anulada';
+      default: return e;
+    }
+  }
+
 }

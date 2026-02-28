@@ -89,7 +89,7 @@ class Agenda(models.Model):
     miercoles = models.BooleanField(default=True)
     jueves = models.BooleanField(default=True)
     viernes = models.BooleanField(default=True)
-    sabado = models.BooleanField(default=False)
+    sabado = models.BooleanField(default=True)
     domingo = models.BooleanField(default=False)
 
     # Configuración de horarios
@@ -120,18 +120,18 @@ class Agenda(models.Model):
         if fecha_hora_propuesta <= timezone.now():
             raise ValueError("No se pueden reservar turnos en el pasado.")
 
-        # 2. Validar si es un día laboral
-        dias_laborales = [
-            self.lunes,
-            self.martes,
-            self.miercoles,
-            self.jueves,
-            self.viernes,
-            self.sabado,
-            self.domingo,
-        ]
-        if not dias_laborales[fecha_hora_propuesta.weekday()]:
-            raise ValueError("El día seleccionado no es un día laboral.")
+        # # 2. Validar si es un día laboral
+        # dias_laborales = [
+        #     self.lunes,
+        #     self.martes,
+        #     self.miercoles,
+        #     self.jueves,
+        #     self.viernes,
+        #     self.sabado,
+        #     self.domingo,
+        # ]
+        # if not dias_laborales[fecha_hora_propuesta.weekday()]:
+        #     raise ValueError("El día seleccionado no es un día laboral.")
 
         # 3. Validar si está dentro del horario laboral
         if not (self.horario_desde <= fecha_hora_propuesta.time() <= self.horario_hasta):

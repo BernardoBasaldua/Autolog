@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { OrdenDeTrabajo, OrdenDeTrabajoCreatePayload } from '../../models/orden/orden.models';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { EstadoOrden } from '../../models/orden/orden.models'; // o donde lo tengas
 
 @Injectable({
   providedIn: 'root'
@@ -61,5 +62,25 @@ export class OrdenService {
   // ✅ ELIMINAR (DELETE) una orden por id
   deleteOrden(id: number) {
     return this.http.delete(`${this.apiOrdenesUrl}${id}/`);
+  }
+
+
+  // ✅ FINALIZAR: setea fecha_entrega => backend pasa a FINALIZADA
+  finalizarOrden(id: number, fechaEntregaYYYYMMDD: string): Observable<OrdenDeTrabajo> {
+    return this.http.patch<OrdenDeTrabajo>(`${this.apiOrdenesUrl}${id}/`, {
+      fecha_entrega: fechaEntregaYYYYMMDD
+    });
+  }
+
+  // ✅ ANULAR: llama a la action del viewset
+  // anularOrden(id: number): Observable<{ status: string; estado: string }> {
+  //   return this.http.post<{ status: string; estado: string }>(
+  //     `${this.apiOrdenesUrl}${id}/anular/`,
+  //     {}
+  //   );
+  // }
+  anularOrden(id: number) {
+    const url = `${this.apiOrdenesUrl}${id}/anular/`;
+    return this.http.post<{ status: string; estado: EstadoOrden }>(url, {});
   }
 }

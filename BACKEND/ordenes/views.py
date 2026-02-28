@@ -8,7 +8,8 @@ from .serializers import OrdenDeTrabajoSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError, PermissionDenied  # 👈 agregá PermissionDenied
-
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.db.models import Q
 from .serializers import OrdenDeTrabajoSerializer
 from usuarios.models.pemisoAcceso import PermisoDeAcceso  # ajustá import según tu app
@@ -57,8 +58,8 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
             agenda, _ = Agenda.objects.get_or_create(taller_id=orden.taller_id)
             orden.agenda = agenda
 
-            # Lock de la agenda
-            agenda = Agenda.objects.select_for_update().get(id=orden.agenda_id)
+            # # Lock de la agenda
+            # agenda = Agenda.objects.select_for_update().get(id=orden.agenda_id)
 
             try:
                 agenda.verificar_disponibilidad(orden.fecha_turno)
@@ -73,9 +74,14 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         # Bloquear edición si ya tiene fecha_entrega
         orden_actual = self.get_object()
+        
+        
+        if orden_actual.estado in (OrdenDeTrabajo.FINALIZADA, OrdenDeTrabajo.ANULADA):
+            raise PermissionDenied("No se puede editar una orden finalizada o anulada.")
+
         if orden_actual.fecha_entrega is not None:
             raise PermissionDenied("No se puede editar una orden que ya tiene fecha de entrega.")
-        
+
         orden = serializer.save()
         if orden.taller_id and orden.agenda_id is None:
             agenda, _ = Agenda.objects.get_or_create(taller_id=orden.taller_id)
@@ -105,7 +111,27 @@ class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
         qs = qs.order_by("-fecha_turno", "-id")
         return Response(OrdenDeTrabajoSerializer(qs, many=True).data)
 
+    @action(detail=True, methods=["post"])
+    def anular(self, request, pk=None):
+        orden = self.get_object()
 
+        # (opcional pero recomendado) solo el taller dueño
+        tecnico = getattr(request.user, "tecnico", None)
+        if not tecnico or not tecnico.taller_id:
+            raise PermissionDenied("Usuario no es técnico.")
+        if orden.taller_id != tecnico.taller_id:
+            raise PermissionDenied("No podés anular órdenes de otro taller.")
+
+        try:
+            orden.anular()  # método del modelo
+        except DjangoValidationError as e:
+            # e.message_dict o e.messages
+            raise DRFValidationError(e.message_dict if hasattr(e, "message_dict") else e.messages)
+
+        return Response(
+            {"status": "ok", "estado": orden.estado},
+            status=status.HTTP_200_OK
+        )
     
 # class OrdenDeTrabajoViewSet(viewsets.ModelViewSet):
 #     serializer_class = OrdenDeTrabajoSerializer

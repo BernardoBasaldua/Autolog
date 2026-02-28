@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute} from '@angular/router';
 
 type Vista = 'semana' | 'dia' | 'mes';
-
+type EstadoOrden = 'pendiente' | 'en_proceso' | 'finalizada' | 'anulada';
 // tipo para mensajes de notificación (se usa si hace falta en la clase)
 type NoticeType = 'error' | 'info' | 'success';
 
@@ -28,7 +28,7 @@ export class TaTurnos implements OnInit {
   private turnoService = inject(TurnoService);
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
-
+  
   // caches
   talleresById = new Map<number, any>();
   clientesById = new Map<number, any>();
@@ -516,4 +516,19 @@ export class TaTurnos implements OnInit {
   ngOnDestroy(): void {
     clearTimeout(this.noticeTimer);
   }
+
+  getEstado(o: any): EstadoOrden | null {
+    return (o?.estado_actual ?? o?.estado ?? null) as EstadoOrden | null;
+  }
+
+  etiquetaEstado(e: EstadoOrden | null): string {
+    switch (e) {
+      case 'pendiente': return 'Pendiente';
+      case 'en_proceso': return 'En proceso';
+      case 'finalizada': return 'Finalizada';
+      case 'anulada': return 'Anulada';
+      default: return '-';
+    }
+  }
+
 }

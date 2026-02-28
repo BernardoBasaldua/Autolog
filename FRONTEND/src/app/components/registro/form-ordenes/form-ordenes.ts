@@ -45,6 +45,9 @@ export class FormOrdenes {
   ordenId: number | null = null;
   cargandoOrden = false;
 
+  private fechaTurnoOriginalISO: string | null = null;
+  private fechaTurnoFueModificada = false;
+
   esteTaller = this.tallerService.tallerActual;
   esteTallerId = this.esteTaller()?.id;
 
@@ -168,11 +171,16 @@ export class FormOrdenes {
       this.cargandoOrden = true;
       this.ordenService.obtenerOrden(this.ordenId).subscribe({
         next: (o: OrdenDeTrabajo) => {
+          this.fechaTurnoOriginalISO = o.fecha_turno ?? null;
+          this.fechaTurnoFueModificada = false;
           this.cargandoOrden = false;
           // Prellenar fecha/hora desde fecha_turno (solo si NO viene de agenda)
           if (o.fecha_turno && !this.fechaHoraVieneDeAgenda) {
-            this.fechaTurno = o.fecha_turno.slice(0, 10);
-            this.horaTurno  = o.fecha_turno.slice(11, 16);
+            const fecha = this.extraerFechaAR_YYYYMMDD(o.fecha_turno);
+            const hhmm  = this.extraerHoraAR(o.fecha_turno);
+
+            this.fechaTurno = fecha ?? '';
+            this.horaTurno  = hhmm ?? '';
           }
           // si ya fue entregada, no se edita (igual el back lo bloquea)
           if (o.fecha_entrega) {
@@ -255,8 +263,30 @@ export class FormOrdenes {
       this.horariosDisponibles.push(String(h).padStart(2, '0') + ':00');
     }
   }
-  
+  onFechaHoraChange() {
+    if (!this.esEdicion) return;
+    this.fechaTurnoFueModificada = true;
+  }
+  private extraerFechaAR_YYYYMMDD(fechaISO: string): string | null {
+    if (!fechaISO) return null;
 
+    const d = new Date(fechaISO);
+
+    // AR timezone y devuelve yyyy-mm-dd
+    const parts = new Intl.DateTimeFormat('en-CA', { // en-CA => YYYY-MM-DD
+      timeZone: 'America/Argentina/Buenos_Aires',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(d);
+
+    const y = parts.find(p => p.type === 'year')?.value;
+    const m = parts.find(p => p.type === 'month')?.value;
+    const day = parts.find(p => p.type === 'day')?.value;
+
+    if (!y || !m || !day) return null;
+    return `${y}-${m}-${day}`;
+  }
   // TENGO QUE SEGUIR TRABAJANDO EN ESTO PARA QUE SE ALINEE CON TU MODELO DJANGO, PERO LO DEJO ASÍ PARA PODER PROBAR LA CREACIÓN DE ORDENES DESDE EL FRONTEND ANTES DE TENER TODO DEFINIDO EN BACKEND
   // private generarHorariosBase() {
   //   this.horariosBase = [];

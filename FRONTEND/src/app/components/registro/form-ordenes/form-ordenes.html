@@ -209,6 +209,7 @@
           type="date"
           [(ngModel)]="fechaTurno"
           name="fechaTurno"
+          (ngModelChange)="onFechaHoraChange()"
         />
       </div>
 
@@ -219,6 +220,7 @@
           name="horaTurno"
           required
           class="horario-select"
+          (ngModelChange)="onFechaHoraChange()"
         >
           <option value="" disabled>Seleccionar horario</option>
           <option *ngFor="let hora of horariosDisponibles" [value]="hora">

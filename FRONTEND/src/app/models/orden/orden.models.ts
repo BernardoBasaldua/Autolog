@@ -1,4 +1,5 @@
 
+export type EstadoOrden = 'pendiente' | 'en_proceso' | 'finalizada' | 'anulada';
 
 export type TipoMantenimiento = 'preventivo' | 'correctivo';
 
@@ -22,6 +23,10 @@ export interface OrdenDeTrabajo {
 
   // SELECTOR
   mantenimiento: TipoMantenimiento;
+
+  // ESTADOS (backend)
+  estado: EstadoOrden;         // estado guardado (read_only)
+  estado_actual: EstadoOrden;  // calculado por backend (read_only)
 
   // RELACIONES
   cliente: number;               // FK usuarios.Cliente
@@ -72,3 +77,8 @@ export type OrdenDeTrabajoUpdatePayload =
   Partial<Omit<OrdenDeTrabajoCreatePayload, 'cliente' | 'vehiculo'>> & {
 
   };
+
+
+export interface OrdenFinalizarPayload {
+  fecha_entrega: string; // 'YYYY-MM-DD'
+}

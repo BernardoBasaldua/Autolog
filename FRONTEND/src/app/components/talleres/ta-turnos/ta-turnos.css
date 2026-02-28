@@ -1,4 +1,15 @@
 /* ===== MODAL POPUP ===== */
+
+/* Contenedor derecho del header (pill + X) */
+.modal-header-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  /* Reservo espacio para el botón X (38px) + margen aprox */
+  padding-right: 46px;
+}
+
+/* Overlay */
 .modal-overlay{
   position: fixed;
   inset: 0;
@@ -10,6 +21,7 @@
   z-index: 99999;
 }
 
+/* Contenedor modal */
 .modal-container{
   width: min(900px, 100%);
   position: relative;
@@ -21,6 +33,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
+/* Botón cerrar (X) */
 .btn-close-modal{
   position: absolute;
   top: 18px;
@@ -45,4 +58,103 @@
 .btn-close-modal i{
   font-size: 14px;
   color: #111827;
+}
+
+/* Pill estado (NO absolute, así no se encima) */
+/* Base pill */
+.estado-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+  border:1px solid rgba(0,0,0,.10);
+  white-space: nowrap;
+  color:#111827;
+}
+
+/* Pendiente (amarillo) */
+.estado-pill.estado-pendiente{
+  background: rgba(234,179,8,.18);
+  border-color: rgba(234,179,8,.40);
+}
+
+/* En proceso (azul) */
+.estado-pill.estado-en_proceso{
+  background: rgba(37,99,235,.18);
+  border-color: rgba(37,99,235,.40);
+}
+
+/* Finalizada (verde) */
+.estado-pill.estado-finalizada{
+  background: rgba(16,185,129,.18);
+  border-color: rgba(16,185,129,.40);
+}
+
+/* Anulada (rojo) — como te gustó */
+.estado-pill.estado-anulada{
+  background: rgba(239,68,68,.15);
+  border-color: rgba(239,68,68,.35);
+  opacity: .75;
+}
+/* ===== MENSUAL (chips dentro del día) ===== */
+.month-events{
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.event-month{
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 10px;
+  margin-top: 0; /* importante porque .event tenía margin-top */
+}
+
+.month-more{
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+
+/* ===== EVENTO (tarjetita dentro del calendario) ===== */
+.event{
+  position:relative;
+  margin-top:6px;
+  padding:8px 10px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:12px;
+  color:#0f172a;
+
+  /* Default si no hay estado */
+  background: rgba(234,179,8,.12);
+  border:1px solid rgba(234,179,8,.25);
+}
+
+/* ⚠️ Más específico: le gana al .event base */
+.event.event-pendiente{
+  background: rgba(234,179,8,.18);
+  border-color: rgba(234,179,8,.40);
+}
+
+.event.event-en_proceso{
+  background: rgba(37,99,235,.18);
+  border-color: rgba(37,99,235,.40);
+}
+
+.event.event-finalizada{
+  background: rgba(16,185,129,.18);
+  border-color: rgba(16,185,129,.40);
+}
+
+.event.event-anulada{
+  background: rgba(0,0,0,.04);
+  border: 1px dashed rgba(0,0,0,.25);
+  color: #6b7280;
+  opacity: .8;
 }

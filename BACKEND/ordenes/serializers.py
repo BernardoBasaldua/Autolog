@@ -10,14 +10,44 @@ class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
     fecha_siguiente_servicio = serializers.DateField(read_only=True)
     kilometraje_siguiente_servicio = serializers.IntegerField(read_only=True)
 
+     # ✅ para el front: muestra pendiente/en_proceso por reloj si no es terminal
+    estado_actual = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = OrdenDeTrabajo
         fields = "__all__"
+        read_only_fields = (
+            "estado",  # ✅ nadie lo setea manualmente
+        )
+
+    def get_estado_actual(self, obj: OrdenDeTrabajo):
+        # terminal manda
+        if obj.estado in (OrdenDeTrabajo.FINALIZADA, OrdenDeTrabajo.ANULADA):
+            return obj.estado
+        # si no, por tiempo
+        return obj.estado_por_tiempo
 
     def validate(self, attrs):
+        request = self.context.get("request")
+        instance: OrdenDeTrabajo | None = getattr(self, "instance", None)
+
+
         fecha_turno = attrs.get("fecha_turno")
         taller = attrs.get("taller")
         agenda = attrs.get("agenda")
+
+        # 🔒 Si es update, bloqueos por estado terminal
+        if instance is not None:
+            if instance.estado in (OrdenDeTrabajo.FINALIZADA, OrdenDeTrabajo.ANULADA):
+                raise serializers.ValidationError(
+                    "No se puede editar una orden finalizada o anulada."
+                )
+
+            # (opcional) si querés mantener tu regla actual: si ya tiene fecha_entrega, no editás nada
+            if instance.fecha_entrega is not None:
+                raise serializers.ValidationError(
+                    "No se puede editar una orden que ya tiene fecha de entrega."
+                )
 
         # Si no viene agenda pero sí taller -> la deducimos
         if agenda is None and taller is not None:
