@@ -9,6 +9,10 @@ from vehiculos.serializers import VehiculoSerializer
 
 from .models import AdministradorTecnico, Cliente, PermisoDeAcceso, Usuario
 
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework import serializers
+
 class ClientePublicoSerializer(serializers.ModelSerializer):
     usuario_pk = serializers.IntegerField(source="usuario.pk", read_only=True)
     first_name = serializers.CharField(source="usuario.first_name", read_only=True)
@@ -39,6 +43,18 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "password": {"write_only": True}  # La contraseña no debe ser visible al pedir datos
         }
 # write_only: True para password significa solo se acepta en operaciones de escritura (POST/PUT/PATCH), pero no se incluye en las representaciones de lectura (GET). Evita que la contraseña aparezca en respuestas JSON.
+
+    def is_valid(self, raise_exception=False):
+        valid = super().is_valid(raise_exception=False)
+
+        if not valid:
+            print("ERRORES DE VALIDACION:", self.errors)
+
+        if raise_exception and not valid:
+            raise serializers.ValidationError(self.errors)
+
+        return valid
+    
     def create(self, validated_data):
         # Sobrescribe el método create del serializer. Se llama cuando se hace .save() en un serializer.
         # .save() es un método que se llama cuando querés crear o actualizar un objeto de tu modelo a través del serializer.
@@ -55,11 +71,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
         # Se usa pop porque no queremos pasar la contraseña en texto plano al constructor del modelo (evita que se guarde sin hashear).
         instance = self.Meta.model(**validated_data)
         # Crea una instancia del modelo (Usuario) sin guardar aún en la BD, pasando el resto de campos (username, email, etc.) como argumentos.
-        if (
-            password is not None
-        ):  # si permitimos que sea None despues no vamos a poder usar authenticate(), VERR MAS ADELANTE
-            instance.set_password(password)  # este metodo heredado de abstractuser hace el hash
-            # Usa el método del modelo (heredado típicamente de AbstractUser) para hashear la contraseña y almacenarla en el campo password de forma segura. No guarda el texto plano.
+
+        if password is not None:
+            try:
+                validate_password(password, instance)
+            except DjangoValidationError as e:
+                print("ERROR PASSWORD:", e.messages)
+                raise serializers.ValidationError({"password": e.messages})
+
+            instance.set_password(password)
         instance.save()
         return instance
 
@@ -127,9 +147,31 @@ class ClienteSerializer(serializers.ModelSerializer):
             "permisos_que_otorgo",
         ]
 
+    def is_valid(self, raise_exception=False):
+        valid = super().is_valid(raise_exception=False)
+
+        if not valid:
+            print("ERRORES DE VALIDACION:", self.errors)
+
+        if raise_exception and not valid:
+            raise serializers.ValidationError(self.errors)
+
+        return valid
+
     def create(self, validated_data):
         usuario_data = validated_data.pop("usuario")
+        # usuario = Usuario.objects.create_user(**usuario_data)
+        password = usuario_data.get("password")
+
+        try:
+            validate_password(password)
+        except DjangoValidationError as e:
+            print("ERROR PASSWORD:", e.messages)
+            raise serializers.ValidationError({"usuario": {"password": e.messages}})
+
         usuario = Usuario.objects.create_user(**usuario_data)
+
+
         cliente = Cliente.objects.create(usuario=usuario, **validated_data)
         return cliente
 

@@ -15,6 +15,7 @@ class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, attrs):
+        print("creando turno")
         fecha_turno = attrs.get("fecha_turno")
         taller = attrs.get("taller")
         agenda = attrs.get("agenda")
@@ -24,9 +25,11 @@ class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
             agenda, _ = Agenda.objects.get_or_create(taller=taller)
             attrs["agenda"] = agenda
 
+        print("agenda creada")
+
         if agenda is None or fecha_turno is None:
             return attrs
-
+        
         # Normalizar timezone
         if timezone.is_naive(fecha_turno):
             fecha_turno = timezone.make_aware(
@@ -38,6 +41,7 @@ class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
         try:
             agenda.verificar_disponibilidad(fecha_turno)
         except ValueError as e:
+            print("ERROR DISPONIBILIDAD:", e)
             raise serializers.ValidationError({"fecha_turno": str(e)})
 
         return attrs
