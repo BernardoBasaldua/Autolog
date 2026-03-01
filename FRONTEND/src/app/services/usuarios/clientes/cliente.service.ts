@@ -20,15 +20,63 @@ export class ClienteService {
   mis_vehiculos = signal<Vehiculo[]>([]);
   vehiculos_autorizados = signal<Vehiculo[]>([]);
   clientes = signal<ClienteModel[]>([]);
+
+  errorMessages: string[] = [];
   
 
   constructor(private http: HttpClient) {}
+
+  getFieldName(field: string): string {
+    const map: any = {
+      dni: 'DNI',
+      username: 'Nombre de usuario',
+      nombre: 'Nombre',
+      apellido: 'Apellido',
+      email: 'Correo electrónico',
+      password: 'Contraseña'
+    };
+
+    return map[field] || field;
+  }
 
     // PARA REGISTRAR NUEVO CLIENTE
   crearCliente(usuario:UsuarioModel): Observable<ClienteModel> {
     //this.usuario = usuario;
     const cliente: ClienteCreatePayload = {usuario};
     const url = this.apiClientesUrl;
+    this.http.post('http://localhost:8000/api/clientes/', data)
+    .subscribe({
+      next: (response) => {
+        console.log("Cliente creado");
+      }
+      error: (err) => {
+        this.errorMessages = [];
+
+        if (err.error) {
+          for (let field in err.error) {
+
+            // Caso campo simple (dni, email, etc)
+            if (Array.isArray(err.error[field])) {
+              err.error[field].forEach((msg: string) => {
+                this.errorMessages.push(`${this.getFieldName(field)}: ${msg}`);
+              });
+            }
+
+            // Caso campo anidado (usuario.password)
+            else if (typeof err.error[field] === 'object') {
+              for (let subField in err.error[field]) {
+                err.error[field][subField].forEach((msg: string) => {
+                  this.errorMessages.push(
+                    `${this.getFieldName(subField)}: ${msg}`
+                  );
+                });
+              }
+            }
+          }
+        }
+      }
+    });
+    
     return this.http.post<ClienteModel>(url, cliente);
   }
 

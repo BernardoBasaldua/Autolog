@@ -178,6 +178,11 @@
 
     </div>
 
+    <div *ngFor="let msg of errorMessages" 
+        class="text-red-600 text-sm mt-2">
+    {{ msg }}
+    </div>
+
     @if (modo() !== 'registroEstablecimiento'){
     <button type="submit" class="button-primary w-full mt-2" [disabled]="clienteForm.invalid">
         {{ modo() !=='editar' ? 'Registrar cliente' : 'Guardar cambios' }}

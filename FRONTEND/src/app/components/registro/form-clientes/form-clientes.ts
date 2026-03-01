@@ -29,6 +29,7 @@ export class FormClientes {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   camposPassword = true;
+  errorMessages = ClienteService.errorMessages
 
   private esAltaDesdeTaller(m: Modo): boolean {
     return (
@@ -72,6 +73,8 @@ export class FormClientes {
         this.formInvalido.emit(this.clienteForm.invalid);
       });
    }
+
+
 
   ngOnInit(): void {
 
