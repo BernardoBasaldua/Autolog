@@ -209,23 +209,40 @@
         name="responsableTecnicoTexto" />
     </div>
 
-    <!-- ================= ODÓMETRO ================= -->
-    <div class="field">
-      <label class="block text-gray-700 text-sm font-semibold mb-2">Odómetro</label>
+    <!-- ================= DATOS ADICIONALES ================= -->
+    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <!-- ================= ODÓMETRO ================= -->
+      <div class="field">
+        <label class="block text-gray-700 text-sm font-semibold mb-2">Odómetro</label>
 
-      <div class="odometro-control">
-        <input type="number" class="odometro-input" placeholder="Ej.: 34340" [(ngModel)]="kilometraje"
-          name="kilometraje" min="0" />
-        <span class="odometro-unit">km</span>
+        <div class="odometro-control">
+          <input type="number" class="odometro-input" placeholder="Ej.: 34340" [(ngModel)]="kilometraje"
+            name="kilometraje" min="0" />
+          <span class="odometro-unit">km</span>
+        </div>
       </div>
-    </div>
 
-    <!-- ================= FECHA ENTREGA ================= -->
-    <div>
-      <label class="block text-gray-700 text-sm font-semibold mb-2">
-        Fecha de entrega
-      </label>
-      <input type="date" [(ngModel)]="fechaEntrega" name="fechaEntrega" />
+      <!-- ================= FECHA ENTREGA ================= -->
+      <div>
+        <label class="block text-gray-700 text-sm font-semibold mb-2">
+          Fecha de entrega
+        </label>
+        <input type="date" [(ngModel)]="fechaEntrega" name="fechaEntrega" />
+      </div>
+
+      <!-- ================= CAMPOS FUTUROS ================= -->
+      <div class="opacity-70">
+        <label class="block text-gray-700 text-sm font-semibold mb-2">
+          Práctica de mantenimiento
+        </label>
+        <div class="flex">
+          <input type="text" placeholder="Cambio de aceite y filtros..." class="flex-1" [(ngModel)]="practicaTexto"
+            name="practicaTexto" />
+          <select class="ml-2 w-auto" disabled>
+            <option>---</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <!-- ================= OBSERVACIONES TÉCNICAS ================= -->
@@ -235,20 +252,6 @@
       </label>
       <textarea rows="3" placeholder="Escribe aquí" [(ngModel)]="observacionesTecnicas"
         name="observacionesTecnicas"></textarea>
-    </div>
-
-    <!-- ================= CAMPOS FUTUROS ================= -->
-    <div class="md:col-span-2 opacity-70">
-      <label class="block text-gray-700 text-sm font-semibold mb-2">
-        Práctica de mantenimiento (pendiente de implementar en el modelo)
-      </label>
-      <div class="flex">
-        <input type="text" placeholder="cambio de aceite y filtros..." class="flex-1" [(ngModel)]="practicaTexto"
-          name="practicaTexto" />
-        <select class="ml-2 w-auto" disabled>
-          <option>---</option>
-        </select>
-      </div>
     </div>
 
   </form>

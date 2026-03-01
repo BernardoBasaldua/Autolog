@@ -22,6 +22,7 @@ export class ClienteService {
   clientes = signal<ClienteModel[]>([]);
 
   errorMessages: string[] = [];
+  static errorMessages: any;
   
 
   constructor(private http: HttpClient) {}
@@ -44,11 +45,11 @@ export class ClienteService {
     //this.usuario = usuario;
     const cliente: ClienteCreatePayload = {usuario};
     const url = this.apiClientesUrl;
-    this.http.post('http://localhost:8000/api/clientes/', data)
+    this.http.post('http://localhost:8000/api/clientes/', cliente)
     .subscribe({
       next: (response) => {
         console.log("Cliente creado");
-      }
+      },
       error: (err) => {
         this.errorMessages = [];
 

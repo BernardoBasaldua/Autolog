@@ -20,8 +20,8 @@ type NoticeType = 'error' | 'info' | 'success';
 export class FormClientes {
   modo = input<Modo>('crear');  // por defecto registrar
   modoInterno = signal<Modo>('crear');
-  clienteActual: ClienteModel | null = null; 
-  usuarioActual: UsuarioModel | null = null; 
+  clienteActual: ClienteModel | null = null;
+  usuarioActual: UsuarioModel | null = null;
   clienteForm: FormGroup;
   formInvalido = output<boolean>();
   perfilCreado = output<void>();
@@ -31,7 +31,7 @@ export class FormClientes {
   camposPassword = true;
   errorMessages = ClienteService.errorMessages
 
-  private esAltaDesdeTaller(m: Modo): boolean {
+  esAltaDesdeTaller(m: Modo): boolean {
     return (
       m === 'alta-desde-taller-CLI' ||
       m === 'alta-desde-taller-VEHI' ||
@@ -44,35 +44,36 @@ export class FormClientes {
   private noticeTimer: any;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private clienteService: ClienteService,
-    private usuarioService : UsuarioService) 
-    {
+    private usuarioService: UsuarioService) {
 
-      // CAMPOS CLIENTE FORM CLIENTE
-      this.clienteForm = this.fb.group({
-        username: ['', Validators.required],
-        nombre: ['', Validators.required],
-        apellido: ['', Validators.required],
-        dni: ['', Validators.required],
-        telefono: ['',Validators.required],
-        direccion: [''],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required],
-        confirmPassword: ['', Validators.required],},
-      
-        // validador de contraseñas iguales
-        {validators: this.passwordMatchValidator.bind(this) 
+    // CAMPOS CLIENTE FORM CLIENTE
+    this.clienteForm = this.fb.group({
+      username: ['', Validators.required],
+      nombre: ['', Validators.required],
+      apellido: ['', Validators.required],
+      dni: ['', Validators.required],
+      telefono: ['', Validators.required],
+      direccion: [''],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
+    },
+
+      // validador de contraseñas iguales
+      {
+        validators: this.passwordMatchValidator.bind(this)
       });
 
-      // Emito el estado inicial
+    // Emito el estado inicial
+    this.formInvalido.emit(this.clienteForm.invalid);
+
+    // Cada vez que cambie el estado del form, aviso al padre
+    this.clienteForm.statusChanges.subscribe(() => {
       this.formInvalido.emit(this.clienteForm.invalid);
-
-      // Cada vez que cambie el estado del form, aviso al padre
-      this.clienteForm.statusChanges.subscribe(() => {
-        this.formInvalido.emit(this.clienteForm.invalid);
-      });
-   }
+    });
+  }
 
 
 
@@ -154,7 +155,7 @@ export class FormClientes {
     this.notice = null;
     clearTimeout(this.noticeTimer);
   }
-  
+
   getUsuarioDesdeForm(marcarComoTocado = false): UsuarioModel | null {
     if (marcarComoTocado) {
       this.clienteForm.markAllAsTouched();
@@ -184,76 +185,77 @@ export class FormClientes {
   registrarCliente(): void {
 
     const datosUsuario = this.getUsuarioDesdeForm(true); // true = marca como touched
-    
+
     if (!datosUsuario) {
       return;
     }
     //const raw = this.clienteForm.getRawValue();
     const form = this.clienteForm.value;
 
-    if (this.modoInterno() === 'crear'|| this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI' || this.modoInterno() === 'alta-desde-taller-ORD') {    
+    if (this.modoInterno() === 'crear' || this.modoInterno() === 'alta-desde-taller-CLI' || this.modoInterno() === 'alta-desde-taller-VEHI' || this.modoInterno() === 'alta-desde-taller-ORD') {
       console.log('Datos de registro usuario:', datosUsuario);
       this.clienteService.crearCliente(datosUsuario).subscribe(
-        {next: (cliente) => {
-          // Éxito: cramos usuario
-          console.log('cliente crado', cliente, this.modoInterno());
-          this.showNotice('Cuenta creada correctamente ✔', 'success');
-          //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
-          if (this.modoInterno() === 'alta-desde-taller-CLI') {
-            this.perfilCreado.emit();
-            this.router.navigate(['/taller/clientes'])
-          
-          }else if (this.modoInterno()=== 'alta-desde-taller-VEHI'){
-            this.router.navigate(
-              ['/taller/vehiculos/seleccion-vehiculo'],
-              {queryParams: { modo: 'alta-desde-taller-VEHI'}}
-            );
-          
-          }else if (this.modoInterno()=== 'alta-desde-taller-ORD'){
-            this.router.navigate(
-              ['/taller/ordenes/nueva']
-            );
-            
-          }else {
-            this.router.navigate(['/login']);
-          }
-          this.clienteForm.reset();
-        },
-        error: (e) => {
-          // Manejo simple de error MEJORAR-------------
-          console.error('Error al crear usuario', e);
-          console.log('Detalle backend:', e.error);
+        {
+          next: (cliente) => {
+            // Éxito: cramos usuario
+            console.log('cliente crado', cliente, this.modoInterno());
+            this.showNotice('Cuenta creada correctamente ✔', 'success');
+            //REDIRECCIONO SEGUN DESDE DONDE SE CREA EL CLIENTE
+            if (this.modoInterno() === 'alta-desde-taller-CLI') {
+              this.perfilCreado.emit();
+              this.router.navigate(['/taller/clientes'])
 
-          const backend = e.error;
-          const mensajes: string[] = [];
+            } else if (this.modoInterno() === 'alta-desde-taller-VEHI') {
+              this.router.navigate(
+                ['/taller/vehiculos/seleccion-vehiculo'],
+                { queryParams: { modo: 'alta-desde-taller-VEHI' } }
+              );
 
-          // 1) Errores anidados en "usuario"
-          if (backend?.usuario && typeof backend.usuario === 'object') {
-            Object.values(backend.usuario).forEach((val: any) => {
+            } else if (this.modoInterno() === 'alta-desde-taller-ORD') {
+              this.router.navigate(
+                ['/taller/ordenes/nueva']
+              );
+
+            } else {
+              this.router.navigate(['/login']);
+            }
+            this.clienteForm.reset();
+          },
+          error: (e) => {
+            // Manejo simple de error MEJORAR-------------
+            console.error('Error al crear usuario', e);
+            console.log('Detalle backend:', e.error);
+
+            const backend = e.error;
+            const mensajes: string[] = [];
+
+            // 1) Errores anidados en "usuario"
+            if (backend?.usuario && typeof backend.usuario === 'object') {
+              Object.values(backend.usuario).forEach((val: any) => {
+                if (Array.isArray(val)) {
+                  mensajes.push(...val);   // agrega todos los mensajes de ese campo
+                }
+              });
+            }
+
+            // 2) Errores de nivel raíz (por si el back manda otros)
+            Object.entries(backend || {}).forEach(([key, val]) => {
+              if (key === 'usuario') return; // ya lo procesamos arriba
               if (Array.isArray(val)) {
-                mensajes.push(...val);   // agrega todos los mensajes de ese campo
+                mensajes.push(...val);
               }
             });
+
+            // 3) Mensaje final
+            const msgFinal = mensajes.length > 0
+              ? mensajes.join('\n')
+              : 'Ocurrió un error al crear el usuario.';
+
+            this.showNotice(msgFinal, 'error');
+
+            // FIN MANEJO ERRORES
           }
-
-          // 2) Errores de nivel raíz (por si el back manda otros)
-          Object.entries(backend || {}).forEach(([key, val]) => {
-            if (key === 'usuario') return; // ya lo procesamos arriba
-            if (Array.isArray(val)) {
-              mensajes.push(...val);
-            }
-          });
-
-          // 3) Mensaje final
-          const msgFinal = mensajes.length > 0
-            ? mensajes.join('\n')
-            : 'Ocurrió un error al crear el usuario.';
-
-          this.showNotice(msgFinal, 'error');
-
-          // FIN MANEJO ERRORES
-        }
-      })
+        })
     } else {
       // Edición – endpoint de actualización
       this.usuarioService.actualizarUsuario(datosUsuario).subscribe({
@@ -269,12 +271,12 @@ export class FormClientes {
         },
       });
     }
-  }    
-  
+  }
+
   // verifica que password y confirmPassword coincidan
   private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
-    const confirm  = group.get('confirmPassword')?.value;
+    const confirm = group.get('confirmPassword')?.value;
 
     // Si alguno está vacío, dejamos que se encargue el 'required'
     if (!password || !confirm) {
@@ -293,4 +295,24 @@ export class FormClientes {
   ngOnDestroy(): void {
     clearTimeout(this.noticeTimer);
   }
+
+  usarWrapper(): boolean {
+    // wrapper solo cuando el form es una "pantalla" propia
+    // (crear/editar en pantalla de clientes)
+    return this.modoInterno() === 'crear' || this.modoInterno() === 'editar';
+  }
+
+  // clasesForm(): any {
+  //   const desdeTaller = this.esAltaDesdeTaller(this.modoInterno());
+
+  //   return {
+  //     // padding solo cuando es card "propia"
+  //     'p-8 max-w-md': this.usarWrapper(),
+
+  //     // si viene desde taller, lo comprimís y lo centrás
+  //     'max-w-xl mx-auto px-4 bg-white p-6 rounded-2xl shadow-md': !this.usarWrapper() && desdeTaller,
+
+  //     // si está embebido en register/login, no le metas max-w ni shadow ni min-h-screen
+  //   };
+  // }
 }

@@ -16,177 +16,179 @@
 </div>
 }
 
-<form class="space-y-4 mt-4" [formGroup]="clienteForm" (ngSubmit)="registrarCliente()">
-    <h3 class="text-lg font-semibold text-gray-800 mb-1">
-        Datos del usuario
-    </h3>
+<div class="min-h-screen flex justify-center items-start pt-10 px-4">
+    <form class="space-y-4 w-full max-w-md bg-white p-8 rounded-2xl shadow-md" [formGroup]="clienteForm" (ngSubmit)="registrarCliente()">
+        <h3 class="text-xl font-semibold text-gray-800 mb-1">
+            Datos del usuario
+        </h3>
 
-    <div class="grid grid-cols-1 gap-4">
-        <!-- USERNAME -->
-        <div>
-            <label for="cliente-username" class="block text-gray-700 text-sm font-medium mb-1">
-                Nombre de usuario
-            </label>
-            <input type="text" id="cliente-username" formControlName="username" [readonly]="modo()==='editar'" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+        <div class="grid grid-cols-1 gap-4">
+            <!-- USERNAME -->
+            <div>
+                <label for="cliente-username" class="block text-gray-700 text-md font-medium mb-1">
+                    Nombre de usuario
+                </label>
+                <input type="text" id="cliente-username" formControlName="username" [readonly]="modo()==='editar'"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                 'input-invalid': clienteForm.get('username')?.invalid
                                 && (clienteForm.get('username')?.touched || clienteForm.get('username')?.dirty)
             }" />
-            @if (clienteForm.get('username')?.hasError('required')
-            && (clienteForm.get('username')?.touched || clienteForm.get('username')?.dirty)) {
-            <small class="text-red-600">El nombre de usuario es obligatorio.</small>
-            }
-        </div>
+                @if (clienteForm.get('username')?.hasError('required')
+                && (clienteForm.get('username')?.touched || clienteForm.get('username')?.dirty)) {
+                <small class="text-red-600">El nombre de usuario es obligatorio.</small>
+                }
+            </div>
 
-        <!-- NOMBRE -->
-        <div>
-            <label for="cliente-nombre" class="block text-gray-700 text-sm font-medium mb-1">
-                Nombre
-            </label>
-            <input type="text" id="cliente-nombre" formControlName="nombre" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- NOMBRE -->
+            <div>
+                <label for="cliente-nombre" class="block text-gray-700 text-md font-medium mb-1">
+                    Nombre
+                </label>
+                <input type="text" id="cliente-nombre" formControlName="nombre" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                 'input-invalid': clienteForm.get('nombre')?.invalid
                                 && (clienteForm.get('nombre')?.touched || clienteForm.get('nombre')?.dirty)
             }" />
-            @if (clienteForm.get('nombre')?.hasError('required')
-            && (clienteForm.get('nombre')?.touched || clienteForm.get('nombre')?.dirty)) {
-            <small class="text-red-600">El nombre es obligatorio.</small>
-            }
-        </div>
+                @if (clienteForm.get('nombre')?.hasError('required')
+                && (clienteForm.get('nombre')?.touched || clienteForm.get('nombre')?.dirty)) {
+                <small class="text-red-600">El nombre es obligatorio.</small>
+                }
+            </div>
 
-        <!-- APELLIDO -->
-        <div>
-            <label for="cliente-apellido" class="block text-gray-700 text-sm font-medium mb-1">
-                Apellido
-            </label>
-            <input type="text" id="cliente-apellido" formControlName="apellido" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- APELLIDO -->
+            <div>
+                <label for="cliente-apellido" class="block text-gray-700 text-md font-medium mb-1">
+                    Apellido
+                </label>
+                <input type="text" id="cliente-apellido" formControlName="apellido" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                 'input-invalid': clienteForm.get('apellido')?.invalid
                                 && (clienteForm.get('apellido')?.touched || clienteForm.get('apellido')?.dirty)
             }" />
-            @if (clienteForm.get('apellido')?.hasError('required')
-            && (clienteForm.get('apellido')?.touched || clienteForm.get('apellido')?.dirty)) {
-            <small class="text-red-600">El apellido es obligatorio.</small>
-            }
-        </div>
+                @if (clienteForm.get('apellido')?.hasError('required')
+                && (clienteForm.get('apellido')?.touched || clienteForm.get('apellido')?.dirty)) {
+                <small class="text-red-600">El apellido es obligatorio.</small>
+                }
+            </div>
 
-        <!-- DNI -->
-        <div>
-            <label for="cliente-dni" class="block text-gray-700 text-sm font-medium mb-1">
-                DNI
-            </label>
-            <input type="text" id="cliente-dni" formControlName="dni" [readonly]="modo()==='editar'" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- DNI -->
+            <div>
+                <label for="cliente-dni" class="block text-gray-700 text-md font-medium mb-1">
+                    DNI
+                </label>
+                <input type="text" id="cliente-dni" formControlName="dni" [readonly]="modo()==='editar'" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                 'input-invalid': clienteForm.get('dni')?.invalid
                                 && (clienteForm.get('dni')?.touched || clienteForm.get('dni')?.dirty)
             }" />
-            @if (clienteForm.get('dni')?.hasError('required')
-            && (clienteForm.get('dni')?.touched || clienteForm.get('dni')?.dirty)) {
-            <small class="text-red-600">El DNI es obligatorio.</small>
-            }
-        </div>
+                @if (clienteForm.get('dni')?.hasError('required')
+                && (clienteForm.get('dni')?.touched || clienteForm.get('dni')?.dirty)) {
+                <small class="text-red-600">El DNI es obligatorio.</small>
+                }
+            </div>
 
-        <!-- TELEFONO (opcional) -->
-        <div>
-            <label for="cliente-telefono" class="block text-gray-700 text-sm font-medium mb-1">
-                Teléfono
-            </label>
-            <input type="text" id="cliente-telefono" formControlName="telefono" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- TELEFONO (opcional) -->
+            <div>
+                <label for="cliente-telefono" class="block text-gray-700 text-md font-medium mb-1">
+                    Teléfono
+                </label>
+                <input type="text" id="cliente-telefono" formControlName="telefono" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            @if (clienteForm.get('telefono')?.hasError('required')
-            && (clienteForm.get('telefono')?.touched || clienteForm.get('telefono')?.dirty)) {
-            <small class="text-red-600">El Telefono es obligatorio.</small>
-            }
-        </div>
+                @if (clienteForm.get('telefono')?.hasError('required')
+                && (clienteForm.get('telefono')?.touched || clienteForm.get('telefono')?.dirty)) {
+                <small class="text-red-600">El Telefono es obligatorio.</small>
+                }
+            </div>
 
-        <!-- DIRECCION (opcional) -->
-        <div>
-            <label for="cliente-direccion" class="block text-gray-700 text-sm font-medium mb-1">
-                Dirección
-            </label>
-            <input type="text" id="cliente-direccion" formControlName="direccion" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- DIRECCION (opcional) -->
+            <div>
+                <label for="cliente-direccion" class="block text-gray-700 text-md font-medium mb-1">
+                    Dirección
+                </label>
+                <input type="text" id="cliente-direccion" formControlName="direccion" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-        </div>
+            </div>
 
-        <!-- EMAIL -->
-        <div>
-            <label for="cliente-email" class="block text-gray-700 text-sm font-medium mb-1">
-                Correo electrónico
-            </label>
-            <input type="email" id="cliente-email" formControlName="email" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- EMAIL -->
+            <div>
+                <label for="cliente-email" class="block text-gray-700 text-md font-medium mb-1">
+                    Correo electrónico
+                </label>
+                <input type="email" id="cliente-email" formControlName="email" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                 'input-invalid': clienteForm.get('email')?.invalid
                                 && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)
             }" />
-            @if (clienteForm.get('email')?.hasError('required')
-            && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)) {
-            <small class="text-red-600">El correo es obligatorio.</small>
-            }
-            @if (clienteForm.get('email')?.hasError('email')
-            && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)) {
-            <small class="text-red-600">Ingresá un correo válido.</small>
-            }
-        </div>
+                @if (clienteForm.get('email')?.hasError('required')
+                && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)) {
+                <small class="text-red-600">El correo es obligatorio.</small>
+                }
+                @if (clienteForm.get('email')?.hasError('email')
+                && (clienteForm.get('email')?.touched || clienteForm.get('email')?.dirty)) {
+                <small class="text-red-600">Ingresá un correo válido.</small>
+                }
+            </div>
 
-        @if (camposPassword) {
-        <!-- PASSWORD -->
-        <div>
-            <label for="cliente-password" class="block text-gray-700 text-sm font-medium mb-1">
-                Contraseña
-            </label>
-            <input type="password" id="cliente-password" formControlName="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            @if (camposPassword) {
+            <!-- PASSWORD -->
+            <div>
+                <label for="cliente-password" class="block text-gray-700 text-md font-medium mb-1">
+                    Contraseña
+                </label>
+                <input type="password" id="cliente-password" formControlName="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                     'input-invalid': clienteForm.get('password')?.invalid
                                     && (clienteForm.get('password')?.touched || clienteForm.get('password')?.dirty)
                 }" />
-            @if (clienteForm.get('password')?.hasError('required')
-            && (clienteForm.get('password')?.touched || clienteForm.get('password')?.dirty)) {
-            <small class="text-red-600">La contraseña es obligatoria.</small>
-            }
-        </div>
+                @if (clienteForm.get('password')?.hasError('required')
+                && (clienteForm.get('password')?.touched || clienteForm.get('password')?.dirty)) {
+                <small class="text-red-600">La contraseña es obligatoria.</small>
+                }
+            </div>
 
-        <!-- CONFIRM PASSWORD -->
-        <div>
-            <label for="cliente-confirm-password" class="block text-gray-700 text-sm font-medium mb-1">
-                Confirmar contraseña
-            </label>
-            <input type="password" id="cliente-confirm-password" formControlName="confirmPassword" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+            <!-- CONFIRM PASSWORD -->
+            <div>
+                <label for="cliente-confirm-password" class="block text-gray-700 text-md font-medium mb-1">
+                    Confirmar contraseña
+                </label>
+                <input type="password" id="cliente-confirm-password" formControlName="confirmPassword" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" [ngClass]="{
                     'input-invalid':
                     (clienteForm.get('confirmPassword')?.touched || clienteForm.get('confirmPassword')?.dirty) &&
                     (clienteForm.get('confirmPassword')?.invalid || clienteForm.hasError('passwordMismatch'))
                 }" />
 
-            <!-- Requerido -->
-            @if (clienteForm.get('confirmPassword')?.hasError('required')
-            && (clienteForm.get('confirmPassword')?.touched || clienteForm.get('confirmPassword')?.dirty)) {
-            <small class="text-red-600">Debés confirmar la contraseña.</small>
+                <!-- Requerido -->
+                @if (clienteForm.get('confirmPassword')?.hasError('required')
+                && (clienteForm.get('confirmPassword')?.touched || clienteForm.get('confirmPassword')?.dirty)) {
+                <small class="text-red-600">Debés confirmar la contraseña.</small>
+                }
+
+                <!-- No coinciden -->
+                @if (clienteForm.hasError('passwordMismatch')
+                && (clienteForm.get('confirmPassword')?.touched || clienteForm.get('confirmPassword')?.dirty)) {
+                <small class="text-red-600">Las contraseñas no coinciden.</small>
+                }
+            </div>
+            }@else {
+            <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
+                Recordale al cliente que su contraseña inicial es A1234567
+                <!-- <strong>{{ clienteForm.get('dni')?.value }}</strong> -->
+            </p>
             }
 
-            <!-- No coinciden -->
-            @if (clienteForm.hasError('passwordMismatch')
-            && (clienteForm.get('confirmPassword')?.touched || clienteForm.get('confirmPassword')?.dirty)) {
-            <small class="text-red-600">Las contraseñas no coinciden.</small>
-            }
         </div>
-        }@else {
-        <p class="mt-2 text-xs text-blue-700 bg-blue-50 rounded-md px-2 py-1">
-            Recordale al cliente que su contraseña inicial es A1234567
-            <!-- <strong>{{ clienteForm.get('dni')?.value }}</strong> -->
-        </p>
+
+        <div *ngFor="let msg of errorMessages" class="text-red-600 text-md mt-2">
+            {{ msg }}
+        </div>
+
+        @if (modo() !== 'registroEstablecimiento'){
+        <button type="submit" class="button-primary w-full mt-2" [disabled]="clienteForm.invalid">
+            {{ modo() !=='editar' ? 'Registrar cliente' : 'Guardar cambios' }}
+        </button>
         }
 
-    </div>
-
-    <div *ngFor="let msg of errorMessages" 
-        class="text-red-600 text-sm mt-2">
-    {{ msg }}
-    </div>
-
-    @if (modo() !== 'registroEstablecimiento'){
-    <button type="submit" class="button-primary w-full mt-2" [disabled]="clienteForm.invalid">
-        {{ modo() !=='editar' ? 'Registrar cliente' : 'Guardar cambios' }}
-    </button>
-    }
-
-</form>
+    </form>
+</div>
