@@ -79,22 +79,14 @@
         <app-form-clientes [modo]="'registroEstablecimiento'" (formInvalido)="formClienteInvalido = $event">
         </app-form-clientes>
 
-            
-        <div *ngFor="let msg of errorMessages" 
-            class="text-red-600 text-sm mt-2">
-        {{ msg }}
-        </div>
+
 
         <button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid || formClienteInvalido">
             {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
         </button>
         }@else {
         
-            
-        <div *ngFor="let msg of errorMessages" 
-            class="text-red-600 text-sm mt-2">
-        {{ msg }}
-        </div>
+    
         <button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid">
             {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
         </button>
