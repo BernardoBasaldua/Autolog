@@ -167,6 +167,11 @@ export class CliTurnos implements OnInit {
   //     }
   //   });
   // }
+  esPendiente(turno: Turno): boolean {
+    const estado = (turno as any).estado_actual ?? (turno as any).estado ?? 'pendiente';
+    return String(estado).toLowerCase() === 'pendiente';
+  }
+
   esOrdenFutura(turno: Turno): boolean {
     // IMPORTANTE: usá la fecha que define si es “futura”.
     // Para turnos, lo más lógico es fecha_turno.
@@ -177,6 +182,12 @@ export class CliTurnos implements OnInit {
   cancelarOrden(turno: Turno): void {
     // Seguridad extra: si no es futura, no hace nada
     if (!this.esOrdenFutura(turno)) return;
+
+    // NUEVO: solo si está pendiente
+    if (!this.esPendiente(turno)) {
+      this.error.set('Solo se puede cancelar una orden en estado Pendiente.');
+      return;
+    }
 
     const ok = confirm(`¿Cancelar la orden #ORD-${turno.id}?`);
     if (!ok) return;
@@ -304,7 +315,15 @@ export class CliTurnos implements OnInit {
 
 
 
-
+ formatearEstado(estado: any): string {
+  const e = String(estado || 'pendiente');
+  if (e === 'en_proceso') return 'En proceso';
+  if (e === 'pendiente') return 'Pendiente';
+  if (e === 'finalizada') return 'Finalizada';
+  if (e === 'anulada') return 'Anulada';
+  // fallback: por si viene algo raro
+  return e.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
+}
 
 
 

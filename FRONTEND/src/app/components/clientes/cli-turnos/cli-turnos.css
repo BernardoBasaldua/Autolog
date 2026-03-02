@@ -1,0 +1,56 @@
+/* ===== Estado pill (cliente) ===== */
+/* La card ahora es referencia para el absolute */
+.card-turno{
+  position: relative;
+}
+
+/* Estado fijo arriba derecha */
+.estado-fixed{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+}
+
+/* Ajuste para que no se encime con el título */
+.card-turno h2{
+  padding-right: 120px;
+}
+.estado-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+  line-height:1;
+  border:1px solid rgba(0,0,0,.10);
+  white-space:nowrap;
+}
+
+/* Colores por estado */
+.estado-pendiente{
+  background: rgba(234,179,8,.12);
+  border-color: rgba(234,179,8,.25);
+  color:#92400e;
+}
+
+.estado-en_proceso{
+  background: rgba(37,99,235,.12);
+  border-color: rgba(37,99,235,.25);
+  color:#1e3a8a;
+}
+
+.estado-finalizada{
+  background: rgba(16,185,129,.12);
+  border-color: rgba(16,185,129,.25);
+  color:#065f46;
+}
+
+/* ✅ anulada en rojo */
+.estado-anulada{
+  background: rgba(239,68,68,.12);
+  border-color: rgba(239,68,68,.25);
+  color:#991b1b;
+}

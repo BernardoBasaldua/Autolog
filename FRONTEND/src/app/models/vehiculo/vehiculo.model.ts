@@ -3,7 +3,7 @@ export interface Marca {
   nombre: string;
   modelos: Modelo[];
 }
-
+export type EstadoOrden = 'pendiente' | 'en_proceso' | 'finalizada' | 'anulada';
 export interface HistorialModel {
   id: number;
   fecha_siguiente_servicio: string;
@@ -18,6 +18,9 @@ export interface HistorialModel {
   vehiculo: number;
   taller: number;
   tecnico: number;
+   // ✅ NUEVO (para mostrar estado en cliente)
+  estado: EstadoOrden;                 // el estado persistido (db)
+  estado_actual?: EstadoOrden;         // el calculado del serializer (opcional)
 }
 
 export interface Modelo {

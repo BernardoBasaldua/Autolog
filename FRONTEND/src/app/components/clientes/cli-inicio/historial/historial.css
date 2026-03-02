@@ -1,0 +1,32 @@
+.estado-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:12px;
+  border:1px solid rgba(0,0,0,.10);
+  text-transform: capitalize;
+}
+
+/* Estados */
+.estado-pendiente{
+  background: rgba(234,179,8,.12);
+  border-color: rgba(234,179,8,.25);
+}
+
+.estado-en_proceso{
+  background: rgba(37,99,235,.12);
+  border-color: rgba(37,99,235,.25);
+}
+
+.estado-finalizada{
+  background: rgba(16,185,129,.12);
+  border-color: rgba(16,185,129,.25);
+}
+
+.estado-anulada{
+  background: rgba(239,68,68,.12);
+  border-color: rgba(239,68,68,.35);
+  color: #b91c1c;
+}

@@ -54,4 +54,8 @@ export class Historial implements OnInit {
     const t = this.talleresSig().find(x => x.id === tallerId);
     return t?.nombre ?? `Taller #${tallerId}`;
   }
+  formatearEstado(e: string | undefined): string {
+    if (!e) return '';
+    return e.replace('_', ' ');
+  }
 }
