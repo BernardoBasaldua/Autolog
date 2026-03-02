@@ -22,7 +22,6 @@ export class ClienteService {
   clientes = signal<ClienteModel[]>([]);
 
   errorMessages: string[] = [];
-  static errorMessages: any;
   
 
   constructor(private http: HttpClient) {}
@@ -49,32 +48,6 @@ export class ClienteService {
     .subscribe({
       next: (response) => {
         console.log("Cliente creado");
-      },
-      error: (err) => {
-        this.errorMessages = [];
-
-        if (err.error) {
-          for (let field in err.error) {
-
-            // Caso campo simple (dni, email, etc)
-            if (Array.isArray(err.error[field])) {
-              err.error[field].forEach((msg: string) => {
-                this.errorMessages.push(`${this.getFieldName(field)}: ${msg}`);
-              });
-            }
-
-            // Caso campo anidado (usuario.password)
-            else if (typeof err.error[field] === 'object') {
-              for (let subField in err.error[field]) {
-                err.error[field][subField].forEach((msg: string) => {
-                  this.errorMessages.push(
-                    `${this.getFieldName(subField)}: ${msg}`
-                  );
-                });
-              }
-            }
-          }
-        }
       }
     });
     

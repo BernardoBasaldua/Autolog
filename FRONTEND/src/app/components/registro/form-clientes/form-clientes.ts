@@ -29,7 +29,7 @@ export class FormClientes {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   camposPassword = true;
-  errorMessages = ClienteService.errorMessages
+  errorMessages = []
 
   esAltaDesdeTaller(m: Modo): boolean {
     return (
@@ -181,6 +181,21 @@ export class FormClientes {
     return datos;
   }
 
+  private getFieldName(field: string): string {
+  const map: any = {
+    dni: 'DNI',
+    username: 'Nombre de usuario',
+    first_name: 'Nombre',
+    last_name: 'Apellido',
+    email: 'Correo electrónico',
+    password: 'Contraseña',
+    telefono: 'Teléfono',
+    direccion: 'Dirección'
+  };
+
+  return map[field] || field;
+}
+
   //REGISTRO CLIENTE
   registrarCliente(): void {
 
@@ -221,7 +236,54 @@ export class FormClientes {
             }
             this.clienteForm.reset();
           },
+
           error: (e) => {
+          console.error('Error backend:', e.error);
+
+          const backend = e.error;
+          const mensajes: string[] = [];
+
+          if (backend && typeof backend === 'object') {
+
+            for (const field in backend) {
+
+              // 🔹 Caso usuario anidado
+              if (field === 'usuario' && typeof backend.usuario === 'object') {
+                for (const subField in backend.usuario) {
+                  const errores = backend.usuario[subField];
+                  if (Array.isArray(errores)) {
+                    errores.forEach((msg: string) => {
+                      mensajes.push(
+                        `${this.getFieldName(subField)}: ${msg}`
+                      );
+                    });
+                  }
+                }
+              }
+
+              // 🔹 Campos normales (dni, email, etc)
+              else {
+                const errores = backend[field];
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                }
+              }
+            }
+          }
+
+          const msgFinal = mensajes.length
+            ? mensajes.join('\n')
+            : 'Ocurrió un error al crear el usuario.';
+
+          this.showNotice(msgFinal, 'error');
+        }
+          /* error: (e) => {
+
+            
             // Manejo simple de error MEJORAR-------------
             console.error('Error al crear usuario', e);
             console.log('Detalle backend:', e.error);
@@ -254,7 +316,7 @@ export class FormClientes {
             this.showNotice(msgFinal, 'error');
 
             // FIN MANEJO ERRORES
-          }
+          } */
         })
     } else {
       // Edición – endpoint de actualización
