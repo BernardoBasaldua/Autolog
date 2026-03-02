@@ -77,6 +77,18 @@ export class FormTalleres {
     clearTimeout(this.noticeTimer);
   }
 
+  private getFieldName(field: string): string {
+    const map: any = {
+      nombre: 'Nombre',
+      descripcion: 'Descripción',
+      telefono: 'Teléfono',
+      direccion: 'Dirección',
+      email: 'Correo electrónico'
+    };
+
+    return map[field] || field;
+  }
+
   onSubmit(): void {
     if (this.tallerForm.invalid) {
       this.tallerForm.markAllAsTouched();
@@ -105,33 +117,54 @@ export class FormTalleres {
         error: (e: any) => {
           console.error('Error al crear establecimiento', e);
 
-          const backend = e?.error; // <-- JSON del back
-          console.log('Detalle backend:', backend);
-
+          const backend = e?.error;
           const mensajes: string[] = [];
 
-          // Caso nuevo: { origen, errors: { campo: [mensajes] } }
-          if (backend?.errors && typeof backend.errors === 'object') {
-            Object.values(backend.errors).forEach((val: any) => {
-              if (Array.isArray(val)) mensajes.push(...val);
-              else if (typeof val === 'string') mensajes.push(val);
-            });
-          }
+          if (backend && typeof backend === 'object') {
 
-          // Fallback: errores a nivel raíz tipo { field: ["msg"] }
-          if (mensajes.length === 0 && backend && typeof backend === 'object') {
-            Object.entries(backend).forEach(([key, val]: [string, any]) => {
-              if (key === 'errors' || key === 'origen') return;
-              if (Array.isArray(val)) mensajes.push(...val);
-            });
+            // 🔹 Caso: { errors: { campo: [mensajes] } }
+            if (backend.errors && typeof backend.errors === 'object') {
+              for (const field in backend.errors) {
+                const errores = backend.errors[field];
+
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                } else if (typeof errores === 'string') {
+                  mensajes.push(
+                    `${this.getFieldName(field)}: ${errores}`
+                  );
+                }
+              }
+            }
+
+            // 🔹 Caso clásico DRF: { campo: ["mensaje"] }
+            else {
+              for (const field in backend) {
+                if (field === 'origen') continue;
+
+                const errores = backend[field];
+
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                }
+              }
+            }
           }
 
           const origen = backend?.origen ? ` (${backend.origen})` : '';
+
           const msgFinal = mensajes.length
             ? `No se pudo crear${origen}:\n\n${mensajes.join('\n')}`
             : `Ocurrió un error al crear el establecimiento${origen}.`;
 
-          // Popup simple (después lo cambiás por MatDialog/Toast)
           this.showNotice(msgFinal, 'error', 5000);
         }
         

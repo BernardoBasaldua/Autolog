@@ -857,8 +857,9 @@ export class FormOrdenes {
   // =========================
   formatCliente(c: ClienteModel): string {
     const nombre = `${c.usuario?.first_name ?? ''} ${c.usuario?.last_name ?? ''}`.trim();
-    const extras = [c.usuario?.telefono, c.usuario?.email].filter(Boolean).join(' - ');
-    return [nombre, extras].filter(Boolean).join(' - ') || `Cliente ${c.id}`;
+    const telefono = c.usuario?.telefono ?? '';
+
+    return [nombre, telefono].filter(Boolean).join(' - ') || `Cliente ${c.id}`;
   }
 
   formatVehiculo(v: Vehiculo): string {

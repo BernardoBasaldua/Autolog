@@ -179,17 +179,16 @@ export class FormVehiculos {
   }
 
   formatPropietario(p: ClienteModel): string {
-    const nombre = [p.usuario.first_name, p.usuario.last_name]
+    const nombre = [p.usuario?.first_name, p.usuario?.last_name]
       .map((x: string) => (x ?? '').trim())
       .filter((x: string) => x.length > 0)
       .join(' ');
 
-    const extras = [p.usuario.email, p.usuario.telefono]
-      .map((x: string) => (x ?? '').trim())
+    const telefono = (p.usuario?.telefono ?? '').trim();
+
+    const full = [nombre, telefono]
       .filter((x: string) => x.length > 0)
       .join(' - ');
-
-    const full = [nombre, extras].filter(Boolean).join(' - ');
 
     return full || `Cliente ${p.id ?? ''}`.trim();
   }
