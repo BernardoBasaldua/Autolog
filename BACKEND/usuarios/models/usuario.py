@@ -34,7 +34,7 @@ class Usuario(AbstractUser):
     # Agrego campos personalizados debajo según necesidad.
     email = models.EmailField('email address', unique=True)
     # dni = models.CharField(max_length=10, unique=True)
-    dni = models.CharField(max_length=10, unique=True, validators=[validate_dni_numeric],) # mínimo 7 caracteres
+    dni = models.CharField(unique=True, validators=[validate_dni_numeric],) # mínimo 7 caracteres
 
     telefono = models.CharField(max_length=20, unique=True)
     direccion = models.TextField(blank=True)

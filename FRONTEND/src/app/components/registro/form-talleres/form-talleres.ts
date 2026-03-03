@@ -79,7 +79,8 @@ export class FormTalleres {
 
   private getFieldName(field: string): string {
     const map: any = {
-      nombre: 'Nombre',
+      username: 'Nombre de usuario',
+      dni: 'DNI',
       descripcion: 'Descripción',
       telefono: 'Teléfono',
       direccion: 'Dirección',
@@ -181,8 +182,57 @@ export class FormTalleres {
           this.router.navigate(['/taller/ordenes']);
         },
         error: (e) => {
-          console.error('Error al ACTUALIZAR establecimiento');
-          this.showNotice('Ocurrió un error al actualizar el establecimiento', 'error', 3500);
+          console.error('Error al crear establecimiento', e);
+
+          const backend = e?.error;
+          const mensajes: string[] = [];
+
+          if (backend && typeof backend === 'object') {
+
+            // 🔹 Caso: { errors: { campo: [mensajes] } }
+            if (backend.errors && typeof backend.errors === 'object') {
+              for (const field in backend.errors) {
+                const errores = backend.errors[field];
+
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                } else if (typeof errores === 'string') {
+                  mensajes.push(
+                    `${this.getFieldName(field)}: ${errores}`
+                  );
+                }
+              }
+            }
+
+            // 🔹 Caso clásico DRF: { campo: ["mensaje"] }
+            else {
+              for (const field in backend) {
+                if (field === 'origen') continue;
+
+                const errores = backend[field];
+
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                }
+              }
+            }
+          }
+
+          const origen = backend?.origen ? ` (${backend.origen})` : '';
+
+          const msgFinal = mensajes.length
+            ? `No se pudo crear${origen}:\n\n${mensajes.join('\n')}`
+            : `Ocurrió un error al crear el establecimiento${origen}.`;
+
+          this.showNotice(msgFinal, 'error', 5000);
         },
       });
 

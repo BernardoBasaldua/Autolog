@@ -1,6 +1,10 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
-
+validador_cuit = RegexValidator(
+    regex=r'^\d{11}$',
+    message="El CUIT debe contener exactamente 11 dígitos numéricos."
+)
 # Create your models here.
 class Taller(models.Model):
     nombre = models.CharField(max_length=255)
@@ -8,7 +12,13 @@ class Taller(models.Model):
     telefono = models.CharField(max_length=20)
     direccion = models.CharField(max_length=255)
     horarioAtencion = models.TimeField(null= True,blank=True)
-    cuit = models.CharField(max_length=20,null=True, unique=True, blank=True)
+    cuit = models.CharField(
+        max_length=11,
+        null=True,
+        blank=True,
+        unique=True,
+        validators=[validador_cuit]
+    )
 
     @property
     def clientes(self):
