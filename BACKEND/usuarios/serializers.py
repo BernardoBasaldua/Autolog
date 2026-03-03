@@ -8,6 +8,7 @@ from talleres.models.taller import Taller
 from vehiculos.serializers import VehiculoSerializer
 
 from .models import AdministradorTecnico, Cliente, PermisoDeAcceso, Usuario
+from .models.usuario import normalize_ar_phone_to_e164, validate_phone_ar_e164
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -43,6 +44,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "password": {"write_only": True}  # La contraseña no debe ser visible al pedir datos
         }
 # write_only: True para password significa solo se acepta en operaciones de escritura (POST/PUT/PATCH), pero no se incluye en las representaciones de lectura (GET). Evita que la contraseña aparezca en respuestas JSON.
+
+    
 
     def is_valid(self, raise_exception=False):
         valid = super().is_valid(raise_exception=False)
@@ -151,6 +154,8 @@ class ClienteSerializer(serializers.ModelSerializer):
             "vehiculos_externos",   # externos
             "permisos_que_otorgo",
         ]
+
+    
 
     def is_valid(self, raise_exception=False):
         valid = super().is_valid(raise_exception=False)

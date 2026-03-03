@@ -24,6 +24,42 @@ Modelo personalizado de usuario que hereda de AbstractUser.
     ► user_permissions: permisos individuales   
 """
 
+def normalize_ar_phone_to_e164(raw: str) -> str:
+    if not raw:
+        return raw
+
+    s = raw.strip()
+    s = re.sub(r"[^\d+]", "", s)
+
+    if s.startswith("0054"):
+        s = "+54" + s[4:]
+
+    if s.startswith("54") and not s.startswith("+"):
+        s = "+" + s
+
+    if not s.startswith("+"):
+        s = "+54" + s.lstrip("0")
+
+    if not s.startswith("+54"):
+        return s
+
+    rest = s[3:]
+
+    if rest.startswith("9"):
+        rest = rest[1:]
+
+    rest = rest.lstrip("0")
+
+    if rest.startswith("15"):
+        rest = rest[2:]
+
+    return "+54" + rest
+
+
+def validate_phone_ar_e164(value: str):
+    # +54 seguido de 10 a 11 dígitos (para forzar que haya área + número)
+    if not re.fullmatch(r"^\+54\d{10,11}$", value or ""):
+        raise ValidationError("Teléfono inválido. Debe ser +54 + código de área (sin 0) + número. Ej: +543489480064")
 
 class Usuario(AbstractUser):
 
@@ -40,6 +76,11 @@ class Usuario(AbstractUser):
     direccion = models.TextField(blank=True)
     google_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
+
+    def save(self, *args, **kwargs):
+        self.telefono = normalize_ar_phone_to_e164(self.telefono)
+        validate_phone_ar_e164(self.telefono)
+        super().save(*args, **kwargs)
     
 
     def __str__(self):
