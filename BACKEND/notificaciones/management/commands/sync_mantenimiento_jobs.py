@@ -38,6 +38,12 @@ class Command(BaseCommand):
                 cliente = v.propietario
                 telefono = (cliente.usuario.telefono or "").strip() if cliente and cliente.usuario else ""
 
+                # Opt-out: si el cliente desactiva WhatsApp, cancelamos pending y no creamos nuevos
+                if cliente and hasattr(cliente, "whatsapp_opt_in") and not cliente.whatsapp_opt_in:
+                    q = NotificationJob.objects.filter(vehiculo=v, kind=KIND, status="pending")
+                    cancelled += q.update(status="cancelled")
+                    continue
+
                 # 1) Si no hay fecha objetivo: cancelamos pendientes y seguimos
                 if not target_date:
                     skipped_no_date += 1

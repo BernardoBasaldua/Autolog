@@ -117,8 +117,8 @@ class Agenda(models.Model):
     def verificar_disponibilidad(self, fecha_hora_propuesta):
         """Verifica si un slot de tiempo específico está disponible en la agenda."""
         # 1. Validar que la fecha/hora sea en el futuro
-        if fecha_hora_propuesta <= timezone.now():
-            raise ValueError("No se pueden reservar turnos en el pasado.")
+        # if fecha_hora_propuesta <= timezone.now():
+        #     raise ValueError("No se pueden reservar turnos en el pasado.")
 
         # # 2. Validar si es un día laboral
         # dias_laborales = [
