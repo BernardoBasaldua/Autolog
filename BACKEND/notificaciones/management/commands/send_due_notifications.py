@@ -74,7 +74,7 @@ class Command(BaseCommand):
                         continue
 
                     # ENVÍO REAL (por ahora con hello_world)
-                    template_name = "autolog_mantenimiento_15_dias"
+                    template_name = "hello_world"
 
                     # Variables {{1}}, {{2}}, {{3}}
                     nombre = (job.cliente.usuario.first_name or "Hola").strip() if hasattr(job.cliente.usuario, "first_name") else "Hola"

@@ -75,18 +75,18 @@
                 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                 </div>
 
-            </div>
         </div>
-        <!--AGREGO FORMULARIO CLIENTE-->
-        <app-form-clientes [modo]="'registroEstablecimiento'"
-            (formInvalido)="formClienteInvalido = $event"></app-form-clientes>
-        <button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid || formClienteInvalido">
-            {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
-        </button>
     </form>
 
+    <!--AGREGO FORMULARIO CLIENTE-->
+    <app-form-clientes [modo]="'registroEstablecimiento'"
+        (formInvalido)="formClienteInvalido = $event"></app-form-clientes>
 </div>
 
+
+<button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid || formClienteInvalido">
+    {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
+</button>
 }@else {
 <div class="min-h-screen flex justify-center items-start pt-10 px-4">
     <form class="space-y-4 w-full max-w-md bg-white p-8 rounded-2xl shadow-md" [formGroup]="tallerForm"

@@ -25,12 +25,12 @@ class WhatsAppClient:
             "type": "template",
             "template": {
                 "name": template_name,
-                "language": {"code": "es_AR"},
+                "language": {"code": "en_US"},
                 "components": [
                     {
                         "type": "body",
                         "parameters": [
-                            {"type": "text", "text": v} for v in variables
+                            #{"type": "text", "text": v} for v in variables
                         ],
                     }
                 ],
