@@ -6,7 +6,7 @@ class MayusculaValidator:
     def validate(self, password, user=None):
         if not re.search(r'[A-Z]', password):
             raise ValidationError(
-                _("La contraseña debe contener al menos una letra mayúscula."),
+                _("Debe contener al menos una letra mayúscula."),
                 code='password_no_upper',
             )
 

@@ -1,6 +1,9 @@
 # users/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MinLengthValidator
+import re
+from django.core.exceptions import ValidationError
 
 """
 Modelo personalizado de usuario que hereda de AbstractUser.
@@ -24,12 +27,20 @@ Modelo personalizado de usuario que hereda de AbstractUser.
 
 class Usuario(AbstractUser):
 
+    def validate_dni_numeric(value: str):
+        if not re.fullmatch(r"\d{7,10}", value):
+            raise ValidationError("Debe ser numérico y tener entre 7 y 10 dígitos.")
+        
     # Agrego campos personalizados debajo según necesidad.
     email = models.EmailField('email address', unique=True)
-    dni = models.CharField(max_length=10, null=True, unique=True)
-    telefono = models.CharField(max_length=20, blank=True, unique=True)
+    # dni = models.CharField(max_length=10, unique=True)
+    dni = models.CharField(max_length=10, unique=True, validators=[validate_dni_numeric],) # mínimo 7 caracteres
+
+    telefono = models.CharField(max_length=20, unique=True)
     direccion = models.TextField(blank=True)
     google_sub = models.CharField(max_length=255, unique=True, null=True, blank=True)
+
+    
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.pk}"
