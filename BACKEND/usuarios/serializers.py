@@ -3,7 +3,8 @@ from vehiculos.models.vehiculo import Vehiculo
 from datetime import date
 from rest_framework import serializers
 
-
+from django.core.exceptions import ValidationError as DjangoModelValidationError
+from django.db import IntegrityError
 from talleres.models.taller import Taller
 from vehiculos.serializers import VehiculoSerializer
 
@@ -198,8 +199,16 @@ class ClienteSerializer(serializers.ModelSerializer):
             print("ERROR PASSWORD:", e.messages)
             raise serializers.ValidationError({"usuario": {"password": e.messages}})
 
-        usuario = Usuario.objects.create_user(**usuario_data)
+        #usuario = Usuario.objects.create_user(**usuario_data)
 
+        try:
+            usuario = Usuario.objects.create_user(**usuario_data)
+        except DjangoModelValidationError as e:
+            # e.message_dict si viene por campo; o e.messages
+            return_error = e.message_dict if hasattr(e, "message_dict") else {"telefono": e.messages}
+            raise serializers.ValidationError({"usuario": return_error})
+        except IntegrityError as e:
+            raise serializers.ValidationError({"usuario": {"non_field_errors": ["Datos duplicados: username/email/dni/teléfono."]}})
 
         cliente = Cliente.objects.create(usuario=usuario, **validated_data)
         return cliente
@@ -220,9 +229,11 @@ class AdministradorTecnicoSerializer(serializers.ModelSerializer):
     # Tu serializer tiene usuario = UsuarioSerializer(), pero por defecto Django REST Framework no crea automáticamente el usuario interno cuando hacés un POST, a menos que vos sobreescribas el método create.
     def create(self, validated_data):
         usuario_data = validated_data.pop("usuario")  # saca los datos del usuario
+
         usuario = Usuario.objects.create_user(
             **usuario_data
         )  # crea el usuario con password hasheada
+
         tecnico = AdministradorTecnico.objects.create(
             usuario=usuario, **validated_data
         )  # Crea el AdministradorTecnico, relacionándolo con ese usuario y con el taller extraído.
