@@ -328,9 +328,49 @@ export class FormClientes {
           this.perfilActualizado.emit();
         },
         error: (e) => {
-          console.error('Error al actualizar perfil', e);
-          this.showNotice('Ocurrió un error al actualizar el perfil', 'error');
-        },
+          console.error('Error backend:', e.error);
+
+          const backend = e.error;
+          const mensajes: string[] = [];
+
+          if (backend && typeof backend === 'object') {
+
+            for (const field in backend) {
+
+              // 🔹 Caso usuario anidado
+              if (field === 'usuario' && typeof backend.usuario === 'object') {
+                for (const subField in backend.usuario) {
+                  const errores = backend.usuario[subField];
+                  if (Array.isArray(errores)) {
+                    errores.forEach((msg: string) => {
+                      mensajes.push(
+                        `${this.getFieldName(subField)}: ${msg}`
+                      );
+                    });
+                  }
+                }
+              }
+
+              // 🔹 Campos normales (dni, email, etc)
+              else {
+                const errores = backend[field];
+                if (Array.isArray(errores)) {
+                  errores.forEach((msg: string) => {
+                    mensajes.push(
+                      `${this.getFieldName(field)}: ${msg}`
+                    );
+                  });
+                }
+              }
+            }
+          }
+
+          const msgFinal = mensajes.length
+            ? mensajes.join('\n')
+            : 'Ocurrió un error al crear el usuario.';
+
+          this.showNotice(msgFinal, 'error');
+        }
       });
     }
   }

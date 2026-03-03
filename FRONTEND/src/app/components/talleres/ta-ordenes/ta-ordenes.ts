@@ -237,11 +237,18 @@ export class TaOrdenes {
   // =========================
   // SELECCIÓN / DETALLE
   // =========================
+  // seleccionarOrden(o: OrdenDeTrabajo): void {
+  //   this.cerrarDetalle();
+
+  //   this.ordenSeleccionada = o;
+
+  //   console.log('Orden seleccionada:', this.ordenSeleccionada);
+  // }
   seleccionarOrden(o: OrdenDeTrabajo): void {
-    this.cerrarDetalle();
+    // si clickeo la misma, no hagas nada
+    if (this.ordenSeleccionada?.id === o.id) return;
 
     this.ordenSeleccionada = o;
-
     console.log('Orden seleccionada:', this.ordenSeleccionada);
   }
 
