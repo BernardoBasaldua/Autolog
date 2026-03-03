@@ -170,3 +170,6 @@ SIMPLE_JWT = {
 }
 
 GOOGLE_CLIENT_ID = "957331454319-4ik3a1gidhfhe28kbcv37ar03n5ahplu.apps.googleusercontent.com"
+
+LANGUAGE_CODE = "es-ar"  # o "es"
+USE_I18N = True

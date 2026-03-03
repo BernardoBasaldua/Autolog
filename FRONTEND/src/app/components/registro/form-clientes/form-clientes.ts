@@ -369,7 +369,7 @@ export class FormClientes {
             ? mensajes.join('\n')
             : 'Ocurrió un error al crear el usuario.';
 
-          this.showNotice(msgFinal, 'error');
+          this.showNotice(msgFinal, 'error', 8000);
         }
       });
     }
