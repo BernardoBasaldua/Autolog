@@ -1,2 +1,18 @@
-<h1 class="text-3xl font-bold text-gray-800">{{ currentTitle() }}</h1>
-<img src="icons/autolog-logo.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog.png';" />
+<!-- <h1 class="text-3xl font-bold text-gray-800">{{ currentTitle() }}</h1>
+<img src="icons/autolog-logo.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog.png';" /> -->
+
+<div class="flex items-center gap-3">
+    <!-- Botón menú (solo mobile) -->
+    <button type="button" class="md:hidden p-2 rounded-lg border border-gray-200" (click)="menuClick.emit()"
+        aria-label="Abrir menú">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate">
+        {{ currentTitle() }}
+    </h1>
+</div>
+
+<img src="icons/autolog-logo.png" alt="Logo Autolog"
+    class="h-12 w-12 md:h-24 md:w-24 object-contain rounded-lg shadow-sm"
+    onerror="this.onerror=null;this.src='Autolog.png';" />

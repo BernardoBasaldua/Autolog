@@ -1,16 +1,16 @@
 <ul *ngIf="userType() === 'cliente'">
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="sidebar-item" routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="navigate.emit()">
             <i class="fas fa-home mr-3"></i><span>Inicio</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/cliente/turnos" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/cliente/turnos" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-calendar-alt mr-3"></i><span>Turnos</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/cliente/talleres" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/cliente/talleres" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-tools mr-3"></i><span>Talleres</span>
         </a>
     </li>
@@ -22,7 +22,7 @@
     </li>
     -->
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/cliente/config" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/cliente/config" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-cog mr-3"></i><span>Configuración</span>
         </a>
     </li>
@@ -30,27 +30,27 @@
 
 <ul *ngIf="userType() === 'taller'">
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/taller/ordenes" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/taller/ordenes" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-file-alt mr-3"></i><span>Órdenes de trabajo</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/taller/clientes" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/taller/clientes" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-users mr-3"></i><span>Clientes</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/taller/vehiculos" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/taller/vehiculos" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-car mr-3"></i><span>Vehículos</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/taller/turnos" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/taller/turnos" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-calendar-check mr-3"></i><span>Agenda de turnos</span>
         </a>
     </li>
     <li class="mb-4">
-        <a class="sidebar-item" routerLink="/taller/config" routerLinkActive="active">
+        <a class="sidebar-item" routerLink="/taller/config" routerLinkActive="active" (click)="navigate.emit()">
             <i class="fas fa-cog mr-3"></i><span>Configuración</span>
         </a>
     </li>

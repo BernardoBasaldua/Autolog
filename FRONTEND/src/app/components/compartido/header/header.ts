@@ -1,11 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
+import { output } from '@angular/core';
+
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
@@ -42,4 +45,6 @@ export class Header {
 
     return 'Inicio'; // Título por defecto
   }
+
+  menuClick = output<void>();
 }

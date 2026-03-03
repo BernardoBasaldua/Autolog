@@ -1,25 +1,33 @@
-<!-- Código original (con scroll en sidebar):
-<div class="flex min-h-screen">
-    <!--Este componente representa el menú lateral (sidebar) de navegación.-->
-<!--
-<app-aside class="sidebar w-64 p-6 flex flex-col justify-between"></app-aside>
-<main class="main flex-1 p-8">
--->
-    <!-- Componente Header creado 
-    <app-header class="flex justify-between items-center mb-8"></app-header> -->
-    <!-- El contenedor donde los componentes serán inyectados según la ruta (los path están en app.routes.ts)
-    <router-outlet></router-outlet>
-</main>
-</div>
--->
-
-<!-- Código nuevo (sin scroll en sidebar):
-    - Hay que corregir estilo
--->
-<div class="flex min-h-screen">
+<!-- <div class="flex min-h-screen">
     <app-aside class="sidebar fixed left-0 top-0 h-screen w-64"></app-aside>
     <main class="main ml-64 h-screen overflow-y-auto flex-1 p-8">
         <app-header class="flex justify-between items-center mb-8"></app-header>
         <router-outlet></router-outlet>
     </main>
+</div> -->
+
+<div class="min-h-screen">
+
+    <!-- Overlay mobile -->
+    <div *ngIf="sidebarOpen" class="fixed inset-0 bg-black/40 z-40 md:hidden" (click)="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <app-aside class="
+      fixed left-0 top-0 h-screen w-64 z-50
+      transform transition-transform duration-200
+      bg-slate-900 text-white
+      md:translate-x-0
+    " [ngClass]="{
+      '-translate-x-full': !sidebarOpen,
+      'translate-x-0': sidebarOpen
+    }" (navigate)="closeSidebar()"></app-aside>
+
+    <!-- Main -->
+    <main class="min-h-screen md:ml-64 p-4 md:p-8">
+        <!-- Header -->
+        <app-header class="flex justify-between items-center mb-6 md:mb-8" (menuClick)="toggleSidebar()"></app-header>
+
+        <router-outlet></router-outlet>
+    </main>
+
 </div>

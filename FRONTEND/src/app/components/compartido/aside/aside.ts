@@ -1,5 +1,5 @@
 // aside.ts
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 
@@ -94,4 +94,6 @@ export class Aside implements OnInit {
       });
     }
   }
+
+  navigate = output<void>();
 }
