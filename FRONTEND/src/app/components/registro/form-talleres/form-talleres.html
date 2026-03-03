@@ -16,8 +16,9 @@
 </div>
 }
 
-<div class="min-h-screen flex justify-center items-start pt-10 px-4">
-    <form class="space-y-4 w-full max-w-md bg-white p-8 rounded-2xl shadow-md" [formGroup]="tallerForm" (ngSubmit)="onSubmit()">
+@if(modo() == 'crear'){
+<div class="min-h-screen justify-center items-start pt-5 px-4">
+    <form class="space-y-4 w-full max-w-md bg-white p-8 rounded-2xl" [formGroup]="tallerForm" (ngSubmit)="onSubmit()">
 
         <h3 class="text-xl font-semibold text-gray-800 mb-1">
             Datos del establecimiento
@@ -74,23 +75,81 @@
             </div>
 
         </div>
-        <!--AGREGO FORMULARIO CLIENTE-->
-        @if(modo() == 'crear'){
-        <app-form-clientes [modo]="'registroEstablecimiento'" (formInvalido)="formClienteInvalido = $event">
-        </app-form-clientes>
+    </form>
+
+    <!--AGREGO FORMULARIO CLIENTE-->
+    <app-form-clientes [modo]="'registroEstablecimiento'"
+        (formInvalido)="formClienteInvalido = $event"></app-form-clientes>
+</div>
 
 
+<button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid || formClienteInvalido">
+    {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
+</button>
+}@else {
+<div class="min-h-screen flex justify-center items-start pt-10 px-4">
+    <form class="space-y-4 w-full max-w-md bg-white p-8 rounded-2xl shadow-md" [formGroup]="tallerForm"
+        (ngSubmit)="onSubmit()">
 
-        <button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid || formClienteInvalido">
-            {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
-        </button>
-        }@else {
-        
-    
-        <button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid">
-            {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
-        </button>
-        }
+        <h3 class="text-xl font-semibold text-gray-800 mb-1">
+            Datos del establecimiento
+        </h3>
 
+        <div class="grid grid-cols-1 gap-4">
+
+            <!-- NOMBRE -->
+            <div>
+                <label for="taller-nombre" class="block text-gray-700 text-md font-medium mb-1">
+                    Nombre del establecimiento
+                </label>
+                <input type="text" id="taller-nombre" formControlName="nombre" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
+                focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+            </div>
+
+            <!-- CUIT -->
+            <div>
+                <label for="taller-cuit" class="block text-gray-700 text-md font-medium mb-1">
+                    CUIT
+                </label>
+                <input type="text" id="taller-cuit" formControlName="cuit" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
+                focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+            </div>
+
+            <!-- TELÉFONO -->
+            <div>
+                <label for="taller-telefono" class="block text-gray-700 text-md font-medium mb-1">
+                    Teléfono de contacto
+                </label>
+                <input type="text" id="taller-telefono" formControlName="telefono" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
+                focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+            </div>
+
+            <!-- DIRECCIÓN -->
+            <div>
+                <label for="taller-direccion" class="block text-gray-700 text-md font-medium mb-1">
+                    Dirección
+                </label>
+                <input type="text" id="taller-direccion" formControlName="direccion" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
+                focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+            <div>
+                <label for="taller-descripcion" class="block text-gray-700 text-md font-medium mb-1">
+                    Descripción
+                </label>
+                <textarea id="taller-descripcion" formControlName="descripcion" rows="4"
+                    placeholder="Taller dedicado al mantenimiento general, servicios programados, reparaciones de motor, frenos, tren delantero, etc."
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-md
+                min-h-[120px]
+                focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+            </div>
+
+        </div>
     </form>
 </div>
+
+<button type="submit" class="button-primary w-full mt-2" [disabled]="tallerForm.invalid">
+    {{ modo() === 'crear' ? 'Registrarse como establecimiento' : 'Guardar cambios' }}
+</button>
+}
