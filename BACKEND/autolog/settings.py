@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "vehiculos",
     "usuarios",
     "agendas",
-    "notificaciones"
+    "notificaciones",
 ]
 
 MIDDLEWARE = [
