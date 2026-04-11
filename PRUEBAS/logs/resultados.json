@@ -1,0 +1,1762 @@
+{
+  "config": {
+    "configFile": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\playwright.config.js",
+    "rootDir": "C:/Personal Tomi/Programación/Autolog Final/Autolog/PRUEBAS/playwright/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Personal Tomi/Programación/Autolog Final/Autolog/PRUEBAS/logs/artifacts",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Personal Tomi/Programación/Autolog Final/Autolog/PRUEBAS/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\reporte-html",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\resultados.json"
+        }
+      ],
+      [
+        "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\logger-reporter.js",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth.spec.js",
+      "file": "auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AU — Autenticación",
+          "file": "auth.spec.js",
+          "line": 23,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-AU-01 | Login válido como CLIENTE redirige a /cliente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4921,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:38:52.895Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-fafb0--CLIENTE-redirige-a-cliente-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-c6fe04fff7ba4ea507e8",
+              "file": "auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "CP-AU-02 | Login válido como TÉCNICO redirige a /taller",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4730,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:38:58.063Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-da7dd-o-TÉCNICO-redirige-a-taller-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-bbf3c0111bd1e07cac7c",
+              "file": "auth.spec.js",
+              "line": 32,
+              "column": 3
+            },
+            {
+              "title": "CP-AU-03 | Login con contraseña incorrecta muestra error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5131,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:02.810Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-ddb9a-ña-incorrecta-muestra-error-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-ab0bc7430003210cac27",
+              "file": "auth.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "CP-AU-04 | Login con campos vacíos — botón deshabilitado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2581,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:07.977Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-3c41a-acíos-—-botón-deshabilitado-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-f670d519c767c90566a0",
+              "file": "auth.spec.js",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "CP-AU-05 | Login con usuario inexistente muestra error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4965,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:10.585Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-7f24c-o-inexistente-muestra-error-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-0c21becb0a13fc811651",
+              "file": "auth.spec.js",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "CP-AU-06 | Cerrar sesión redirige a /login y bloquea rutas protegidas",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5291,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:15.574Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\auth-AU-—-Autenticación-CP-17994--y-bloquea-rutas-protegidas-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-4fc753f4d51ad34cc181",
+              "file": "auth.spec.js",
+              "line": 70,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "cliente.spec.js",
+      "file": "cliente.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "CL — Dashboard y vehículos del cliente",
+          "file": "cliente.spec.js",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-01 | Dashboard /cliente muestra la lista de vehículos del cliente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5564,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:20.919Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CL-—-Dashboard-y-v-e8525-ta-de-vehículos-del-cliente-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-872eb27bbaa47415a94f",
+              "file": "cliente.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "CP-CL-02 | Acceder a /cliente sin sesión redirige a /login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3439,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:26.509Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CL-—-Dashboard-y-v-6e9b8-sin-sesión-redirige-a-login-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-55627bc9a2585e5abd94",
+              "file": "cliente.spec.js",
+              "line": 38,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "CL — Historial de vehículo",
+          "file": "cliente.spec.js",
+          "line": 45,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-03 | La página de historial muestra órdenes de trabajo del vehículo",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                        "line": 65,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5149,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:29.999Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                            "line": 65,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CL-—-Historial-de--18d8c-nes-de-trabajo-del-vehículo-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "567336df8214d47592c8-22258f92e35398bab086",
+              "file": "cliente.spec.js",
+              "line": 50,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "CL — Permisos de acceso",
+          "file": "cliente.spec.js",
+          "line": 71,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-04 | La pantalla de permisos muestra los permisos otorgados y recibidos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                        "line": 84,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5712,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:35.173Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                            "line": 84,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CL-—-Permisos-de-a-a4cfd-misos-otorgados-y-recibidos-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "567336df8214d47592c8-93df2b96c77e84bff0f5",
+              "file": "cliente.spec.js",
+              "line": 76,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "CM — Próximo mantenimiento",
+          "file": "cliente.spec.js",
+          "line": 90,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-05 | /cliente/pm muestra información del próximo service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5538,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:40.913Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CM-—-Próximo-mante-a0917-rmación-del-próximo-service-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-93082cd452cc22de66b9",
+              "file": "cliente.spec.js",
+              "line": 95,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "TU — Turnos del cliente",
+          "file": "cliente.spec.js",
+          "line": 107,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-06 | /cliente/turnos muestra turnos pasados y futuros",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5474,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:46.475Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-TU-—-Turnos-del-cl-a153f-ra-turnos-pasados-y-futuros-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-fc94d5d06aca93d14095",
+              "file": "cliente.spec.js",
+              "line": 112,
+              "column": 3
+            },
+            {
+              "title": "CP-CL-07 | /cliente/talleres muestra listado de talleres para pedir turno",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5536,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:51.976Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-19a3fba81a8932bdfae0",
+              "file": "cliente.spec.js",
+              "line": 121,
+              "column": 3
+            },
+            {
+              "title": "CP-CL-08 | Seleccionar un taller muestra los turnos disponibles",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                        "line": 141,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5978,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:39:57.540Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\cliente.spec.js",
+                            "line": 141,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-TU-—-Turnos-del-cl-51bc9-stra-los-turnos-disponibles-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "567336df8214d47592c8-21aac9c1265f4a9d4f82",
+              "file": "cliente.spec.js",
+              "line": 130,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "CL — Configuración de cuenta",
+          "file": "cliente.spec.js",
+          "line": 147,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-CL-09 | /cliente/config muestra datos del perfil del cliente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6280,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:03.561Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "567336df8214d47592c8-bb59c521aa79230da7f6",
+              "file": "cliente.spec.js",
+              "line": 152,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "registro.spec.js",
+      "file": "registro.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "REG — Registro de usuarios",
+          "file": "registro.spec.js",
+          "line": 34,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-REG-01 | /registrarse muestra botones \"Registrar cliente\" y \"Registrar establecimiento\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2214,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:09.896Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-68f16--Registrar-establecimiento--chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-a257b79238c166f1c98e",
+              "file": "registro.spec.js",
+              "line": 37,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-02 | Seleccionar \"Registrar cliente\" muestra el formulario de cliente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2558,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:12.140Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-c99ae-ra-el-formulario-de-cliente-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-fb8d552feb018ebedb83",
+              "file": "registro.spec.js",
+              "line": 45,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-03 | Registro exitoso como CLIENTE navega a /cliente o muestra éxito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6032,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:14.724Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-ba9b765824c4811e1d75",
+              "file": "registro.spec.js",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-04 | Seleccionar \"Registrar establecimiento\" muestra el formulario de taller",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2299,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:20.784Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-c2d9d-tra-el-formulario-de-taller-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-f301e50283b38d4a8b2d",
+              "file": "registro.spec.js",
+              "line": 84,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-05 | Registro con username ya existente muestra error de duplicado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2739,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:23.108Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-63116--muestra-error-de-duplicado-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-cbd54fb66e58b8657415",
+              "file": "registro.spec.js",
+              "line": 95,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-06 | Botón submit deshabilitado con formulario de cliente vacío",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2336,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:25.885Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-4b61d-formulario-de-cliente-vacío-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-6a8d45778955557dc7a0",
+              "file": "registro.spec.js",
+              "line": 119,
+              "column": 3
+            },
+            {
+              "title": "CP-REG-07 | Contraseñas que no coinciden muestran error de validación",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2625,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:28.268Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\registro-REG-—-Registro-de-36673-uestran-error-de-validación-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1098c23971260b33563e-82b0b708bf554488840f",
+              "file": "registro.spec.js",
+              "line": 131,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "taller.spec.js",
+      "file": "taller.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "OT — Órdenes de trabajo",
+          "file": "taller.spec.js",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-TA-01 | /taller/ordenes muestra la lista de OTs del taller",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5704,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:30.975Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-dee1b0cb7568497766ea",
+              "file": "taller.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-02 | Filtros de OT — estado, patente, fecha son visibles y funcionales",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5584,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:36.715Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-29c6b--son-visibles-y-funcionales-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-cd3ac13c10fc37b48bef",
+              "file": "taller.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-03 | /taller/form-orden muestra formulario para crear nueva OT",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6217,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:42.323Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-bd5c7-mulario-para-crear-nueva-OT-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-b9092b8d6585c03be567",
+              "file": "taller.spec.js",
+              "line": 49,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-04 | Crear OT con campos vacíos — botón \"Confirmar orden\" dispara validación",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6243,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:48.582Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-e8c6f-ar-orden-dispara-validación-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-eb81acec356c21359058",
+              "file": "taller.spec.js",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-05 | Formulario nueva OT tiene los campos requeridos: cliente, vehículo, fecha",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6033,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:40:54.853Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-56ee6-idos-cliente-vehículo-fecha-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-5509851ad621066f0aa0",
+              "file": "taller.spec.js",
+              "line": 78,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-06 | Editar OT en estado PENDIENTE permite modificar descripción",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                        "line": 103,
+                        "column": 41
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5738,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:00.915Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                            "line": 103,
+                            "column": 41
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-ad479-rmite-modificar-descripción-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-a056ba3db28c5e3d8209",
+              "file": "taller.spec.js",
+              "line": 99,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-07 | OT FINALIZADA no muestra botón de editar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                        "line": 134,
+                        "column": 40
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5673,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:06.685Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                            "line": 134,
+                            "column": 40
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-f10aa--no-muestra-botón-de-editar-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-ef68be94961349b58dbc",
+              "file": "taller.spec.js",
+              "line": 123,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-08 | Anular OT en estado EN_PROCESO muestra confirmación",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                        "line": 146,
+                        "column": 42
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 5796,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:12.389Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\playwright\\tests\\taller.spec.js",
+                            "line": 146,
+                            "column": 42
+                          }
+                        }
+                      ],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-OT-—-Órdenes-de-tra-9464d-ROCESO-muestra-confirmación-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-ec0a3ba2e722da1ae517",
+              "file": "taller.spec.js",
+              "line": 142,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "CL/VH — Clientes y vehículos del taller",
+          "file": "taller.spec.js",
+          "line": 159,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-TA-09 | /taller/clientes muestra los clientes asociados al taller",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5564,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:18.213Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-a5fefa9c08f8064862f1",
+              "file": "taller.spec.js",
+              "line": 164,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-10 | /taller/vehiculos muestra los vehículos del taller",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8682,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:23.812Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-CL-VH-—-Clientes-y--9a6cb-ra-los-vehículos-del-taller-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-b629f779ec1c52c680a5",
+              "file": "taller.spec.js",
+              "line": 173,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "TU — Agenda y turnos del taller",
+          "file": "taller.spec.js",
+          "line": 184,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-TA-11 | /taller/turnos muestra la agenda con slots horarios",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7902,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:32.561Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-96cd74e63d72ffa002b7",
+              "file": "taller.spec.js",
+              "line": 189,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-12 | La agenda solo muestra días Lunes a Viernes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6407,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:40.521Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-TU-—-Agenda-y-turno-291e7-uestra-días-Lunes-a-Viernes-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-85eef9624b250e07fe6d",
+              "file": "taller.spec.js",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "CP-TA-13 | Slots de turno en rango 07:00 — 18:00",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6063,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:47.015Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-TU-—-Agenda-y-turno-cd15f-urno-en-rango-07-00-—-18-00-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-c547fbeb1c11dfa4fe17",
+              "file": "taller.spec.js",
+              "line": 213,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "TA — Configuración del taller",
+          "file": "taller.spec.js",
+          "line": 223,
+          "column": 6,
+          "specs": [
+            {
+              "title": "CP-TA-14 | /taller/config muestra datos del taller y permite editar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5989,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T16:41:53.109Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Personal Tomi\\Programación\\Autolog Final\\Autolog\\PRUEBAS\\logs\\artifacts\\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium\\test-finished-1.png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cf83bf390a5b1b0590c7-03bc4157ceb7a89e4358",
+              "file": "taller.spec.js",
+              "line": 228,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-11T16:38:51.936Z",
+    "duration": 187752.88799999998,
+    "expected": 30,
+    "skipped": 6,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

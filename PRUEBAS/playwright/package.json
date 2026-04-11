@@ -1,0 +1,16 @@
+{
+  "name": "autolog-pruebas-interfaz",
+  "version": "1.0.0",
+  "description": "Pruebas de interfaz de AutoLog con Playwright",
+  "scripts": {
+    "test": "playwright test --headed",
+    "test:auth": "playwright test tests/auth.spec.js --headed",
+    "test:registro": "playwright test tests/registro.spec.js --headed",
+    "test:cliente": "playwright test tests/cliente.spec.js --headed",
+    "test:taller": "playwright test tests/taller.spec.js --headed",
+    "report": "npx playwright show-report ../logs/reporte-html"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
