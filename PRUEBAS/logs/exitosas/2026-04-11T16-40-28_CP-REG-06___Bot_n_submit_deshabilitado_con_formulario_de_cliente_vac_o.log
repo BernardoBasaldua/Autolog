@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:40:28
+Caso      : CP-REG-06 | Botón submit deshabilitado con formulario de cliente vacío
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : PASSED
+Duración  : 2336ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-4b61d-formulario-de-cliente-vacío-chromium\test-finished-1.png

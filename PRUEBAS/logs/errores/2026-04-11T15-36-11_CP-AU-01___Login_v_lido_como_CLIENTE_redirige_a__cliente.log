@@ -1,0 +1,17 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 12:36:11
+Caso      : CP-AU-01 | Login válido como CLIENTE redirige a /cliente
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js
+Estado    : TIMEDOUT
+Duración  : 30468ms
+Reintentos: 1
+
+--- ERROR ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- STACK ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-fafb0--CLIENTE-redirige-a-cliente-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-fafb0--CLIENTE-redirige-a-cliente-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-fafb0--CLIENTE-redirige-a-cliente-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-fafb0--CLIENTE-redirige-a-cliente-chromium-retry1\trace.zip

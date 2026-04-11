@@ -1,0 +1,42 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:20:20
+Caso      : CP-CL-07 | /cliente/talleres muestra listado de talleres para pedir turno
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : FAILED
+Duración  : 5322ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/taller|mecánico|sin talleres|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/taller|mecánico|sin talleres|no hay/i) resolved to 3 elements:
+    1) <span>Talleres</span> aka getByRole('link', { name: ' Talleres' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Talleres </h1> aka getByRole('heading', { name: 'Talleres' })
+    3) <h2 class="text-xl font-bold text-gray-900">Taller Playwright</h2> aka getByRole('heading', { name: 'Taller Playwright' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/taller|mecánico|sin talleres|no hay/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/taller|mecánico|sin talleres|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/taller|mecánico|sin talleres|no hay/i) resolved to 3 elements:
+    1) <span>Talleres</span> aka getByRole('link', { name: ' Talleres' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Talleres </h1> aka getByRole('heading', { name: 'Talleres' })
+    3) <h2 class="text-xl font-bold text-gray-900">Taller Playwright</h2> aka getByRole('heading', { name: 'Taller Playwright' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/taller|mecánico|sin talleres|no hay/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js:126:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium-retry1\trace.zip

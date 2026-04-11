@@ -1,0 +1,42 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:25:30
+Caso      : CP-TA-11 | /taller/turnos muestra la agenda con slots horarios
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 9181ms
+Reintentos: 0
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i)
+Expected: visible
+Error: strict mode violation: getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i) resolved to 3 elements:
+    1) <span>Agenda de turnos</span> aka getByRole('link', { name: ' Agenda de turnos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Agenda de Turnos </h1> aka getByRole('heading', { name: 'Agenda de Turnos' })
+    3) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Lun 6 </div> aka getByText('Lun')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i)
+Expected: visible
+Error: strict mode violation: getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i) resolved to 3 elements:
+    1) <span>Agenda de turnos</span> aka getByRole('link', { name: ' Agenda de turnos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Agenda de Turnos </h1> aka getByRole('heading', { name: 'Agenda de Turnos' })
+    3) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Lun 6 </div> aka getByText('Lun')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/turno|agenda|lunes|lun|horario|disponible|franja/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:195:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\trace.zip

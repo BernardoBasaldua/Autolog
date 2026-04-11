@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:41:23
+Caso      : CP-TA-09 | /taller/clientes muestra los clientes asociados al taller
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : PASSED
+Duración  : 5564ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium\test-finished-1.png

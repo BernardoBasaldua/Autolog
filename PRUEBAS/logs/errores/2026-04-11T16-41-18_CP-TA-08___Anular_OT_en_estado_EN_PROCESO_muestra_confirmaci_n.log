@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:41:18
+Caso      : CP-TA-08 | Anular OT en estado EN_PROCESO muestra confirmación
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : SKIPPED
+Duración  : 5796ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-9464d-ROCESO-muestra-confirmación-chromium\test-finished-1.png

@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:33:51
+Caso      : CP-TA-01 | /taller/ordenes muestra la lista de OTs del taller
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : PASSED
+Duración  : 5200ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium\test-finished-1.png

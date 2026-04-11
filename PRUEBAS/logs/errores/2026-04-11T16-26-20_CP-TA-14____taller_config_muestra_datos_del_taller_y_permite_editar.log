@@ -1,0 +1,44 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:26:20
+Caso      : CP-TA-14 | /taller/config muestra datos del taller y permite editar
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 6380ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/taller|nombre|dirección|teléfono|configuración/i)
+Expected: visible
+Error: strict mode violation: getByText(/taller|nombre|dirección|teléfono|configuración/i) resolved to 4 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="font-semibold text-lg"> Taller Playwright </p> aka getByText('Taller Playwright')
+    2) <span>Configuración</span> aka getByRole('link', { name: ' Configuración' })
+    3) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Configuración </h1> aka getByRole('heading', { name: 'Configuración' })
+    4) <p _ngcontent-ng-c3773652391="" class="text-sm text-gray-500"> Modificar nombre, cuit, teléfono y otros datos d…</p> aka getByText('Modificar nombre, cuit, telé')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/taller|nombre|dirección|teléfono|configuración/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/taller|nombre|dirección|teléfono|configuración/i)
+Expected: visible
+Error: strict mode violation: getByText(/taller|nombre|dirección|teléfono|configuración/i) resolved to 4 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="font-semibold text-lg"> Taller Playwright </p> aka getByText('Taller Playwright')
+    2) <span>Configuración</span> aka getByRole('link', { name: ' Configuración' })
+    3) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Configuración </h1> aka getByRole('heading', { name: 'Configuración' })
+    4) <p _ngcontent-ng-c3773652391="" class="text-sm text-gray-500"> Modificar nombre, cuit, teléfono y otros datos d…</p> aka getByText('Modificar nombre, cuit, telé')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/taller|nombre|dirección|teléfono|configuración/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:234:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium-retry1\trace.zip

@@ -1,0 +1,40 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:20:06
+Caso      : CP-CL-06 | /cliente/turnos muestra turnos pasados y futuros
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : FAILED
+Duración  : 5789ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/turno|orden|fecha|sin turnos|no tenés/i)
+Expected: visible
+Error: strict mode violation: getByText(/turno|orden|fecha|sin turnos|no tenés/i) resolved to 2 elements:
+    1) <span>Turnos</span> aka getByRole('link', { name: ' Turnos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Turnos </h1> aka getByRole('heading', { name: 'Turnos' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/turno|orden|fecha|sin turnos|no tenés/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/turno|orden|fecha|sin turnos|no tenés/i)
+Expected: visible
+Error: strict mode violation: getByText(/turno|orden|fecha|sin turnos|no tenés/i) resolved to 2 elements:
+    1) <span>Turnos</span> aka getByRole('link', { name: ' Turnos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Turnos </h1> aka getByRole('heading', { name: 'Turnos' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/turno|orden|fecha|sin turnos|no tenés/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js:117:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-a153f-ra-turnos-pasados-y-futuros-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-a153f-ra-turnos-pasados-y-futuros-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-a153f-ra-turnos-pasados-y-futuros-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-a153f-ra-turnos-pasados-y-futuros-chromium-retry1\trace.zip

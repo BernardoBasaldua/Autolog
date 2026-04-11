@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:19:20
+Caso      : CP-AU-04 | Login con campos vacíos — botón deshabilitado
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js
+Estado    : PASSED
+Duración  : 3368ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-3c41a-acíos-—-botón-deshabilitado-chromium\test-finished-1.png

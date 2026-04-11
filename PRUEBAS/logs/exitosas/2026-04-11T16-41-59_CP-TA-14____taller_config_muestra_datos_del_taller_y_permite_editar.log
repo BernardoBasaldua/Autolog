@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:41:59
+Caso      : CP-TA-14 | /taller/config muestra datos del taller y permite editar
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : PASSED
+Duración  : 5989ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TA-—-Configuración--7d47a-del-taller-y-permite-editar-chromium\test-finished-1.png

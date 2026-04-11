@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:36:44
+Caso      : CP-TA-11 | /taller/turnos muestra la agenda con slots horarios
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : PASSED
+Duración  : 5219ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-df370-a-agenda-con-slots-horarios-chromium\test-finished-1.png

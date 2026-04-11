@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:39:20
+Caso      : CP-AU-06 | Cerrar sesión redirige a /login y bloquea rutas protegidas
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js
+Estado    : PASSED
+Duración  : 5291ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-17994--y-bloquea-rutas-protegidas-chromium\test-finished-1.png

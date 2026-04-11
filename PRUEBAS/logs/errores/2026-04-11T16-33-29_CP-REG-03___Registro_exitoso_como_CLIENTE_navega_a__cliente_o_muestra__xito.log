@@ -1,0 +1,22 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:33:29
+Caso      : CP-REG-03 | Registro exitoso como CLIENTE navega a /cliente o muestra éxito
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : FAILED
+Duración  : 5337ms
+Reintentos: 0
+
+--- ERROR ---
+Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+Received: [31mfalse[39m
+--- STACK ---
+Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+Received: [31mfalse[39m
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js:80:16
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\trace.zip

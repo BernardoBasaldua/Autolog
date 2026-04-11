@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:21:39
+Caso      : CP-TA-02 | Filtros de OT — estado, patente, fecha son visibles y funcionales
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : PASSED
+Duración  : 5451ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-29c6b--son-visibles-y-funcionales-chromium\test-finished-1.png

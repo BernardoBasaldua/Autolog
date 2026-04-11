@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:20:27
+Caso      : CP-CL-08 | Seleccionar un taller muestra los turnos disponibles
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : SKIPPED
+Duración  : 5417ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-51bc9-stra-los-turnos-disponibles-chromium\test-finished-1.png

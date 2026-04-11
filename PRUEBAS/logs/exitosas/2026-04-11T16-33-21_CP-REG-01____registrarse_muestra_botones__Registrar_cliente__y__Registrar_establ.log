@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:33:21
+Caso      : CP-REG-01 | /registrarse muestra botones "Registrar cliente" y "Registrar establecimiento"
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : PASSED
+Duración  : 1584ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-68f16--Registrar-establecimiento--chromium\test-finished-1.png

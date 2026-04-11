@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:39:46
+Caso      : CP-CL-05 | /cliente/pm muestra información del próximo service
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : PASSED
+Duración  : 5538ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CM-—-Próximo-mante-a0917-rmación-del-próximo-service-chromium\test-finished-1.png

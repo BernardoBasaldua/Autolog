@@ -1,0 +1,17 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:24:03
+Caso      : CP-TA-05 | Crear OT válida redirige a lista de OTs o muestra confirmación
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : TIMEDOUT
+Duración  : 30699ms
+Reintentos: 1
+
+--- ERROR ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- STACK ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-0e788--OTs-o-muestra-confirmación-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-0e788--OTs-o-muestra-confirmación-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-0e788--OTs-o-muestra-confirmación-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-0e788--OTs-o-muestra-confirmación-chromium-retry1\trace.zip

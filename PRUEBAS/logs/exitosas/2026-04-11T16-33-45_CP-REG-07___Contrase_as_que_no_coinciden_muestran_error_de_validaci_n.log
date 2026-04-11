@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:33:45
+Caso      : CP-REG-07 | Contraseñas que no coinciden muestran error de validación
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : PASSED
+Duración  : 2161ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-36673-uestran-error-de-validación-chromium\test-finished-1.png

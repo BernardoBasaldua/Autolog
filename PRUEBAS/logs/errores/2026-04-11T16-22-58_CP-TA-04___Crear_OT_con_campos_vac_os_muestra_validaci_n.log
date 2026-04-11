@@ -1,0 +1,17 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:22:58
+Caso      : CP-TA-04 | Crear OT con campos vacíos muestra validación
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : TIMEDOUT
+Duración  : 31447ms
+Reintentos: 1
+
+--- ERROR ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- STACK ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-78887-s-vacíos-muestra-validación-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-78887-s-vacíos-muestra-validación-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-78887-s-vacíos-muestra-validación-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-78887-s-vacíos-muestra-validación-chromium-retry1\trace.zip

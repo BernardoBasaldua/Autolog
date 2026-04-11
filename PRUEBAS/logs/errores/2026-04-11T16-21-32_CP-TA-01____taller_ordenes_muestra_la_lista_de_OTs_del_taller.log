@@ -1,0 +1,44 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:21:32
+Caso      : CP-TA-01 | /taller/ordenes muestra la lista de OTs del taller
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 6166ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/orden|OT|patente|estado|sin órdenes|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/orden|OT|patente|estado|sin órdenes|no hay/i) resolved to 4 elements:
+    1) <button id="nuevaOrdenTab" class="tab-button" _ngcontent-ng-c1545320206=""> Nueva Orden </button> aka getByRole('button', { name: 'Nueva Orden' })
+    2) <th class="rounded-tl-lg" _ngcontent-ng-c1545320206="">Orden</th> aka getByRole('columnheader', { name: 'Orden' })
+    3) <th _ngcontent-ng-c1545320206="">Estado</th> aka getByRole('columnheader', { name: 'Estado' })
+    4) <td colspan="4" class="empty-row" _ngcontent-ng-c1545320206=""> No hay órdenes para mostrar. </td> aka getByRole('cell', { name: 'No hay órdenes para mostrar.' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/orden|OT|patente|estado|sin órdenes|no hay/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/orden|OT|patente|estado|sin órdenes|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/orden|OT|patente|estado|sin órdenes|no hay/i) resolved to 4 elements:
+    1) <button id="nuevaOrdenTab" class="tab-button" _ngcontent-ng-c1545320206=""> Nueva Orden </button> aka getByRole('button', { name: 'Nueva Orden' })
+    2) <th class="rounded-tl-lg" _ngcontent-ng-c1545320206="">Orden</th> aka getByRole('columnheader', { name: 'Orden' })
+    3) <th _ngcontent-ng-c1545320206="">Estado</th> aka getByRole('columnheader', { name: 'Estado' })
+    4) <td colspan="4" class="empty-row" _ngcontent-ng-c1545320206=""> No hay órdenes para mostrar. </td> aka getByRole('cell', { name: 'No hay órdenes para mostrar.' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/orden|OT|patente|estado|sin órdenes|no hay/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:34:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-OT-—-Órdenes-de-tra-20370--la-lista-de-OTs-del-taller-chromium-retry1\trace.zip

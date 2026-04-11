@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:39:35
+Caso      : CP-CL-03 | La página de historial muestra órdenes de trabajo del vehículo
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : SKIPPED
+Duración  : 5149ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Historial-de--18d8c-nes-de-trabajo-del-vehículo-chromium\test-finished-1.png

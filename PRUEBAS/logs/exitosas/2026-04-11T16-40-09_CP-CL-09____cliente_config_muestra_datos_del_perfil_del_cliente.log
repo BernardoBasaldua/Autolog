@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:40:09
+Caso      : CP-CL-09 | /cliente/config muestra datos del perfil del cliente
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : PASSED
+Duración  : 6280ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\test-finished-1.png

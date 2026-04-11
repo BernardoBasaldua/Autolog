@@ -1,0 +1,52 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:25:02
+Caso      : CP-TA-10 | /taller/vehiculos muestra los vehículos del taller
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 7754ms
+Reintentos: 0
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i) resolved to 8 elements:
+    1) <span>Vehículos</span> aka getByRole('link', { name: ' Vehículos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Vehículos </h1> aka getByRole('heading', { name: 'Vehículos', exact: true })
+    3) <h2 _ngcontent-ng-c4019553131="" class="text-lg font-semibold text-gray-800"> Vehículos del taller </h2> aka getByRole('heading', { name: 'Vehículos del taller' })
+    4) <button type="button" _ngcontent-ng-c4019553131="" class="button-primary boton-agregar-vehiculo"> + Agregar vehículo </button> aka getByRole('button', { name: '+ Agregar vehículo' })
+    5) <label _ngcontent-ng-c4019553131="" class="block text-sm font-medium text-gray-700 mb-1"> Buscar vehículo </label> aka getByText('Buscar vehículo')
+    6) <label class="filter-label" _ngcontent-ng-c4019553131="">Marca</label> aka getByText('Marca')
+    7) <label class="filter-label" _ngcontent-ng-c4019553131="">Modelo</label> aka getByText('Modelo')
+    8) <div _ngcontent-ng-c4019553131="" class="col-span-full text-center text-gray-500"> No se encontraron vehículos con los filtros actu…</div> aka getByText('No se encontraron vehículos')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i) resolved to 8 elements:
+    1) <span>Vehículos</span> aka getByRole('link', { name: ' Vehículos' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Vehículos </h1> aka getByRole('heading', { name: 'Vehículos', exact: true })
+    3) <h2 _ngcontent-ng-c4019553131="" class="text-lg font-semibold text-gray-800"> Vehículos del taller </h2> aka getByRole('heading', { name: 'Vehículos del taller' })
+    4) <button type="button" _ngcontent-ng-c4019553131="" class="button-primary boton-agregar-vehiculo"> + Agregar vehículo </button> aka getByRole('button', { name: '+ Agregar vehículo' })
+    5) <label _ngcontent-ng-c4019553131="" class="block text-sm font-medium text-gray-700 mb-1"> Buscar vehículo </label> aka getByText('Buscar vehículo')
+    6) <label class="filter-label" _ngcontent-ng-c4019553131="">Marca</label> aka getByText('Marca')
+    7) <label class="filter-label" _ngcontent-ng-c4019553131="">Modelo</label> aka getByText('Modelo')
+    8) <div _ngcontent-ng-c4019553131="" class="col-span-full text-center text-gray-500"> No se encontraron vehículos con los filtros actu…</div> aka getByText('No se encontraron vehículos')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/vehículo|patente|marca|modelo|sin vehículos|no hay/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:179:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--9a6cb-ra-los-vehículos-del-taller-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--9a6cb-ra-los-vehículos-del-taller-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--9a6cb-ra-los-vehículos-del-taller-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--9a6cb-ra-los-vehículos-del-taller-chromium\trace.zip

@@ -1,0 +1,52 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:26:03
+Caso      : CP-TA-13 | Slots de turno en rango 07:00 — 18:00
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 6411ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/07|08|09|10|11|12|13|14|15|16|17/)
+Expected: visible
+Error: strict mode violation: getByText(/07|08|09|10|11|12|13|14|15|16|17/) resolved to 8 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="text-sm text-gray-400"> Av. Testing 123 </p> aka getByText('Av. Testing')
+    2) <div class="toolbar-title" _ngcontent-ng-c413744515="">5 Abr - 11 Abr 2026</div> aka getByText('5 Abr - 11 Abr')
+    3) <select _ngcontent-ng-c413744515="" class="select ng-untouched ng-pristine ng-valid">…</select> aka getByRole('combobox').nth(1)
+    4) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Vie 10 </div> aka getByText('Vie 10')
+    5) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Sáb 11 </div> aka getByText('Sáb')
+    6) <div class="cell time-cell" _ngcontent-ng-c413744515="">10 AM</div> aka getByText('10 AM')
+    7) <div class="cell time-cell" _ngcontent-ng-c413744515="">11 AM</div> aka getByText('11 AM')
+    8) <div class="cell time-cell" _ngcontent-ng-c413744515="">12 PM</div> aka getByText('12 PM')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/07|08|09|10|11|12|13|14|15|16|17/)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/07|08|09|10|11|12|13|14|15|16|17/)
+Expected: visible
+Error: strict mode violation: getByText(/07|08|09|10|11|12|13|14|15|16|17/) resolved to 8 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="text-sm text-gray-400"> Av. Testing 123 </p> aka getByText('Av. Testing')
+    2) <div class="toolbar-title" _ngcontent-ng-c413744515="">5 Abr - 11 Abr 2026</div> aka getByText('5 Abr - 11 Abr')
+    3) <select _ngcontent-ng-c413744515="" class="select ng-untouched ng-pristine ng-valid">…</select> aka getByRole('combobox').nth(1)
+    4) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Vie 10 </div> aka getByText('Vie 10')
+    5) <div class="cell header-cell" _ngcontent-ng-c413744515=""> Sáb 11 </div> aka getByText('Sáb')
+    6) <div class="cell time-cell" _ngcontent-ng-c413744515="">10 AM</div> aka getByText('10 AM')
+    7) <div class="cell time-cell" _ngcontent-ng-c413744515="">11 AM</div> aka getByText('11 AM')
+    8) <div class="cell time-cell" _ngcontent-ng-c413744515="">12 PM</div> aka getByText('12 PM')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/07|08|09|10|11|12|13|14|15|16|17/)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:218:70
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-cd15f-urno-en-rango-07-00-—-18-00-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-cd15f-urno-en-rango-07-00-—-18-00-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-cd15f-urno-en-rango-07-00-—-18-00-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-TU-—-Agenda-y-turno-cd15f-urno-en-rango-07-00-—-18-00-chromium-retry1\trace.zip

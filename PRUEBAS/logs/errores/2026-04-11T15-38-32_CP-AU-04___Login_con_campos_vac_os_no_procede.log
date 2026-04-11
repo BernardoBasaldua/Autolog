@@ -1,0 +1,30 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 12:38:32
+Caso      : CP-AU-04 | Login con campos vacíos no procede
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js
+Estado    : FAILED
+Duración  : 2832ms
+Reintentos: 1
+
+--- ERROR ---
+Error: locator.click: Error: strict mode violation: getByRole('button', { name: /iniciar sesión|entrar|login/i }) resolved to 2 elements:
+    1) <button type="button" class="tab-button active" _ngcontent-ng-c4087255460=""> Iniciar Sesión </button> aka getByRole('button', { name: 'Iniciar Sesión' }).first()
+    2) <button disabled type="submit" _ngcontent-ng-c4087255460="" class="button-primary w-full"> Iniciar Sesión </button> aka locator('form').getByRole('button', { name: 'Iniciar Sesión' })
+
+Call log:
+[2m  - waiting for getByRole('button', { name: /iniciar sesión|entrar|login/i })[22m
+
+--- STACK ---
+Error: locator.click: Error: strict mode violation: getByRole('button', { name: /iniciar sesión|entrar|login/i }) resolved to 2 elements:
+    1) <button type="button" class="tab-button active" _ngcontent-ng-c4087255460=""> Iniciar Sesión </button> aka getByRole('button', { name: 'Iniciar Sesión' }).first()
+    2) <button disabled type="submit" _ngcontent-ng-c4087255460="" class="button-primary w-full"> Iniciar Sesión </button> aka locator('form').getByRole('button', { name: 'Iniciar Sesión' })
+
+Call log:
+[2m  - waiting for getByRole('button', { name: /iniciar sesión|entrar|login/i })[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js:57:78
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-cc2fd-on-campos-vacíos-no-procede-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-cc2fd-on-campos-vacíos-no-procede-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-cc2fd-on-campos-vacíos-no-procede-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-cc2fd-on-campos-vacíos-no-procede-chromium-retry1\trace.zip

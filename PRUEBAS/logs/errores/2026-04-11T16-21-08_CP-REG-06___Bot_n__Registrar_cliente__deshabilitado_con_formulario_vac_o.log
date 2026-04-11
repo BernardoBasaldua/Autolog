@@ -1,0 +1,40 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:21:08
+Caso      : CP-REG-06 | Botón "Registrar cliente" deshabilitado con formulario vacío
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : FAILED
+Duración  : 2687ms
+Reintentos: 0
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeDisabled[2m([22m[2m)[22m failed
+
+Locator: getByRole('button', { name: /registrar cliente/i })
+Expected: disabled
+Error: strict mode violation: getByRole('button', { name: /registrar cliente/i }) resolved to 2 elements:
+    1) <button type="button" class="tipo-button active" _ngcontent-ng-c132517674="">…</button> aka getByRole('button', { name: 'Registrar cliente Desde aca' })
+    2) <button disabled type="submit" _ngcontent-ng-c3355921665="" class="button-primary w-full mt-2"> Registrar cliente </button> aka getByRole('button', { name: 'Registrar cliente', exact: true })
+
+Call log:
+[2m  - Expect "toBeDisabled" with timeout 5000ms[22m
+[2m  - waiting for getByRole('button', { name: /registrar cliente/i })[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeDisabled[2m([22m[2m)[22m failed
+
+Locator: getByRole('button', { name: /registrar cliente/i })
+Expected: disabled
+Error: strict mode violation: getByRole('button', { name: /registrar cliente/i }) resolved to 2 elements:
+    1) <button type="button" class="tipo-button active" _ngcontent-ng-c132517674="">…</button> aka getByRole('button', { name: 'Registrar cliente Desde aca' })
+    2) <button disabled type="submit" _ngcontent-ng-c3355921665="" class="button-primary w-full mt-2"> Registrar cliente </button> aka getByRole('button', { name: 'Registrar cliente', exact: true })
+
+Call log:
+[2m  - Expect "toBeDisabled" with timeout 5000ms[22m
+[2m  - waiting for getByRole('button', { name: /registrar cliente/i })[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js:130:29
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-4054b-litado-con-formulario-vacío-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-4054b-litado-con-formulario-vacío-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-4054b-litado-con-formulario-vacío-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-4054b-litado-con-formulario-vacío-chromium\trace.zip

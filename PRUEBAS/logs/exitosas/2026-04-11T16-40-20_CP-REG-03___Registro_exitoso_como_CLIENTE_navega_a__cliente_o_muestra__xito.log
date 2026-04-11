@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:40:20
+Caso      : CP-REG-03 | Registro exitoso como CLIENTE navega a /cliente o muestra éxito
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : PASSED
+Duración  : 6032ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium\test-finished-1.png

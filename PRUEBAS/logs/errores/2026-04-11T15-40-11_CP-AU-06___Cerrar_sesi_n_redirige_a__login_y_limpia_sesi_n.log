@@ -1,0 +1,17 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 12:40:11
+Caso      : CP-AU-06 | Cerrar sesión redirige a /login y limpia sesión
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\auth.spec.js
+Estado    : TIMEDOUT
+Duración  : 31576ms
+Reintentos: 0
+
+--- ERROR ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- STACK ---
+[31mTest timeout of 30000ms exceeded.[39m
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-69b69-ige-a-login-y-limpia-sesión-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-69b69-ige-a-login-y-limpia-sesión-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-69b69-ige-a-login-y-limpia-sesión-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\auth-AU-—-Autenticación-CP-69b69-ige-a-login-y-limpia-sesión-chromium\trace.zip

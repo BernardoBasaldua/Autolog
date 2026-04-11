@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:19:35
+Caso      : CP-CL-01 | Dashboard /cliente muestra la lista de vehículos del cliente
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : PASSED
+Duración  : 5351ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Dashboard-y-v-e8525-ta-de-vehículos-del-cliente-chromium\test-finished-1.png

@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:33:09
+Caso      : CP-CL-07 | /cliente/talleres muestra listado de talleres para pedir turno
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : PASSED
+Duración  : 5169ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-TU-—-Turnos-del-cl-88dfa-e-talleres-para-pedir-turno-chromium\test-finished-1.png

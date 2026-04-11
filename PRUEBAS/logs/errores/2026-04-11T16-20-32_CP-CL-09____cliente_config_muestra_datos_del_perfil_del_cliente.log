@@ -1,0 +1,46 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:20:32
+Caso      : CP-CL-09 | /cliente/config muestra datos del perfil del cliente
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : FAILED
+Duración  : 5289ms
+Reintentos: 0
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i)
+Expected: visible
+Error: strict mode violation: getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i) resolved to 5 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="font-semibold text-lg"> Carlos Playwright </p> aka getByText('Carlos Playwright')
+    2) <p _ngcontent-ng-c3209185930="" class="text-sm text-gray-400"> cliente_playwright@test.com </p> aka getByText('cliente_playwright@test.com')
+    3) <h2 _ngcontent-ng-c3979025700="" class="text-lg font-semibold text-gray-800">Configurar perfil</h2> aka getByRole('heading', { name: 'Configurar perfil' })
+    4) <p _ngcontent-ng-c3979025700="" class="text-sm text-gray-500"> Modificar tu nombre, email, teléfono y otros dat…</p> aka getByText('Modificar tu nombre, email,')
+    5) <button type="button" class="button-primary" _ngcontent-ng-c3979025700=""> Editar perfil </button> aka getByRole('button', { name: 'Editar perfil' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i)
+Expected: visible
+Error: strict mode violation: getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i) resolved to 5 elements:
+    1) <p _ngcontent-ng-c3209185930="" class="font-semibold text-lg"> Carlos Playwright </p> aka getByText('Carlos Playwright')
+    2) <p _ngcontent-ng-c3209185930="" class="text-sm text-gray-400"> cliente_playwright@test.com </p> aka getByText('cliente_playwright@test.com')
+    3) <h2 _ngcontent-ng-c3979025700="" class="text-lg font-semibold text-gray-800">Configurar perfil</h2> aka getByRole('heading', { name: 'Configurar perfil' })
+    4) <p _ngcontent-ng-c3979025700="" class="text-sm text-gray-500"> Modificar tu nombre, email, teléfono y otros dat…</p> aka getByText('Modificar tu nombre, email,')
+    5) <button type="button" class="button-primary" _ngcontent-ng-c3979025700=""> Editar perfil </button> aka getByRole('button', { name: 'Editar perfil' })
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/Carlos|cliente_playwright@test.com|perfil|datos/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js:157:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Configuración-c3e87-atos-del-perfil-del-cliente-chromium\trace.zip

@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:39:30
+Caso      : CP-CL-02 | Acceder a /cliente sin sesión redirige a /login
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : PASSED
+Duración  : 3439ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Dashboard-y-v-6e9b8-sin-sesión-redirige-a-login-chromium\test-finished-1.png

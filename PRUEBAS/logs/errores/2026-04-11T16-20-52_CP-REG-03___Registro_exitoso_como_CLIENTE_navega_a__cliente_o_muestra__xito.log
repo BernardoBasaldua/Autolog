@@ -1,0 +1,30 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:20:52
+Caso      : CP-REG-03 | Registro exitoso como CLIENTE navega a /cliente o muestra éxito
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js
+Estado    : FAILED
+Duración  : 3569ms
+Reintentos: 1
+
+--- ERROR ---
+Error: locator.click: Error: strict mode violation: getByRole('button', { name: /registrar cliente/i }) resolved to 2 elements:
+    1) <button type="button" class="tipo-button active" _ngcontent-ng-c132517674="">…</button> aka getByRole('button', { name: 'Registrar cliente Desde aca' })
+    2) <button type="submit" _ngcontent-ng-c3355921665="" class="button-primary w-full mt-2"> Registrar cliente </button> aka getByRole('button', { name: 'Registrar cliente', exact: true })
+
+Call log:
+[2m  - waiting for getByRole('button', { name: /registrar cliente/i })[22m
+
+--- STACK ---
+Error: locator.click: Error: strict mode violation: getByRole('button', { name: /registrar cliente/i }) resolved to 2 elements:
+    1) <button type="button" class="tipo-button active" _ngcontent-ng-c132517674="">…</button> aka getByRole('button', { name: 'Registrar cliente Desde aca' })
+    2) <button type="submit" _ngcontent-ng-c3355921665="" class="button-primary w-full mt-2"> Registrar cliente </button> aka getByRole('button', { name: 'Registrar cliente', exact: true })
+
+Call log:
+[2m  - waiting for getByRole('button', { name: /registrar cliente/i })[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\registro.spec.js:73:81
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\registro-REG-—-Registro-de-da5f4-a-a-cliente-o-muestra-éxito-chromium-retry1\trace.zip

@@ -1,0 +1,46 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:24:48
+Caso      : CP-TA-09 | /taller/clientes muestra los clientes asociados al taller
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js
+Estado    : FAILED
+Duración  : 15404ms
+Reintentos: 1
+
+--- ERROR ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i) resolved to 5 elements:
+    1) <span>Clientes</span> aka getByRole('link', { name: ' Clientes' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Clientes </h1> aka getByRole('heading', { name: 'Clientes', exact: true })
+    3) <h2 _ngcontent-ng-c2052033945="" class="text-lg font-semibold text-gray-800 whitespace-nowrap"> Clientes del taller </h2> aka getByRole('heading', { name: 'Clientes del taller' })
+    4) <button _ngcontent-ng-c2052033945="" class="button-primary w-full md:w-auto"> + Agregar cliente </button> aka getByRole('button', { name: '+ Agregar cliente' })
+    5) <div _ngcontent-ng-c2052033945="" class="col-span-full text-center text-gray-500"> No se encontraron clientes para este taller. </div> aka getByText('No se encontraron clientes')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i)[22m
+
+--- STACK ---
+Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+Locator: getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i)
+Expected: visible
+Error: strict mode violation: getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i) resolved to 5 elements:
+    1) <span>Clientes</span> aka getByRole('link', { name: ' Clientes' })
+    2) <h1 class="text-xl md:text-3xl font-bold text-gray-800 truncate"> Clientes </h1> aka getByRole('heading', { name: 'Clientes', exact: true })
+    3) <h2 _ngcontent-ng-c2052033945="" class="text-lg font-semibold text-gray-800 whitespace-nowrap"> Clientes del taller </h2> aka getByRole('heading', { name: 'Clientes del taller' })
+    4) <button _ngcontent-ng-c2052033945="" class="button-primary w-full md:w-auto"> + Agregar cliente </button> aka getByRole('button', { name: '+ Agregar cliente' })
+    5) <div _ngcontent-ng-c2052033945="" class="col-span-full text-center text-gray-500"> No se encontraron clientes para este taller. </div> aka getByText('No se encontraron clientes')
+
+Call log:
+[2m  - Expect "toBeVisible" with timeout 5000ms[22m
+[2m  - waiting for getByText(/cliente|nombre|apellido|teléfono|sin clientes|no hay/i)[22m
+
+    at C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\taller.spec.js:170:7
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium-retry1\test-failed-1.png
+  [video/webm] video: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium-retry1\video.webm
+  [text/markdown] error-context: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium-retry1\error-context.md
+  [application/zip] trace: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\taller-CL-VH-—-Clientes-y--d521d-lientes-asociados-al-taller-chromium-retry1\trace.zip

@@ -1,0 +1,10 @@
+=== AutoLog Test Log ===
+Fecha     : 11/4/2026, 01:39:40
+Caso      : CP-CL-04 | La pantalla de permisos muestra los permisos otorgados y recibidos
+Archivo   : C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\playwright\tests\cliente.spec.js
+Estado    : SKIPPED
+Duración  : 5712ms
+Reintentos: 0
+
+--- ADJUNTOS ---
+  [image/png] screenshot: C:\Personal Tomi\Programación\Autolog Final\Autolog\PRUEBAS\logs\artifacts\cliente-CL-—-Permisos-de-a-a4cfd-misos-otorgados-y-recibidos-chromium\test-finished-1.png
