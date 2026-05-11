@@ -570,3 +570,64 @@ Para correr todo de un saque desde Postman: **Runner → Autolog → orden 1, 3,
 4. Runner → ejecutar la colección **completa** en orden 1, 3, 5, 4, 2.
 5. Resultado esperado: **5 requests con todos los `pm.test(...)` en verde**.
 6. Re-ejecutar Test #4 (debería fallar con 400 — caso negativo "ya está cerrada").
+
+---
+
+## Apéndice B — Cómo reiniciar las pruebas desde cero
+
+Seguir estos pasos cada vez que se quiera ejecutar la suite completa en estado limpio.
+
+### B.1 Limpiar la base de datos
+
+```powershell
+cd C:\Users\bbasaldua\Documents\Autolog\BACKEND
+.\venv\Scripts\Activate.ps1
+python manage.py flush --no-input
+python manage.py loaddata fixtures/base_data.json
+```
+
+> `flush` elimina **todos** los datos de la BD (pero conserva la estructura).
+> `loaddata` recarga las marcas, modelos y datos base incluidos en el fixture.
+
+### B.2 Recrear el seed de pruebas
+
+```powershell
+python manage.py shell
+```
+
+Pegar el script completo de la sección 4 (superuser + usuarios + vehículo + OT pasada).
+Al finalizar, el script imprime los nuevos IDs:
+
+```
+=== IDs para Postman ===
+cliente_origen_id  = X
+cliente_destino_id = X
+vehiculo_id        = X
+taller_id          = X
+orden_pasada_id    = X
+```
+
+> **Importante:** los IDs cambian con cada `flush`. Siempre anotarlos antes de continuar.
+
+### B.3 Resetear variables en Postman
+
+En Postman → **Environments** → **Autolog Local**:
+
+| Variable | Acción |
+|----------|--------|
+| `access_token` | Borrar valor actual |
+| `refresh_token` | Borrar valor actual |
+| `role` | Borrar valor actual |
+| `orden_id` | Borrar valor actual |
+| `agenda_id` | Borrar valor actual |
+| `cliente_origen_id` | Actualizar con el nuevo ID del seed |
+| `cliente_destino_id` | Actualizar con el nuevo ID del seed |
+| `vehiculo_id` | Actualizar con el nuevo ID del seed |
+| `taller_id` | Actualizar con el nuevo ID del seed |
+| `orden_pasada_id` | Actualizar con el nuevo ID del seed |
+
+Las variables `*_username` y `*_password` no cambian entre ejecuciones.
+
+### B.4 Ejecutar
+
+Runner → colección **Autolog** → orden **1, 3, 5, 4, 2** → **Run Autolog**.

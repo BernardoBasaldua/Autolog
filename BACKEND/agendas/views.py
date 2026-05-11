@@ -24,7 +24,10 @@ class AgendaViewSet(viewsets.ModelViewSet):
         turnos_qs = agenda.get_turnos_asignados()
 
         if fecha_str:
-            fecha = parse_date(fecha_str)
+            try:
+                fecha = parse_date(fecha_str)
+            except (ValueError, TypeError):
+                fecha = None
             if not fecha:
                 return Response({"detail": "Parámetro 'fecha' inválido. Usá YYYY-MM-DD."}, status=400)
 
