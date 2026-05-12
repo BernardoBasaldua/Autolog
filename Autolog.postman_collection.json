@@ -188,6 +188,18 @@
       },
       "event": [
         {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const id = pm.variables.get('orden_pasada_id');",
+              "if (id === undefined || id === null || String(id).trim() === '') {",
+              "    throw new Error(\"orden_pasada_id esta vacio. Correr el seed (seccion 4.2 de TESTSERVICES.md) y pegar el ID impreso en el environment de Postman. Sin este valor la URL queda /api/ordenes//anular/ y devuelve 404.\");",
+              "}"
+            ]
+          }
+        },
+        {
           "listen": "test",
           "script": {
             "type": "text/javascript",

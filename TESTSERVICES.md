@@ -201,6 +201,14 @@ print(f"orden_pasada_id    = {ot_pasada.id}")
   `cliente` para usuarios normales.
 - Con credenciales inválidas devuelve 401.
 
+> **Nota sobre el claim `role`:** se setea en `BACKEND/auth/serializers.py:10-21`
+> (`MyTokenObtainPairSerializer.get_token()`) pero el backend **nunca lo lee** para
+> autorizar. Los endpoints autorizan vía `is_staff`/`is_superuser` y las relaciones
+> ORM `usuario.tecnico` / `usuario.cliente`. El `role` solo lo consume el frontend
+> Angular para renderizar la UI según el tipo de usuario. Por eso el assert sobre
+> `role` en este test es una **validación de formato del response**, no una
+> dependencia funcional de las pruebas #2 a #5.
+
 #### Request (caso feliz — login como técnico)
 
 ```http
@@ -555,6 +563,7 @@ Para correr todo de un saque desde Postman: **Runner → Autolog → orden 1, 3,
 | 401 al transferir titularidad | Logueado como técnico, no cliente | Re-login con `cliente_username` antes del Test #2 |
 | 400 "Ya existe una orden con ese horario" en Test #3 | Otra OT en el mismo `fecha_turno` | Cambiar la hora del payload |
 | 400 al anular Test #4 ("Solo se puede anular cuando el turno ya pasó") | La OT del seed quedó con fecha futura | Recrear `ot_pasada` en el shell con `timezone.now() - timedelta(hours=2)` |
+| **404 Not Found en Test #4 (Anular OT)** | `orden_pasada_id` vacío en el environment (la URL queda `/api/ordenes//anular/` que no matchea) **o** la OT fue borrada de la BD | Re-correr el seed (sección 4.2), copiar el `orden_pasada_id` impreso al environment de Postman y verificar que el environment "Autolog Local" esté seleccionado |
 | `cliente_origen_id` u otros IDs vacíos | Faltó copiar del print del shell | Re-correr el seed o consultar en el admin panel |
 | 404 en `/api/vehiculo/{id}/transferir-titularidad/` | URL escrita como `/api/vehiculos/...` (plural) | El router está como **singular**: `/api/vehiculo/...` |
 | 500 al crear OT con vehículo recién creado | Faltan `intervalo_servicio_meses` o `intervalo_servicio_km` en el vehículo | Setearlos en el seed (script ya los incluye) |
