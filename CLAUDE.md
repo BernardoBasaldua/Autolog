@@ -50,6 +50,16 @@ Autolog/
 │   │   └── app.routes.ts
 │   ├── INTERFACES (CANVA)/        # Wireframes HTML de referencia
 │   └── package.json
+├── PRUEBAS/
+│   ├── playwright/                # Pruebas E2E de interfaz (Playwright)
+│   ├── logs/                      # Logs de ejecución E2E (errores / exitosas / reporte)
+│   ├── RENDIMIENTO/               # Pruebas de carga y estrés con JMeter
+│   ├── GUIA_KATALON.md
+│   └── Ejemplos/                  # Planes de prueba de referencia (PDF)
+├── EXPLICACION/                   # Explicaciones y análisis de resultados de pruebas
+├── TESTSERVICES.md                # Plan de pruebas de servicios (API)
+├── RESULTADOS_TEST_SERVICES.md    # Resultados de las pruebas de servicios
+├── Autolog.postman_*.json         # Colección y entorno Postman
 └── ERS_AutoLog_1.0.0.pdf          # Especificación de Requisitos del Sistema
 ```
 
@@ -284,6 +294,32 @@ pendiente → en_proceso → finalizada
 - **Duplicado en `usuarios/urls.py`**: `router.register('clientes', ...)` aparece dos veces
 - **Código legacy comentado**: varias vistas con versiones anteriores sin limpiar
 - **`print()` / `console.log` de debug**: presentes en producción
+
+---
+
+## Estado de las pruebas (etapa actual del proyecto)
+
+El trabajo actual se centra en **pruebas y calidad**, no en nuevas funcionalidades.
+
+| Tipo | Herramienta | Ubicación | Estado |
+|---|---|---|---|
+| Interfaz / E2E | Playwright (+ guía Katalon) | `PRUEBAS/playwright/`, `PRUEBAS/logs/` | Ejecutadas, logs de errores y exitosas registrados |
+| Servicios (API) | Postman | `TESTSERVICES.md`, `RESULTADOS_TEST_SERVICES.md`, `Autolog.postman_*.json` | Ejecutadas y documentadas (incluye fix D2 en `agendas/views.py`) |
+| Rendimiento (carga) | JMeter 5.6.3 | `PRUEBAS/RENDIMIENTO/`, análisis en `EXPLICACION/PRUEBAS_RENDIMIENTO.md` | Ejecutada (08/10/2026) |
+| Rendimiento (estrés) | JMeter (grupo 04 del `.jmx`) | `PRUEBAS/RENDIMIENTO/` | **Pendiente**: el grupo está deshabilitado en el plan |
+
+### Pruebas de rendimiento (JMeter)
+- Datos de prueba: `seed_rendimiento.py` crea "Taller Rendimiento" (`taller_id=1`, `agenda_id=1`), el técnico `tecnico_perf` y 100 clientes `cliente_perfNNN` (contraseña `Perf2025!`), y genera `usuarios.csv`
+- Se ejecuta desde `PRUEBAS/RENDIMIENTO/`: `jmeter -n -t Autolog_Rendimiento.jmx -l resultados.jtl -e -o reporte_html`
+- **Resultado de la carga:** 2510 requests, 0 % de errores, p95 global de 193 ms → cumple RNF-RD-02 (< 2 s) y RNF-RD-03 (100 usuarios; el pico real fue de unos 33 hilos simultáneos)
+- **Cuello de botella detectado:** `GET /api/talleres/{id}/vehiculos/` (promedio 390 ms, p95 704 ms). Causa: N+1 en `VehiculoSerializer`, que serializa el historial completo de OT y la marca con todos sus modelos por cada vehículo. Optimización pendiente (`prefetch_related` / serializer liviano / paginación)
+- La corrida dejó 50 OT extra en la base (las creó el grupo 02), así que las corridas siguientes no son exactamente comparables
+- Limitación del entorno: SQLite + `runserver` + JMeter en la misma PC
+
+### Próximos pasos
+1. Habilitar el grupo 04 y correr el estrés subiendo `-Jusuarios_estres` hasta un error del 15–20 %
+2. (Opcional) Optimizar `/talleres/{id}/vehiculos/` y volver a medir para documentar el antes y el después
+3. Redactar la sección de resultados de rendimiento en el informe
 
 ---
 
